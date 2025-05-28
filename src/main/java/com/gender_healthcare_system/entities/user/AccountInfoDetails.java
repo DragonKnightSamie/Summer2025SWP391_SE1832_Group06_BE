@@ -1,0 +1,63 @@
+package com.gender_healthcare_system.entities.user;
+
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
+
+import java.util.Collection;
+import java.util.Collections;
+
+public class AccountInfoDetails implements UserDetails {
+
+    private final String username;
+    private final String password;
+    private final Collection<? extends GrantedAuthority> authorities;
+
+    public AccountInfoDetails(Account userInfo) {
+        this.username = userInfo.getUsername(); // lấy từ thực thể Account
+        PasswordEncoder encoder = new BCryptPasswordEncoder();
+        this.password = encoder.encode(userInfo.getPassword());
+
+        // đảm bảo userInfo.getRole() != null
+        String roleName = "ROLE_" + userInfo.getRole().getName().toUpperCase();
+
+        this.authorities = Collections.singletonList(new SimpleGrantedAuthority(roleName));
+    }
+
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return authorities;
+    }
+
+    @Override
+    public String getPassword() {
+        return password;
+    }
+
+    @Override
+    public String getUsername() {
+        return username;
+    }
+
+    @Override
+    public boolean isAccountNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return true;
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return true;
+    }
+}
