@@ -2,6 +2,7 @@ package com.gender_healthcare_system.services;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.gender_healthcare_system.entities.enu.AccountStatus;
 import com.gender_healthcare_system.entities.user.Account;
 import com.gender_healthcare_system.entities.user.AccountInfoDetails;
@@ -43,32 +44,38 @@ public class AccountService implements IAccountService {
 
     @Transactional
     public void createCustomerAccount(CustomerPayload payload) throws JsonProcessingException {
-        Role role = roleRepo.findByRoleId(2); // Assuming 2 is the ID for Customer role
+        ObjectMapper mapper = new ObjectMapper();
+        mapper.registerModule(new JavaTimeModule());
+
         Account account = new Account();
+        Customer customer = new Customer();
+
         account.setUsername(payload.getUsername());
         account.setPassword(payload.getPassword());
         account.setStatus(AccountStatus.ACTIVE);
+
+        Role role = roleRepo.findByRoleId(2);
         account.setRole(role);
 
-        accountRepo.saveAndFlush(account);
+        //account.setRoleId(2);
 
-        Customer customer = new Customer();
+        accountRepo.saveAndFlush(account);
 
         //customer.setCustomerId(account.getAccountId());
         customer.setAccount(account);
 
         customer.setFullName(payload.getFullName());
         customer.setGender(payload.getGender());
-        ObjectMapper mapper = new ObjectMapper();
-        String GenderSpecificDetails = mapper.writeValueAsString(payload.getGenderSpecificDetails());
+
+        String GenderSpecificDetails = mapper.writeValueAsString(
+                payload.getGenderSpecificDetails());
         customer.setGenderSpecificDetails(GenderSpecificDetails);
+
         customer.setDateOfBirth(payload.getDateOfBirth());
         customer.setPhone(payload.getPhone());
         customer.setEmail(payload.getEmail());
         customer.setAddress(payload.getAddress());
-        customer.setAccount(account);
-
-
+        
         customerRepo.saveAndFlush(customer);
     }
 

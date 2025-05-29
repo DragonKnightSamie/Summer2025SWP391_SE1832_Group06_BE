@@ -73,10 +73,12 @@ public class JwtService {
     //invalidate token by adding it to a blacklist
     //dung de logout
     public void invalidateToken(String token) {
+
         blacklistedTokens.add(token);
     }
 
     public boolean isTokenBlacklisted(String token) {
+
         return blacklistedTokens.contains(token);
     }
 

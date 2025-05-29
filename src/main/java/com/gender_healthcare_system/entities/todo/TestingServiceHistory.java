@@ -24,7 +24,7 @@ public class TestingServiceHistory {
     @Column(name = "service_history_id")
     private int serviceHistoryId;
 
-    @Column(name = "service_id",insertable = false,updatable = false, nullable = false)
+    @Column(name = "service_id", nullable = false)
     private int serviceId;
 
     @Nationalized
@@ -47,7 +47,7 @@ public class TestingServiceHistory {
 
     // Relationship with TestingService
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "service_id", nullable = false)
+    @JoinColumn(name = "service_id", insertable = false, updatable = false, nullable = false)
     private TestingService testingService;
 
     // Relationship with Customer

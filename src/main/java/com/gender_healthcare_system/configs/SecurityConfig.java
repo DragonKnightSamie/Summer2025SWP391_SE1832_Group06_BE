@@ -28,7 +28,6 @@ public class SecurityConfig {
     private final UserDetailsService userDetailsService;
 
     private final String[] AUTH_WHITELIST = {
-            "/guest/logout",
             "/customer/register",
             "/guest/login",
             "/v3/api-docs/**",
@@ -36,7 +35,12 @@ public class SecurityConfig {
             "/swagger-ui.html"
     };
 
+    private final String[] CUSTOMER_AUTHLIST = {
+            "/customer/logout"
+    };
+
     public SecurityConfig(UserDetailsService userDetailsService) {
+
         this.userDetailsService = userDetailsService;
     }
 
@@ -46,6 +50,7 @@ public class SecurityConfig {
         return http.csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(AUTH_WHITELIST).permitAll()
+                        .requestMatchers(CUSTOMER_AUTHLIST).hasAuthority("ROLE_CUSTOMER")
                         .anyRequest().authenticated()
                 )
                 .sessionManagement(sess -> sess

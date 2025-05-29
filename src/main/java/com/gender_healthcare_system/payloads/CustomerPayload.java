@@ -14,7 +14,8 @@ import lombok.NoArgsConstructor;
 import org.hibernate.validator.constraints.Length;
 import org.springframework.format.annotation.DateTimeFormat;
 
-import java.util.Date;
+import java.time.LocalDate;
+
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -33,8 +34,9 @@ public class CustomerPayload {
     private String fullName;
 
     @NotNull(message = "Date of birth is required")
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy")
-    private Date dateOfBirth; //DD-MM-YYYY
+    @DateTimeFormat(pattern = "DD-MM-YYYY")
+    //@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy")
+    private LocalDate dateOfBirth; //DD-MM-YYYY
 
     @NotBlank(message = "Gender is required")
     private Gender gender; //Enum

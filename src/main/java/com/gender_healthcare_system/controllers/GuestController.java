@@ -35,17 +35,10 @@ public class GuestController {
         );
         if (authentication.isAuthenticated()) {
 
-            String jwtToken = jwtService.generateToken(loginRequest.getUsername());
-            return jwtToken;
+            return jwtService.generateToken(loginRequest.getUsername());
         } else {
             throw new UsernameNotFoundException("Invalid username or password");
         }
-    }
-
-    @PostMapping("/logout")
-    public String logout(@RequestBody String token) {
-        jwtService.isTokenBlacklisted(token);
-        return "Logout successful";
     }
 
 }

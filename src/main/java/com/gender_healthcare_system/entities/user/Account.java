@@ -30,11 +30,14 @@ public class Account {
     @Column(name = "status", nullable = false, length = 15)
     private AccountStatus status;
 
-    @Column(name = "role_id",insertable = false,updatable = false, nullable = false)
-    private int roleId;
+/*    @Column(name = "role_id", nullable = false)
+    private int roleId;*/
 
     //ManyToOne relationship with Role
     @ManyToOne
-    @JoinColumn(name = "role_id", nullable = false)
+    //@MapsId
+    @JoinColumn(name = "role_id")
     private Role role;
+
+    //, insertable = false, updatable = false, nullable = false
 }

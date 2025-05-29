@@ -1,16 +1,16 @@
-package com.gender_healthcare_system.payloads;
+package com.gender_healthcare_system.dtos;
 
-public class LoginRespose {
+public class LoginResponse {
 
     private String token;
     private String username;
     private String status;
     private String role;
 
-    public LoginRespose() {
+    public LoginResponse() {
     }
 
-    public LoginRespose(String token, String username, String status, String role) {
+    public LoginResponse(String token, String username, String status, String role) {
         this.token = token;
         this.username = username;
         this.status = status;
