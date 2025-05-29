@@ -18,7 +18,7 @@ public class Account {
     @SequenceGenerator(name = "account_sequence", sequenceName = "account_sequence", allocationSize = 1)
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "account_sequence")
     @Column(name = "account_id")
-    private int id;
+    private int accountId;
 
     @Column(name = "username", nullable = false, unique = true, length = 50)
     private String username;
@@ -29,6 +29,9 @@ public class Account {
     //Enum
     @Column(name = "status", nullable = false, length = 15)
     private AccountStatus status;
+
+    @Column(name = "role_id",insertable = false,updatable = false, nullable = false)
+    private int roleId;
 
     //ManyToOne relationship with Role
     @ManyToOne

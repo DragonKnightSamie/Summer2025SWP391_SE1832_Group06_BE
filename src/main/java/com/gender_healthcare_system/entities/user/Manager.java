@@ -37,11 +37,12 @@ public class Manager {
     @Nationalized  // Allows for Unicode characters
     private String address;
 
-    //Relationship with TestingServiceType
-    @OneToMany(mappedBy = "manager", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private List<TestingServiceType> testingServiceTypes;
-
     //Relationship with Blog
     @OneToMany(mappedBy = "manager", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Blog> blogs;
+
+    //One-to-One relationship with Account
+    @OneToOne
+    @JoinColumn(name = "manager_id", referencedColumnName = "account_id", nullable = false, unique = true)
+    private Account account;
 }

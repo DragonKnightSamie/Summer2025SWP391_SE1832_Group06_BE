@@ -24,14 +24,14 @@ public class TestingServiceHistory {
     @Column(name = "service_history_id")
     private int serviceHistoryId;
 
-    @Column(name = "service_id", nullable = false)
+    @Column(name = "service_id",insertable = false,updatable = false, nullable = false)
     private int serviceId;
 
     @Nationalized
     @Column(name = "result", nullable = false, length = 255)
     private String result;
 
-    @Enumerated(EnumType.STRING) //có thể sửa lại thành EXCELLENT, GOOD, AVERAGE, POOR
+    @Enumerated(EnumType.STRING)
     @Column(name = "rating", nullable = false)
     private Rating rating;
 
@@ -54,5 +54,10 @@ public class TestingServiceHistory {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "customer_id", nullable = false)
     private Customer customer;
+
+    //One-to-One relationship with Payment
+    @OneToOne
+    @JoinColumn(name = "service_history_id", referencedColumnName = "payment_id", unique = true)
+    private Payment payment;
 
 }

@@ -1,15 +1,12 @@
 package com.gender_healthcare_system.controllers;
 
-import com.gender_healthcare_system.exceptions.AppException;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import com.gender_healthcare_system.payloads.LoginRequest;
-import com.gender_healthcare_system.payloads.LoginRespose;
 import com.gender_healthcare_system.services.AccountService;
 import com.gender_healthcare_system.services.JwtService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -44,4 +41,5 @@ public class GuestController {
             throw new UsernameNotFoundException("Invalid username or password");
         }
     }
+
 }

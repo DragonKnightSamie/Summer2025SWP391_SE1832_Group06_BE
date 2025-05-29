@@ -40,5 +40,5 @@ public class Payment {
     @JoinColumn(name = "staff_id", nullable = false)
     private Staff staff;
 
-    //thếu mối quan hệ giữa payment và consultant
+
 }

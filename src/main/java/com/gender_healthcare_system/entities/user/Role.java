@@ -1,9 +1,15 @@
 package com.gender_healthcare_system.entities.user;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Entity
 @Table(name = "Role")
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class Role {
 
     @Id
@@ -14,26 +20,5 @@ public class Role {
     @Column(name = "name")
     private String name;
 
-    public Role() {
-    }
 
-    public Role(String name) {
-        this.name = name;
-    }
-
-    public int getRoleId() {
-        return roleId;
-    }
-
-    public void setRoleId(int roleId) {
-        this.roleId = roleId;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
 }

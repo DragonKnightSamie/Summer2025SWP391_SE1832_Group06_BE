@@ -44,4 +44,9 @@ public class Consultant {
     // Assuming that a Consultant can have multiple consultations
     @OneToMany(mappedBy = "consultant", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Consultation> consultations;
+
+    //One-to-One relationship with Account
+    @OneToOne
+    @JoinColumn(name = "consultant_id", referencedColumnName = "account_id", nullable = false, unique = true)
+    private Account account;
 }

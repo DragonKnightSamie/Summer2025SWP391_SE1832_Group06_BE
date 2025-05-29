@@ -1,6 +1,8 @@
 package com.gender_healthcare_system.entities.user;
 
+import com.gender_healthcare_system.entities.enu.Gender;
 import com.gender_healthcare_system.entities.todo.Consultation;
+import com.gender_healthcare_system.entities.todo.GenderSpecificDetails;
 import com.gender_healthcare_system.entities.todo.TestingServiceHistory;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -19,8 +21,8 @@ import java.util.List;
 public class Customer {
 
     @Id
-    @SequenceGenerator(name = "customer_sequence", sequenceName = "customer_sequence", allocationSize = 1)
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "customer_sequence")
+    //@SequenceGenerator(name = "customer_sequence", sequenceName = "customer_sequence", allocationSize = 1)
+    //@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "customer_sequence")
     @Column(name = "customer_id")
     private int customerId;
 
@@ -32,7 +34,8 @@ public class Customer {
     private Date dateOfBirth;
 
     @Column(name = "gender", nullable = false, length = 15)
-    private String gender;
+    @Enumerated(EnumType.STRING)
+    private Gender gender;
 
     @Column(name = "gender_specific_details", nullable = false, length = 255)
     private String genderSpecificDetails;
@@ -54,5 +57,10 @@ public class Customer {
     @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<TestingServiceHistory> testingServiceHistories;
 
+    //One-to-One relationship with Account
+    @OneToOne
+    @MapsId // ✅ Map customerId = account.accountId
+    @JoinColumn(name = "customer_id")
+    private Account account;
 
 }

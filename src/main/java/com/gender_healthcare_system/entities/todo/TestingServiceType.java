@@ -42,10 +42,5 @@ public class TestingServiceType {
     @OneToMany(mappedBy = "testingServiceType", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<TestingService> testingServices;
 
-    //Relationship with Manager
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "manager_id", nullable = false)
-    private Manager manager;
-
 
 }

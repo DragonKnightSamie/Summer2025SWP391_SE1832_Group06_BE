@@ -18,7 +18,7 @@ public class TestingService {
 
     @Id
     @SequenceGenerator(name = "testing_service_seq", sequenceName = "testing_service_sequence", allocationSize = 1)
-    @GeneratedValue(strategy = GenerationType.SEQUENCE,generator = "testing_service_seq")
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "testing_service_seq")
     @Column(name = "service_id")
     private int serviceId;
 
@@ -46,5 +46,9 @@ public class TestingService {
     @JoinColumn(name = "service_type_id", insertable = false, updatable = false)
     private TestingServiceType testingServiceType;
 
+    //One-to-one relationship with TestingServiceForm
+    @OneToOne
+    @JoinColumn(name = "service_id", referencedColumnName = "service_form_id", unique = true)
+    private TestingServiceForm testingServiceForm;
 
 }

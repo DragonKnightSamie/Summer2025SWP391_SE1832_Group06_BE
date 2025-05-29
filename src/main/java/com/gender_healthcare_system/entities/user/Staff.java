@@ -2,12 +2,18 @@ package com.gender_healthcare_system.entities.user;
 
 import com.gender_healthcare_system.entities.todo.Payment;
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.hibernate.annotations.Nationalized;
 
 import java.util.List;
 
 @Entity
 @Table(name = "Staff")
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class Staff {
 
     @Id
@@ -33,4 +39,9 @@ public class Staff {
     //One-to-Many relationship with Payment
     @OneToMany(mappedBy = "staff", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Payment> payments;
+
+    //One-to-One relationship with Account
+    @OneToOne
+    @JoinColumn(name = "staff_id", referencedColumnName = "account_id", nullable = false, unique = true)
+    private Account account;
 }
