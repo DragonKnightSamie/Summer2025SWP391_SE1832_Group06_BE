@@ -28,6 +28,7 @@ public class SecurityConfig {
     private final UserDetailsService userDetailsService;
 
     private final String[] AUTH_WHITELIST = {
+            "/guest/logout",
             "/customer/register",
             "/guest/login",
             "/v3/api-docs/**",

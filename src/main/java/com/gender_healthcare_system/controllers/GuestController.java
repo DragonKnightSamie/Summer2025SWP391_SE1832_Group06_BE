@@ -42,4 +42,10 @@ public class GuestController {
         }
     }
 
+    @PostMapping("/logout")
+    public String logout(@RequestBody String token) {
+        jwtService.isTokenBlacklisted(token);
+        return "Logout successful";
+    }
+
 }
