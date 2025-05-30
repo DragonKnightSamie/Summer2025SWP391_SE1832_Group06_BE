@@ -6,6 +6,7 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -48,7 +49,11 @@ public class JwtAuthFilter extends OncePerRequestFilter {
             UserDetails userDetails = userDetailsService
                     .loadUserByUsername(username);
 
-            if (jwtService.validateToken(token, userDetails)) {
+            boolean validateResult = jwtService.validateToken(token, userDetails);
+
+            if (!validateResult) {
+                throw new BadCredentialsException("Token invalid or expired");
+            }
 
                 UsernamePasswordAuthenticationToken authToken =
                         new UsernamePasswordAuthenticationToken(
@@ -62,7 +67,6 @@ public class JwtAuthFilter extends OncePerRequestFilter {
                         .buildDetails(request));
 
                 SecurityContextHolder.getContext().setAuthentication(authToken);
-            }
         }
         filterChain.doFilter(request, response);
     }

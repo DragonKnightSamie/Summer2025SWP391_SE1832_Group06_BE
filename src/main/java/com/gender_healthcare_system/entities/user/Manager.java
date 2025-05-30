@@ -18,8 +18,8 @@ import java.util.List;
 public class Manager {
 
     @Id
-    @SequenceGenerator(name = "manager_sequence", sequenceName = "manager_sequence", allocationSize = 1)
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "manager_sequence")
+    //@SequenceGenerator(name = "manager_sequence", sequenceName = "manager_sequence", allocationSize = 1)
+    //@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "manager_sequence")
     @Column(name = "manager_id")
     private int managerId;
 
@@ -43,6 +43,7 @@ public class Manager {
 
     //One-to-One relationship with Account
     @OneToOne
-    @JoinColumn(name = "manager_id", referencedColumnName = "account_id", nullable = false, unique = true)
+    @MapsId
+    @JoinColumn(name = "manager_id", nullable = false)
     private Account account;
 }

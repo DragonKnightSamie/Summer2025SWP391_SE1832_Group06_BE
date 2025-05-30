@@ -16,13 +16,13 @@ import lombok.NoArgsConstructor;
 public class Payment {
 
     @Id
-    @SequenceGenerator(name = "payment_seq", sequenceName = "payment_sequence", allocationSize = 1)
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "payment_seq")
+    //@SequenceGenerator(name = "payment_seq", sequenceName = "payment_sequence", allocationSize = 1)
+    //@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "payment_seq")
     @Column(name = "payment_id")
     private int paymentId;
 
-    @Column(name = "service_history_id", nullable = false)
-    private int serviceHistoryId;
+    /*@Column(name = "service_history_id", nullable = false)
+    private int serviceHistoryId;*/
 
     @Column(name = "amount", nullable = false)
     private double amount;
@@ -40,5 +40,9 @@ public class Payment {
     @JoinColumn(name = "staff_id", nullable = false)
     private Staff staff;
 
+    @OneToOne
+    @MapsId
+    @JoinColumn(name = "payment_id")
+    private TestingServiceHistory testingServiceHistory;
 
 }

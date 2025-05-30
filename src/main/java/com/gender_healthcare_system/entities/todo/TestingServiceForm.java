@@ -13,21 +13,18 @@ import lombok.NoArgsConstructor;
 public class TestingServiceForm {
 
     @Id
-    @SequenceGenerator(name = "testing_service_form_seq", sequenceName = "testing_service_form_sequence", allocationSize = 1)
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "testing_service_form_seq")
+    //@SequenceGenerator(name = "testing_service_form_seq", sequenceName = "testing_service_form_sequence", allocationSize = 1)
+    //@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "testing_service_form_seq")
     @Column(name = "service_form_id")
     private int serviceFormId;
-
-    @Column(name = "service_id", nullable = false)
-    private int serviceId;
 
     @Column(name = "content", nullable = false, length = 255)
     private String content;
 
     //Relationship with TestingService
     //1:1
-    @OneToOne
-    @JoinColumn(name = "service_id", insertable = false, updatable = false)
-    private TestingService testingService;
+    //@OneToOne
+    //@JoinColumn(name = "service_id", insertable = false, updatable = false)
+    //private TestingService testingService;
 
 }

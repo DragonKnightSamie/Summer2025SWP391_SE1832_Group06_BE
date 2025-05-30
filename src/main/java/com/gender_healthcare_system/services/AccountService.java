@@ -33,13 +33,13 @@ public class AccountService implements IAccountService {
     private RoleRepo roleRepo;
 
     @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        Optional<Account> accountInfo = accountRepo.findAccountsByUsername(username);
+    public UserDetails loadUserByUsername(String username) {
+        Optional<Account> accountInfo = accountRepo.findActiveAccountByUsername(username);
 
         return accountInfo
                 .map(AccountInfoDetails::new)
                 .orElseThrow(() ->
-                        new UsernameNotFoundException("User not found: " + username));
+                        new UsernameNotFoundException("Invalid Username or Password"));
     }
 
     @Transactional

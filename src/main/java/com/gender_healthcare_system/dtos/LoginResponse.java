@@ -4,17 +4,17 @@ public class LoginResponse {
 
     private int id;
     private String username;
+    private String fullname;
     private String email;
     private String token;
 
     public LoginResponse() {
     }
 
-    public LoginResponse(int id, String username, String email, String token) {
+    public LoginResponse(int id, String fullname, String email) {
         this.id = id;
-        this.username = username;
+        this.fullname = fullname;
         this.email = email;
-        this.token = token;
     }
 
     public int getId() {
@@ -32,6 +32,10 @@ public class LoginResponse {
     public void setUsername(String username) {
         this.username = username;
     }
+
+    public String getFullname() { return fullname; }
+
+    public void setFullname(String fullname) { this.fullname = fullname; }
 
     public String getEmail() {
         return email;

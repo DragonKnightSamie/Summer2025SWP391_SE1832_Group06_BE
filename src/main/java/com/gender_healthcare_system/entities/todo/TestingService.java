@@ -48,7 +48,8 @@ public class TestingService {
 
     //One-to-one relationship with TestingServiceForm
     @OneToOne
-    @JoinColumn(name = "service_id", referencedColumnName = "service_form_id", unique = true)
+    @MapsId
+    @JoinColumn(name = "service_id", nullable = false)
     private TestingServiceForm testingServiceForm;
 
 }

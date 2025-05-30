@@ -18,8 +18,8 @@ import java.util.List;
 public class Consultant {
 
     @Id
-    @SequenceGenerator(name = "consultant_sequence", sequenceName = "consultant_sequence", allocationSize = 1)
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "consultant_sequence")
+    //@SequenceGenerator(name = "consultant_sequence", sequenceName = "consultant_sequence", allocationSize = 1)
+    //@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "consultant_sequence")
     @Column(name = "consultant_id")
     private int consultantId;
 
@@ -47,6 +47,7 @@ public class Consultant {
 
     //One-to-One relationship with Account
     @OneToOne
-    @JoinColumn(name = "consultant_id", referencedColumnName = "account_id", nullable = false, unique = true)
+    @MapsId
+    @JoinColumn(name = "consultant_id", nullable = false)
     private Account account;
 }

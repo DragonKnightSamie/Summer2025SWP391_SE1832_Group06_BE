@@ -11,13 +11,13 @@ import java.util.Collections;
 
 public class AccountInfoDetails implements UserDetails {
 
-    //private final int id;
-    //private final String email;
+    private final int id;
     private final String username;
     private final String password;
     private final Collection<? extends GrantedAuthority> authorities;
 
     public AccountInfoDetails(Account userInfo) {
+        this.id = userInfo.getAccountId();
         this.username = userInfo.getUsername(); // lấy từ thực thể Account
         PasswordEncoder encoder = new BCryptPasswordEncoder();
         this.password = encoder.encode(userInfo.getPassword());
@@ -61,5 +61,9 @@ public class AccountInfoDetails implements UserDetails {
     @Override
     public boolean isEnabled() {
         return true;
+    }
+
+    public int getId() {
+        return id;
     }
 }

@@ -11,8 +11,11 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Collections;
 import java.util.List;
 
 @RestController
@@ -30,13 +33,15 @@ public class ManagerController {
     private AuthenticationManager authenticationManager;
 
     //getAllBlogs
-    @GetMapping("/blogs")
+    @GetMapping("/blogs/")
+    @PreAuthorize("hasAuthority('ROLE_MANAGER')")
     public ResponseEntity<List<Blog>> getAllBlogs() {
         return ResponseEntity.ok(blogService.getAllBlogs());
     }
 
     //getBlogsById
     @GetMapping("/blogs/{id}")
+    @PreAuthorize("hasAuthority('ROLE_MANAGER')")
     public ResponseEntity<Blog> getBlogById(@PathVariable int id) {
         Blog blog = blogService.getBlogById(id);
         if (blog != null) {
@@ -48,13 +53,14 @@ public class ManagerController {
 
     //searchBlogs
     @GetMapping("/blogs/search")
+    @PreAuthorize("hasAuthority('ROLE_MANAGER')")
     public ResponseEntity<List<Blog>> searchBlogs(@RequestParam String keyword) {
         return ResponseEntity.ok(blogService.searchBlogs(keyword));
     }
 
     //MANGER CREATE BLOGS
     @GetMapping("/blogs/create")
-    @PreAuthorize("hasRole('ROLE_MANAGER')")
+    @PreAuthorize("hasAuthority('ROLE_MANAGER')")
     public ResponseEntity<Blog> createBlog(@RequestBody Blog blog) {
         Blog newBlog = blogService.createBlog(blog);
         if (newBlog != null) {
@@ -66,7 +72,7 @@ public class ManagerController {
 
     //MANGER UPDATE BLOGS
     @GetMapping("/blogs/update/{id}")
-    @PreAuthorize("hasRole('ROLE_MANAGER')")
+    @PreAuthorize("hasAuthority('ROLE_MANAGER')")
     public ResponseEntity<Blog> updateBlog(@PathVariable int id, @RequestBody Blog blog) {
         Blog updatedBlog = blogService.updateBlog(id, blog);
         if (updatedBlog != null) {
@@ -78,7 +84,7 @@ public class ManagerController {
 
     //MANGER DELETE BLOGS
     @GetMapping("/blogs/delete/{id}")
-    @PreAuthorize("hasRole('ROLE_MANAGER')")
+    @PreAuthorize("hasAuthority('ROLE_MANAGER')")
     public ResponseEntity<Void> deleteBlog(@PathVariable int id) {
         try {
             blogService.deleteBlog(id);
@@ -95,15 +101,27 @@ public class ManagerController {
                 new UsernamePasswordAuthenticationToken(loginRequest.getUsername(),
                         loginRequest.getPassword())
         );
-        if (authentication.isAuthenticated()) {
-            return jwtService.generateToken(loginRequest.getUsername());
-        } else {
-            throw new RuntimeException("Invalid username or password");
+
+        if (!authentication.isAuthenticated()) {
+            throw new RuntimeException("Invalid Username or Password");
         }
+
+            boolean checkAuth = authentication
+                .getAuthorities()
+                .stream()
+                .anyMatch(x -> x
+                        .getAuthority().equals("ROLE_MANAGER"));
+
+        if(!checkAuth) {
+            throw new UsernameNotFoundException("Invalid Username or Password");
+        }
+            return jwtService.generateToken(loginRequest.getUsername());
+
     }
 
     // Manager logout
     @PostMapping("/logout")
+    @PreAuthorize("hasAuthority('ROLE_MANAGER')")
     public String logout(@RequestBody String token) {
         jwtService.isTokenBlacklisted(token);
         return "Logout successful";

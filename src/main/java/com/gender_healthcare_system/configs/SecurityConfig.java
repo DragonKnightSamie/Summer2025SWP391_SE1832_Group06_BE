@@ -30,8 +30,10 @@ public class SecurityConfig {
 
     // Các API không cần đăng nhập
     private static final String[] AUTH_WHITELIST = {
-            "/guest/register",
-            "/guest/login",
+            "/customer/register",
+            "/customer/login",
+            "/manager/login",
+            "/staff/login",
             "/v3/api-docs/**",
             "/swagger-ui/**",
             "/swagger-ui.html"
@@ -49,12 +51,14 @@ public class SecurityConfig {
 
     // Các API cần quyền MANAGER
     private static final String[] MANAGER_AUTHLIST = {
-            "/manager/**"
+            "/manager/blogs/**",
+            "/manager/logout"
     };
 
     // Các API cần quyền STAFF
     private static final String[] STAFF_AUTHLIST = {
             "/staff/payments/**",
+            "/staff/logout/"
     };
 
     @Bean

@@ -2,57 +2,77 @@ package com.gender_healthcare_system.controllers;
 
 import com.gender_healthcare_system.entities.enu.PaymentStatus;
 import com.gender_healthcare_system.entities.todo.Payment;
+import com.gender_healthcare_system.payloads.LoginRequest;
+import com.gender_healthcare_system.services.JwtService;
 import com.gender_healthcare_system.services.PaymentService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
-@RequestMapping("/staff/payments")
+@RequestMapping("/staff")
 public class StaffController {
 
     @Autowired
     private PaymentService paymentService;
 
+    @Autowired
+    private AuthenticationManager authenticationManager;
+
+    @Autowired
+    private JwtService jwtService;
+
     // 1. Get all payments
-    @GetMapping
+    @GetMapping("/payments/")
+    @PreAuthorize("hasAuthority('ROLE_STAFF')")
     public List<Payment> getAllPayments() {
         return paymentService.getAllPayments();
     }
 
     // 2. Get payment by ID
-    @GetMapping("/{id}")
+    @GetMapping("/payments/{id}")
+    @PreAuthorize("hasAuthority('ROLE_STAFF')")
     public Payment getPaymentById(@PathVariable int id) {
         return paymentService.getPaymentById(id);
     }
 
     // 3. Create new payment
-    @PostMapping
+    @PostMapping("/payments/")
+    @PreAuthorize("hasAuthority('ROLE_STAFF')")
     public Payment createPayment(@RequestBody Payment payment) {
         return paymentService.createPayment(payment);
     }
 
     // 4. Update payment
-    @PutMapping("/{id}")
+    @PutMapping("/payments/{id}")
+    @PreAuthorize("hasAuthority('ROLE_STAFF')")
     public Payment updatePayment(@PathVariable int id, @RequestBody Payment payment) {
         return paymentService.updatePayment(id, payment);
     }
 
     // 5. Delete payment
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/payments/{id}")
+    @PreAuthorize("hasAuthority('ROLE_STAFF')")
     public void deletePayment(@PathVariable int id) {
         paymentService.deletePayment(id);
     }
 
     // 6. Get payments by staff ID
-    @GetMapping("/by-staff/{staffId}")
+    @GetMapping("/payments/by-staff/{staffId}")
+    @PreAuthorize("hasAuthority('ROLE_STAFF')")
     public List<Payment> getPaymentsByStaffId(@PathVariable int staffId) {
         return paymentService.getPaymentsByStaffId(staffId);
     }
 
     // 7. Get payments by status
-    @GetMapping("/by-status/{status}")
+    @GetMapping("/payments/status/{status}")
+    @PreAuthorize("hasAuthority('ROLE_STAFF')")
     public List<Payment> getPaymentsByStatus(@PathVariable String status) {
         try {
             PaymentStatus parsedStatus = PaymentStatus.valueOf(status.toUpperCase());
@@ -63,7 +83,8 @@ public class StaffController {
     }
 
     // 8. Update payment status
-    @PutMapping("/{id}/update-status")
+    @PutMapping("/payments/{id}/update-status")
+    @PreAuthorize("hasAuthority('ROLE_STAFF')")
     public Payment updatePaymentStatus(@PathVariable int id, @RequestParam String newStatus) {
         try {
             PaymentStatus status = PaymentStatus.valueOf(newStatus.toUpperCase());
@@ -71,5 +92,28 @@ public class StaffController {
         } catch (IllegalArgumentException e) {
             throw new RuntimeException("Invalid payment status: " + newStatus);
         }
+    }
+
+    // 9. Staff login
+    @PostMapping("/login")
+    public String login(@RequestBody LoginRequest loginRequest) {
+        Authentication authentication = authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(loginRequest.getUsername(),
+                        loginRequest.getPassword())
+        );
+        if (authentication.isAuthenticated()) {
+
+            return jwtService.generateToken(loginRequest.getUsername());
+        } else {
+            throw new UsernameNotFoundException("Invalid username or password");
+        }
+    }
+
+    //10. Staff logout
+    @PostMapping("/logout")
+    @PreAuthorize("hasAuthority('ROLE_STAFF')")
+    public String logout(@RequestBody String token) {
+        jwtService.isTokenBlacklisted(token);
+        return "Logout successful";
     }
 }

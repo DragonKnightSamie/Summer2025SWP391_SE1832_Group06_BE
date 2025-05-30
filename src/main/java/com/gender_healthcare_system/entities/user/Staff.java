@@ -17,8 +17,8 @@ import java.util.List;
 public class Staff {
 
     @Id
-    @SequenceGenerator(name = "staff_sequence", sequenceName = "staff_sequence", allocationSize = 1)
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "staff_sequence")
+    //@SequenceGenerator(name = "staff_sequence", sequenceName = "staff_sequence", allocationSize = 1)
+    //@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "staff_sequence")
     @Column(name = "staff_id")
     private int staffId;
 
@@ -42,6 +42,7 @@ public class Staff {
 
     //One-to-One relationship with Account
     @OneToOne
-    @JoinColumn(name = "staff_id", referencedColumnName = "account_id", nullable = false, unique = true)
+    @MapsId
+    @JoinColumn(name = "staff_id", nullable = false)
     private Account account;
 }

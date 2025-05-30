@@ -30,14 +30,17 @@ public class Account {
     @Column(name = "status", nullable = false, length = 15)
     private AccountStatus status;
 
-/*    @Column(name = "role_id", nullable = false)
-    private int roleId;*/
-
     //ManyToOne relationship with Role
     @ManyToOne
     //@MapsId
     @JoinColumn(name = "role_id")
     private Role role;
 
-    //, insertable = false, updatable = false, nullable = false
+    public Account(int accountId, String username, String password, Role role) {
+        this.accountId = accountId;
+        this.username = username;
+        this.password = password;
+        this.role = role;
+    }
+
 }

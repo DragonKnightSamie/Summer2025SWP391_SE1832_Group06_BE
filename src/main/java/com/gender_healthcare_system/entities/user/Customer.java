@@ -61,7 +61,7 @@ public class Customer {
     //One-to-One relationship with Account
     @OneToOne
     @MapsId // ✅ Map customerId = account.accountId
-    @JoinColumn(name = "customer_id")
+    @JoinColumn(name = "customer_id", nullable = false)
     private Account account;
 
 }

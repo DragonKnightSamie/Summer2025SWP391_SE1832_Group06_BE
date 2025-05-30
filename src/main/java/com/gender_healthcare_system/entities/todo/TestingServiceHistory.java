@@ -56,8 +56,7 @@ public class TestingServiceHistory {
     private Customer customer;
 
     //One-to-One relationship with Payment
-    @OneToOne
-    @JoinColumn(name = "service_history_id", referencedColumnName = "payment_id", unique = true)
+    @OneToOne(mappedBy = "testingServiceHistory")
     private Payment payment;
 
 }
