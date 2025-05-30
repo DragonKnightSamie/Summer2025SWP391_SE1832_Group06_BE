@@ -20,11 +20,6 @@ public class CustomerController {
     @Autowired
     private JwtService jwtService;
 
-    @PostMapping("/register")
-    public String register(@RequestBody CustomerPayload customerPayload) throws JsonProcessingException {
-        accountService.createCustomerAccount(customerPayload);
-        return "Customer registered successfully";
-    }
 
     @PostMapping("/logout")
     public String logout(@RequestBody String token) {

@@ -1,7 +1,6 @@
 package com.gender_healthcare_system.configs;
 
 import com.gender_healthcare_system.filters.JwtAuthFilter;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -21,41 +20,58 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @EnableWebSecurity
 public class SecurityConfig {
 
-    @Autowired
-    private JwtAuthFilter jwtAuthFilter;
-
-    @Autowired
+    private final JwtAuthFilter jwtAuthFilter;
     private final UserDetailsService userDetailsService;
 
-    private final String[] AUTH_WHITELIST = {
-            "/customer/register",
+    public SecurityConfig(JwtAuthFilter jwtAuthFilter, UserDetailsService userDetailsService) {
+        this.jwtAuthFilter = jwtAuthFilter;
+        this.userDetailsService = userDetailsService;
+    }
+
+    // Các API không cần đăng nhập
+    private static final String[] AUTH_WHITELIST = {
+            "/guest/register",
             "/guest/login",
             "/v3/api-docs/**",
             "/swagger-ui/**",
             "/swagger-ui.html"
     };
 
-    private final String[] CUSTOMER_AUTHLIST = {
+    // Các API blog công khai (xem, tìm kiếm)
+    private static final String[] BLOG_PUBLIC_ENDPOINTS = {
+            "/api/blogs/**"
+    };
+
+    // Các API cần quyền CUSTOMER
+    private static final String[] CUSTOMER_AUTHLIST = {
             "/customer/logout"
     };
 
-    public SecurityConfig(UserDetailsService userDetailsService) {
+    // Các API cần quyền MANAGER
+    private static final String[] MANAGER_AUTHLIST = {
+            "/manager/**"
+    };
 
-        this.userDetailsService = userDetailsService;
-    }
+    // Các API cần quyền STAFF
+    private static final String[] STAFF_AUTHLIST = {
+            "/staff/payments/**",
+    };
 
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http)
-            throws Exception {
+    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         return http.csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(AUTH_WHITELIST).permitAll()
+                        .requestMatchers(BLOG_PUBLIC_ENDPOINTS).permitAll()
                         .requestMatchers(CUSTOMER_AUTHLIST).hasAuthority("ROLE_CUSTOMER")
+                        .requestMatchers(MANAGER_AUTHLIST).hasAuthority("ROLE_MANAGER")
+                        .requestMatchers(STAFF_AUTHLIST).hasAuthority("ROLE_STAFF")
                         .anyRequest().authenticated()
                 )
                 .sessionManagement(sess -> sess
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                .authenticationProvider(authenticationProvider()).addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
+                .authenticationProvider(authenticationProvider())
+                .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
                 .build();
     }
 
@@ -73,8 +89,7 @@ public class SecurityConfig {
     }
 
     @Bean
-    public AuthenticationManager authenticationManager(
-            AuthenticationConfiguration config) throws Exception {
+    public AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {
         return config.getAuthenticationManager();
     }
 }

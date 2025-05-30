@@ -11,6 +11,8 @@ import java.util.Collections;
 
 public class AccountInfoDetails implements UserDetails {
 
+    //private final int id;
+    //private final String email;
     private final String username;
     private final String password;
     private final Collection<? extends GrantedAuthority> authorities;

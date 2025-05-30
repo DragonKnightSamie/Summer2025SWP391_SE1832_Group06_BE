@@ -2,35 +2,27 @@ package com.gender_healthcare_system.dtos;
 
 public class LoginResponse {
 
-    private String token;
+    private int id;
     private String username;
-    private String status;
-    private String role;
+    private String email;
+    private String token;
 
     public LoginResponse() {
     }
 
-    public LoginResponse(String token, String username, String status, String role) {
-        this.token = token;
+    public LoginResponse(int id, String username, String email, String token) {
+        this.id = id;
         this.username = username;
-        this.status = status;
-        this.role = role;
-    }
-
-    public String getStatus() {
-        return status;
-    }
-
-    public void setStatus(String status) {
-        this.status = status;
-    }
-
-    public String getToken() {
-        return token;
-    }
-
-    public void setToken(String token) {
+        this.email = email;
         this.token = token;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 
     public String getUsername() {
@@ -41,11 +33,19 @@ public class LoginResponse {
         this.username = username;
     }
 
-    public String getRole() {
-        return role;
+    public String getEmail() {
+        return email;
     }
 
-    public void setRole(String role) {
-        this.role = role;
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public String getToken() {
+        return token;
+    }
+
+    public void setToken(String token) {
+        this.token = token;
     }
 }
