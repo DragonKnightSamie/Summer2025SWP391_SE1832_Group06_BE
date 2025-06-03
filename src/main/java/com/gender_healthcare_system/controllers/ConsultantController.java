@@ -67,6 +67,14 @@ public class ConsultantController {
         return ResponseEntity.ok(consultationService.getConsultationsByConsultantId(consultantId));
     }
 
+    //register consultation
+    @PostMapping("/consultations/register")
+    @PreAuthorize("hasAuthority('ROLE_CONSULTANT')")
+    public ResponseEntity<String> registerConsulation(@RequestBody ConsultationPayload payload) {
+        consultationService.registerConsultation(payload);
+        return ResponseEntity.ok("Consultation registered successfully");
+    }
+
     //Confirm consultation
     @PostMapping("/consultations/confirm")
     @PreAuthorize("hasAuthority('ROLE_CONSULTANT')")
