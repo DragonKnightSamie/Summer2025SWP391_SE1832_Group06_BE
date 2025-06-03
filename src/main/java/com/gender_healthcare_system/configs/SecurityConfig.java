@@ -58,7 +58,18 @@ public class SecurityConfig {
     // Các API cần quyền STAFF
     private static final String[] STAFF_AUTHLIST = {
             "/staff/payments/**",
+            "/staff/login/",
             "/staff/logout/"
+    };
+
+    // Các API cần quyền CONSULTANT
+    private static final String[] CONSULTANT_AUTHLIST = {
+            "/consultant/**",
+    };
+
+    //
+    private static final String[] CONSULTATION_AUTHLIST = {
+            "api/consultation/**"
     };
 
     @Bean
@@ -70,6 +81,8 @@ public class SecurityConfig {
                         .requestMatchers(CUSTOMER_AUTHLIST).hasAuthority("ROLE_CUSTOMER")
                         .requestMatchers(MANAGER_AUTHLIST).hasAuthority("ROLE_MANAGER")
                         .requestMatchers(STAFF_AUTHLIST).hasAuthority("ROLE_STAFF")
+                        .requestMatchers(CONSULTANT_AUTHLIST).hasAuthority("ROLE_CONSULTANT")
+                        .requestMatchers(CONSULTATION_AUTHLIST).hasAnyAuthority("ROLE_CUSTOMER", "ROLE_CONSULTANT") //Consultation API accessible by both CUSTOMER and CONSULTANT
                         .anyRequest().authenticated()
                 )
                 .sessionManagement(sess -> sess
@@ -78,6 +91,7 @@ public class SecurityConfig {
                 .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
                 .build();
     }
+
 
     @Bean
     public BCryptPasswordEncoder bCryptPasswordEncoder() {

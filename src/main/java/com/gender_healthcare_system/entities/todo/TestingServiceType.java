@@ -42,5 +42,9 @@ public class TestingServiceType {
     @OneToMany(mappedBy = "testingServiceType", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<TestingService> testingServices;
 
-
+    //Relationship with TestingServiceType
+    @OneToOne
+    @MapsId // ✅ Map serviceTypeId = serviceResultId
+    @JoinColumn(name = "service_type_id", nullable = false)
+    private TestingServiceResult testingServiceResult;
 }

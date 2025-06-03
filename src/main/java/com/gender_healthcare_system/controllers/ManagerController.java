@@ -25,7 +25,6 @@ public class ManagerController {
     @Autowired
     private BlogService blogService;
 
-
     @Autowired
     private JwtService jwtService;
 
