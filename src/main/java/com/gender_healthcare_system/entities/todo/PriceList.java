@@ -13,6 +13,11 @@ public class PriceList {
     @Column(name = "price_id")
     private int priceId;
 
+    //Relationship with TestingService
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "service_id", nullable = false)
+    private TestingService testingService;
+
     @Column(name = "price", nullable = false)
     private double price;
 
@@ -20,8 +25,5 @@ public class PriceList {
     @Column(name = "description", length = 255)
     private String description;
 
-    //Relationship with TestingService
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "service_id", nullable = false)
-    private TestingService testingService;
+
 }

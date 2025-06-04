@@ -2,7 +2,7 @@ package com.gender_healthcare_system.controllers;
 
 import com.gender_healthcare_system.entities.todo.Blog;
 import com.gender_healthcare_system.services.BlogService;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -10,9 +10,10 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api")
+@AllArgsConstructor
 public class BlogController {
-    @Autowired
-    private BlogService blogService;
+
+    private final BlogService blogService;
 
     //getAllBlogs
     @GetMapping("/blogs")

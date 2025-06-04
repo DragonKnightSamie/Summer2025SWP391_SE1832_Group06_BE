@@ -22,6 +22,10 @@ public class Certificate {
     @Column(name = "certificate_id")
     private int certificateId;
 
+    @ManyToOne
+    @JoinColumn(name = "consultant_id", nullable = false)
+    private Consultant consultant;
+
     @Nationalized
     @Column(name = "certificate_name", nullable = false, length = 100)
     private String certificateName;
@@ -40,7 +44,4 @@ public class Certificate {
     @Column(name = "description", length = 255)
     private String description;
 
-    @ManyToOne
-    @JoinColumn(name = "consultant_id", nullable = false)
-    private Consultant consultant;
 }

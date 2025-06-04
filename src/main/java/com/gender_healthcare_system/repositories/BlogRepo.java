@@ -8,6 +8,7 @@ import java.util.List;
 
 @Repository
 public interface BlogRepo extends JpaRepository<Blog, Integer> {
+
     List<Blog> findByTitleContainingIgnoreCase(String keyword);
 }
 

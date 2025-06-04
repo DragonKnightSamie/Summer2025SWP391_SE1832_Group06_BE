@@ -36,10 +36,10 @@ public class Payment {
     private PaymentStatus status;
 
     //Many-to-One relationship with Staff
-    @ManyToOne
+    /*@ManyToOne
     @JoinColumn(name = "staff_id", nullable = false)
     private Staff staff;
-
+*/
     @OneToOne
     @MapsId
     @JoinColumn(name = "payment_id")

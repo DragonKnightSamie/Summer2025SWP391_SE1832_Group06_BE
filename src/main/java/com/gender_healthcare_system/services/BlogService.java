@@ -2,16 +2,17 @@ package com.gender_healthcare_system.services;
 
 import com.gender_healthcare_system.entities.todo.Blog;
 import com.gender_healthcare_system.repositories.BlogRepo;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AllArgsConstructor;
+
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
+@AllArgsConstructor
 public class BlogService {
 
-    @Autowired
-    private BlogRepo blogRepo;
+    private final BlogRepo blogRepo;
 
     //Get all
     public List<Blog> getAllBlogs() {

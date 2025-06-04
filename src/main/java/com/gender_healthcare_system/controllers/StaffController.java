@@ -1,11 +1,15 @@
 package com.gender_healthcare_system.controllers;
 
+import com.gender_healthcare_system.dtos.LoginResponse;
 import com.gender_healthcare_system.entities.enu.PaymentStatus;
 import com.gender_healthcare_system.entities.todo.Payment;
+import com.gender_healthcare_system.entities.user.AccountInfoDetails;
 import com.gender_healthcare_system.payloads.LoginRequest;
 import com.gender_healthcare_system.services.JwtService;
 import com.gender_healthcare_system.services.PaymentService;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.gender_healthcare_system.services.StaffService;
+import lombok.AllArgsConstructor;
+
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -17,16 +21,16 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/staff")
+@AllArgsConstructor
 public class StaffController {
 
-    @Autowired
-    private PaymentService paymentService;
+    private final PaymentService paymentService;
+    
+    private final StaffService staffService;
+    
+    private final AuthenticationManager authenticationManager;
 
-    @Autowired
-    private AuthenticationManager authenticationManager;
-
-    @Autowired
-    private JwtService jwtService;
+    private final JwtService jwtService;
 
     // 1. Get all payments
     @GetMapping("/payments/")
@@ -64,11 +68,11 @@ public class StaffController {
     }
 
     // 6. Get payments by staff ID
-    @GetMapping("/payments/by-staff/{staffId}")
+    /*@GetMapping("/payments/by-staff/{staffId}")
     @PreAuthorize("hasAuthority('ROLE_STAFF')")
     public List<Payment> getPaymentsByStaffId(@PathVariable int staffId) {
         return paymentService.getPaymentsByStaffId(staffId);
-    }
+    }*/
 
     // 7. Get payments by status
     @GetMapping("/payments/status/{status}")
@@ -96,17 +100,39 @@ public class StaffController {
 
     // 9. Staff login
     @PostMapping("/login")
-    public String login(@RequestBody LoginRequest loginRequest) {
+    public LoginResponse login(@RequestBody LoginRequest loginRequest) {
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(loginRequest.getUsername(),
                         loginRequest.getPassword())
         );
-        if (authentication.isAuthenticated()) {
+        if (!authentication.isAuthenticated()) {
 
-            return jwtService.generateToken(loginRequest.getUsername());
-        } else {
             throw new UsernameNotFoundException("Invalid username or password");
         }
+            boolean hasRole = authentication
+                    .getAuthorities()
+                    .stream()
+                    .anyMatch(x -> x
+                            .getAuthority().equals("ROLE_STAFF"));
+
+            if(!hasRole){
+                throw new UsernameNotFoundException
+                        ("Access denied for non-staff user");
+            }
+
+            AccountInfoDetails account =
+                    (AccountInfoDetails) authentication.getPrincipal();
+            int id = account.getId();
+
+            LoginResponse loginDetails = staffService.getStaffLoginDetails(id);
+            loginDetails.setUsername(loginRequest.getUsername());
+
+            String jwtToken = jwtService.generateToken(loginRequest.getUsername());
+            loginDetails.setToken(jwtToken);
+
+            return loginDetails;
+           //return jwtService.generateToken(loginRequest.getUsername());
+
     }
 
     //10. Staff logout

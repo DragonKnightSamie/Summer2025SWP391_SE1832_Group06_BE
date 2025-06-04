@@ -20,6 +20,11 @@ public class Account {
     @Column(name = "account_id")
     private int accountId;
 
+    //ManyToOne relationship with Role
+    @ManyToOne
+    @JoinColumn(name = "role_id")
+    private Role role;
+
     @Column(name = "username", nullable = false, unique = true, length = 50)
     private String username;
 
@@ -29,12 +34,6 @@ public class Account {
     //Enum
     @Column(name = "status", nullable = false, length = 15)
     private AccountStatus status;
-
-    //ManyToOne relationship with Role
-    @ManyToOne
-    //@MapsId
-    @JoinColumn(name = "role_id")
-    private Role role;
 
     public Account(int accountId, String username, String password, Role role) {
         this.accountId = accountId;

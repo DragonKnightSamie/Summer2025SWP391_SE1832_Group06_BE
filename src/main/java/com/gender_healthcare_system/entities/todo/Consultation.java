@@ -1,5 +1,6 @@
 package com.gender_healthcare_system.entities.todo;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.gender_healthcare_system.entities.user.Consultant;
 import com.gender_healthcare_system.entities.user.Customer;
 import com.gender_healthcare_system.entities.enu.ConsultationStatus;
@@ -7,6 +8,7 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDateTime;
 
@@ -23,27 +25,6 @@ public class Consultation {
     @Column(name = "consultation_id")
     private int consultationId;
 
-    @Column(name = "created_at", nullable = false)
-    private LocalDateTime createdAt;
-
-    @Column(name = "expected_start_time", nullable = false)
-    private LocalDateTime expectedStartTime;
-
-    @Column(name = "real_start_time", nullable = true)
-    private LocalDateTime realStartTime;
-
-    @Column(name = "expected_end_time", nullable = false)
-    private LocalDateTime expectedEndTime;
-
-    @Column(name = "real_end_time", nullable = true)
-    private LocalDateTime realEndTime;
-
-    //Enum
-    @Column(name = "status", nullable = false, length = 20)
-    @Enumerated(EnumType.STRING)
-    private ConsultationStatus status;
-
-
     // Many to one relationship with Consultant
     @ManyToOne
     @JoinColumn(name = "consultant_id", nullable = false)
@@ -53,4 +34,47 @@ public class Consultation {
     @ManyToOne
     @JoinColumn(name = "customer_id", nullable = false)
     private Customer customer;
+
+    @Column(name = "created_at", nullable = false)
+    //@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy HH:mm:ss")
+    @DateTimeFormat(pattern = "DD-MM-YYYY HH:mm:ss")
+    private LocalDateTime createdAt;
+
+    @Column(name = "expected_start_time", nullable = false)
+    //@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy HH:mm:ss")
+    @DateTimeFormat(pattern = "DD-MM-YYYY HH:mm:ss")
+    private LocalDateTime expectedStartTime;
+
+    @Column(name = "real_start_time", nullable = true)
+    //@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy HH:mm:ss")
+    @DateTimeFormat(pattern = "DD-MM-YYYY HH:mm:ss")
+    private LocalDateTime realStartTime;
+
+    @Column(name = "expected_end_time", nullable = false)
+    //@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy HH:mm:ss")
+    @DateTimeFormat(pattern = "DD-MM-YYYY HH:mm:ss")
+    private LocalDateTime expectedEndTime;
+
+    @Column(name = "real_end_time", nullable = true)
+    //@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy HH:mm:ss")
+    @DateTimeFormat(pattern = "DD-MM-YYYY HH:mm:ss")
+    private LocalDateTime realEndTime;
+
+    //Enum
+    @Column(name = "status", nullable = false, length = 20)
+    @Enumerated(EnumType.STRING)
+    private ConsultationStatus status;
+
+    public Consultation(int consultationId, LocalDateTime createdAt,
+                        LocalDateTime expectedStartTime, LocalDateTime realStartTime,
+                        LocalDateTime expectedEndTime, LocalDateTime realEndTime,
+                        ConsultationStatus status) {
+        this.consultationId = consultationId;
+        this.createdAt = createdAt;
+        this.expectedStartTime = expectedStartTime;
+        this.realStartTime = realStartTime;
+        this.expectedEndTime = expectedEndTime;
+        this.realEndTime = realEndTime;
+        this.status = status;
+    }
 }

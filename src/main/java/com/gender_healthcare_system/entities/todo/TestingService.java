@@ -22,8 +22,10 @@ public class TestingService {
     @Column(name = "service_id")
     private int serviceId;
 
-    @Column(name = "service_type_id", nullable = false)
-    private int serviceTypeId;
+    //Relationship with TestingServiceType
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "service_type_id", nullable = false)
+    private TestingServiceType testingServiceType;
 
     @Nationalized
     @Column(name = "service_name", nullable = false, length = 100)
@@ -40,11 +42,6 @@ public class TestingService {
     // Relationship with TestingServiceHistory
     @OneToMany(mappedBy = "testingService", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<TestingServiceHistory> testingServiceHistories;
-
-    //Relationship with TestingServiceType
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "service_type_id", insertable = false, updatable = false)
-    private TestingServiceType testingServiceType;
 
     //One-to-one relationship with TestingServiceForm
     @OneToOne

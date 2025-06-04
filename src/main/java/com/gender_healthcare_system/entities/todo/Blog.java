@@ -1,5 +1,6 @@
 package com.gender_healthcare_system.entities.todo;
 
+import com.gender_healthcare_system.entities.enu.BlogStatus;
 import com.gender_healthcare_system.entities.user.Manager;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -21,6 +22,11 @@ public class Blog {
     @Column(name = "blog_id")
     private int blogId;
 
+    //Relationship with Manager
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "manager_id", nullable = false)
+    private Manager manager;
+
     @Column(name = "title", nullable = false, length = 100)
     private String title;
 
@@ -30,8 +36,8 @@ public class Blog {
     @Column(name = "created_at", nullable = false)
     private LocalDateTime createdAt;
 
-    //Relationship with Manager
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "manager_id", nullable = false)
-    private Manager manager;
+    @Column(name = "status", nullable = false)
+    @Enumerated(EnumType.STRING)
+    private BlogStatus status;
+
 }

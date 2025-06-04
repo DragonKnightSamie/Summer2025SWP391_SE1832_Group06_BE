@@ -3,6 +3,7 @@ package com.gender_healthcare_system.entities.todo;
 import com.gender_healthcare_system.entities.user.Customer;
 import com.gender_healthcare_system.entities.enu.Rating;
 import com.gender_healthcare_system.entities.enu.TestingServiceHistoryStatus;
+import com.gender_healthcare_system.entities.user.Staff;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -24,8 +25,20 @@ public class TestingServiceHistory {
     @Column(name = "service_history_id")
     private int serviceHistoryId;
 
-    @Column(name = "service_id", nullable = false)
-    private int serviceId;
+    // Relationship with TestingService
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "service_id", nullable = false)
+    private TestingService testingService;
+
+    // Relationship with Customer
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "customer_id", nullable = false)
+    private Customer customer;
+
+    // Relationship with Customer
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "staff_id", nullable = false)
+    private Staff staff;
 
     @Nationalized
     @Column(name = "result", nullable = false, length = 255)
@@ -44,16 +57,6 @@ public class TestingServiceHistory {
     @Column(name = "status", nullable = false, length = 20)
     @Enumerated(EnumType.STRING)
     private TestingServiceHistoryStatus status;
-
-    // Relationship with TestingService
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "service_id", insertable = false, updatable = false, nullable = false)
-    private TestingService testingService;
-
-    // Relationship with Customer
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "customer_id", nullable = false)
-    private Customer customer;
 
     //One-to-One relationship with Payment
     @OneToOne(mappedBy = "testingServiceHistory")

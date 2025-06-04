@@ -50,4 +50,13 @@ public class Consultant {
     @MapsId
     @JoinColumn(name = "consultant_id", nullable = false)
     private Account account;
+
+    public Consultant(int consultantId, String fullName, String phone,
+                      String email, String address) {
+        this.consultantId = consultantId;
+        this.fullName = fullName;
+        this.phone = phone;
+        this.email = email;
+        this.address = address;
+    }
 }

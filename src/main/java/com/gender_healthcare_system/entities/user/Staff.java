@@ -1,6 +1,7 @@
 package com.gender_healthcare_system.entities.user;
 
 import com.gender_healthcare_system.entities.todo.Payment;
+import com.gender_healthcare_system.entities.todo.TestingServiceHistory;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -38,7 +39,7 @@ public class Staff {
 
     //One-to-Many relationship with Payment
     @OneToMany(mappedBy = "staff", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private List<Payment> payments;
+    private List<TestingServiceHistory> testingServiceHistories;
 
     //One-to-One relationship with Account
     @OneToOne

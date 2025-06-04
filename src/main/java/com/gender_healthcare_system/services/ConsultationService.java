@@ -1,112 +1,150 @@
 package com.gender_healthcare_system.services;
 
+import com.gender_healthcare_system.dtos.ConsultantConsultationDTO;
+import com.gender_healthcare_system.dtos.ConsultationsDTO;
 import com.gender_healthcare_system.entities.enu.ConsultationStatus;
 import com.gender_healthcare_system.entities.todo.Consultation;
-import com.gender_healthcare_system.entities.user.Account;
 import com.gender_healthcare_system.entities.user.Consultant;
 import com.gender_healthcare_system.entities.user.Customer;
-import com.gender_healthcare_system.payloads.ConsultationPayload;
-import com.gender_healthcare_system.repositories.AccountRepo;
+import com.gender_healthcare_system.exceptions.AppException;
+import com.gender_healthcare_system.payloads.ConsultationCompletePayload;
+import com.gender_healthcare_system.payloads.ConsultationConfirmPayload;
+import com.gender_healthcare_system.payloads.ConsultationRegisterPayload;
 import com.gender_healthcare_system.repositories.ConsultantRepo;
 import com.gender_healthcare_system.repositories.ConsultationRepo;
 import com.gender_healthcare_system.repositories.CustomerRepo;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AllArgsConstructor;
+
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
+@AllArgsConstructor
 public class ConsultationService {
 
-    @Autowired
-    private ConsultationService consultationService;
+    private final CustomerRepo customerRepo;
+    
+    private final ConsultantRepo consultantRepo;
 
-    @Autowired
-    private CustomerRepo customerRepo;
-
-    @Autowired
-    private ConsultantRepo consultantRepo;
-
-    @Autowired
-    private ConsultationRepo consultationRepo;
+    private final ConsultationRepo consultationRepo;
 
     //getConsultationById
-    public Consultation getConsultationById(int id) {
-        return consultationRepo.findById(id)
-                .orElseThrow(() -> new RuntimeException("Consultation not found"));
+    public ConsultantConsultationDTO getConsultationById(int id) {
+        return consultationRepo.getConsultationDetailsById(id)
+                .orElseThrow(() -> new AppException(404, "Consultation not found"));
     }
 
     //getConsultationByCustomerId
-    public List<Consultation> getConsultationsByCustomerId(int customerId) {
-        return consultationRepo.findByCustomer_CustomerId(customerId);
+    public List<ConsultationsDTO> getConsultationsByCustomerId(int customerId) {
+        return consultationRepo.findByCustomerId(customerId);
     }
 
     //getConsultationByConsultantId
-    public List<Consultation> getConsultationsByConsultantId(int consultantId) {
-        return consultationRepo.findByConsultant_ConsultantId(consultantId);
+    public List<ConsultationsDTO>
+    getConsultationsByConsultantId(int consultantId) {
+        return consultationRepo.findByConsultantId(consultantId);
     }
 
 
     //register
-    public Consultation registerConsultation(ConsultationPayload payload) {
-        Customer customer = customerRepo.findById(payload.getCustomerId())
-                .orElseThrow(() -> new RuntimeException("Customer not found"));
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    public void registerConsultation(ConsultationRegisterPayload payload) {
+        Customer customer = customerRepo.getCustomerById(payload.getCustomerId())
+                .orElseThrow(() -> new AppException(404, "Customer not found"));
 
-        Consultant consultant = consultantRepo.findById(payload.getConsultantId())
-                .orElseThrow(() -> new RuntimeException("Consultant not found"));
+        Consultant consultant = consultantRepo.getConsultantById(payload.getConsultantId())
+                .orElseThrow(() -> new AppException(404, "Consultant not found"));
 
         Consultation consultation = new Consultation();
         consultation.setCreatedAt(LocalDateTime.now());
         consultation.setExpectedStartTime(payload.getExpectedStartTime());
+        //LocalDateTime endtime = payload.getExpectedStartTime().plusMinutes(60);
         consultation.setExpectedEndTime(payload.getExpectedEndTime());
         consultation.setStatus(ConsultationStatus.PENDING);
         consultation.setCustomer(customer);
         consultation.setConsultant(consultant);
 
-        return consultationRepo.save(consultation);
+        consultationRepo.save(consultation);
 
     }
 
     //confirm consultation : consultant xác nhận lịch hẹn
-    public void confirmConsultation(ConsultationPayload payload) {
-        Consultation consultation = consultationRepo.findById(payload.getConsultationId())
-                .orElseThrow(() -> new RuntimeException("Consultation not found"));
+    @Transactional
+    public void confirmConsultation(ConsultationConfirmPayload payload) {
+        Consultation consultation = consultationRepo
+                .findConsultationById(payload.getConsultationId())
+                .orElseThrow(() -> new AppException(404, "Consultation not found"));
 
         if (consultation.getStatus() != ConsultationStatus.PENDING) {
-            throw new RuntimeException("Only pending consultations can be approved");
+            throw new AppException(400, "Only pending consultations can be approved");
         }
 
-        consultation.setStatus(ConsultationStatus.CONFIRMED);
+        /*consultation.setStatus(ConsultationStatus.CONFIRMED);
         consultation.setExpectedStartTime(payload.getExpectedStartTime());
         consultation.setExpectedEndTime(payload.getExpectedEndTime());
 
-        consultationRepo.save(consultation);
+        consultationRepo.save(consultation);*/
+        consultationRepo.updateConsultation(payload, ConsultationStatus.CONFIRMED);
     }
 
-    public void cancelConsultation(ConsultationPayload payload) {
-        Consultation consultation = consultationRepo.findById(payload.getConsultationId())
-                .orElseThrow(() -> new RuntimeException("Consultation not found"));
+    @Transactional
+    public void cancelConsultation(int id) {
+        Consultation consultation = consultationRepo.findConsultationById(id)
+                .orElseThrow(() -> new AppException(404, "Consultation not found"));
 
         if (consultation.getStatus() == ConsultationStatus.COMPLETED) {
-            throw new RuntimeException("Cannot cancel a completed consultation");
+            throw new AppException(400, "Cannot cancel a completed consultation");
         }
 
-        consultation.setStatus(ConsultationStatus.CANCELLED);
-        consultationRepo.save(consultation);
+        /*consultation.setStatus(ConsultationStatus.CANCELLED);
+        consultationRepo.save(consultation);*/
+        consultationRepo.cancelConsultation(id);
     }
 
-    public void updateConsultation(ConsultationPayload payload) {
-        Consultation consultation = consultationRepo.findById(payload.getConsultationId())
-                .orElseThrow(() -> new RuntimeException("Consultation not found"));
+    @Transactional
+    public void reScheduleConsultation(ConsultationConfirmPayload payload) {
+        Consultation consultation = consultationRepo
+                .findConsultationById(payload.getConsultationId())
+                .orElseThrow(() -> new AppException(404, "Consultation not found"));
 
-        if (consultation.getStatus() == ConsultationStatus.COMPLETED || consultation.getStatus() == ConsultationStatus.CANCELLED) {
-            throw new RuntimeException("Cannot update a completed or cancelled consultation");
+        if (consultation.getStatus() == ConsultationStatus.COMPLETED
+                || consultation.getStatus() == ConsultationStatus.CANCELLED) {
+
+            throw new AppException
+                    (400, "Cannot reschedule a completed or cancelled consultation");
         }
 
-        consultation.setExpectedStartTime(payload.getExpectedStartTime());
+        /*consultation.setExpectedStartTime(payload.getExpectedStartTime());
         consultation.setExpectedEndTime(payload.getExpectedEndTime());
+        consultation.setStatus(ConsultationStatus.RESCHEDULED);
 
-        consultationRepo.save(consultation);
+        consultationRepo.save(consultation);*/
+        consultationRepo.updateConsultation(payload, ConsultationStatus.RESCHEDULED);
+    }
+
+    @Transactional
+    public void completeConsultation(ConsultationCompletePayload payload) {
+        Consultation consultation = consultationRepo
+                .findConsultationById(payload.getConsultationId())
+                .orElseThrow(() -> new AppException(404, "Consultation not found"));
+
+        if (consultation.getStatus() == ConsultationStatus.COMPLETED
+                || consultation.getStatus() == ConsultationStatus.CANCELLED) {
+
+            throw new AppException
+                    (400, "Cannot mark an already completed " +
+                            "or cancelled consultation as completed");
+        }
+
+       /* consultation.setRealStartTime(payload.getRealStartTime());
+        consultation.setRealEndTime(payload.getRealEndTime());
+        consultation.setStatus(ConsultationStatus.COMPLETED);
+
+        consultationRepo.save(consultation);*/
+        consultationRepo.completeConsultation(payload, ConsultationStatus.COMPLETED);
     }
 }

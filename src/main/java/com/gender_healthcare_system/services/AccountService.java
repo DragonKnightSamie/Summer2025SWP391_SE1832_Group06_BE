@@ -14,7 +14,8 @@ import com.gender_healthcare_system.repositories.AccountRepo;
 import com.gender_healthcare_system.repositories.CustomerRepo;
 import com.gender_healthcare_system.repositories.RoleRepo;
 import jakarta.transaction.Transactional;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AllArgsConstructor;
+
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
@@ -22,15 +23,14 @@ import org.springframework.stereotype.Service;
 import java.util.Optional;
 
 @Service
+@AllArgsConstructor
 public class AccountService implements IAccountService {
 
-    @Autowired
-    private AccountRepo accountRepo;
-    @Autowired
-    private CustomerRepo customerRepo;
+    private final AccountRepo accountRepo;
 
-    @Autowired
-    private RoleRepo roleRepo;
+    private final CustomerRepo customerRepo;
+
+    private final RoleRepo roleRepo;
 
     @Override
     public UserDetails loadUserByUsername(String username) {

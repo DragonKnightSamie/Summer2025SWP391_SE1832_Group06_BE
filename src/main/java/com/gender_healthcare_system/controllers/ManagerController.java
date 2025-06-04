@@ -1,35 +1,82 @@
 package com.gender_healthcare_system.controllers;
 
+import com.gender_healthcare_system.dtos.LoginResponse;
 import com.gender_healthcare_system.entities.todo.Blog;
+import com.gender_healthcare_system.entities.user.AccountInfoDetails;
 import com.gender_healthcare_system.payloads.LoginRequest;
-import com.gender_healthcare_system.services.AccountService;
 import com.gender_healthcare_system.services.BlogService;
 import com.gender_healthcare_system.services.JwtService;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.gender_healthcare_system.services.ManagerService;
+import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Collections;
 import java.util.List;
 
 @RestController
 @RequestMapping("/manager")
+@AllArgsConstructor
 public class ManagerController {
 
-    @Autowired
-    private BlogService blogService;
+    private final BlogService blogService;
 
-    @Autowired
-    private JwtService jwtService;
+    private final ManagerService managerService;
 
-    @Autowired
-    private AuthenticationManager authenticationManager;
+    private final JwtService jwtService;
+
+    private final AuthenticationManager authenticationManager;
+
+    //Manager login
+    @PostMapping("/login")
+    public LoginResponse login(@RequestBody LoginRequest loginRequest) {
+        Authentication authentication = authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(loginRequest.getUsername(),
+                        loginRequest.getPassword())
+        );
+
+        if (!authentication.isAuthenticated()) {
+            throw new RuntimeException("Invalid Username or Password");
+        }
+
+        boolean hasRole = authentication
+                .getAuthorities()
+                .stream()
+                .anyMatch(x -> x
+                        .getAuthority().equals("ROLE_MANAGER"));
+
+        if(!hasRole) {
+            throw new UsernameNotFoundException
+                    ("Access denied for non-manager user");
+        }
+
+        AccountInfoDetails account =
+                (AccountInfoDetails) authentication.getPrincipal();
+        int id = account.getId();
+
+        LoginResponse loginDetails = managerService
+                .getManagerLoginDetails(id);
+        loginDetails.setUsername(loginRequest.getUsername());
+
+        String jwtToken = jwtService.generateToken(loginRequest.getUsername());
+        loginDetails.setToken(jwtToken);
+
+        return loginDetails;
+        //return jwtService.generateToken(loginRequest.getUsername());
+
+    }
+
+    // Manager logout
+    @PostMapping("/logout")
+    @PreAuthorize("hasAuthority('ROLE_MANAGER')")
+    public String logout(@RequestBody String token) {
+        jwtService.isTokenBlacklisted(token);
+        return "Logout successful";
+    }
 
     //getAllBlogs
     @GetMapping("/blogs/")
@@ -57,7 +104,7 @@ public class ManagerController {
         return ResponseEntity.ok(blogService.searchBlogs(keyword));
     }
 
-    //MANGER CREATE BLOGS
+    //MANAGER CREATE BLOGS
     @GetMapping("/blogs/create")
     @PreAuthorize("hasAuthority('ROLE_MANAGER')")
     public ResponseEntity<Blog> createBlog(@RequestBody Blog blog) {
@@ -91,39 +138,6 @@ public class ManagerController {
         } catch (RuntimeException e) {
             return ResponseEntity.notFound().build();
         }
-    }
-
-    //Manager login
-    @PostMapping("/login")
-    public String login(@RequestBody LoginRequest loginRequest) {
-        Authentication authentication = authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(loginRequest.getUsername(),
-                        loginRequest.getPassword())
-        );
-
-        if (!authentication.isAuthenticated()) {
-            throw new RuntimeException("Invalid Username or Password");
-        }
-
-            boolean checkAuth = authentication
-                .getAuthorities()
-                .stream()
-                .anyMatch(x -> x
-                        .getAuthority().equals("ROLE_MANAGER"));
-
-        if(!checkAuth) {
-            throw new UsernameNotFoundException("Invalid Username or Password");
-        }
-            return jwtService.generateToken(loginRequest.getUsername());
-
-    }
-
-    // Manager logout
-    @PostMapping("/logout")
-    @PreAuthorize("hasAuthority('ROLE_MANAGER')")
-    public String logout(@RequestBody String token) {
-        jwtService.isTokenBlacklisted(token);
-        return "Logout successful";
     }
 
 }

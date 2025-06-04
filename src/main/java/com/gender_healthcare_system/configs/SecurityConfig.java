@@ -1,6 +1,7 @@
 package com.gender_healthcare_system.configs;
 
 import com.gender_healthcare_system.filters.JwtAuthFilter;
+import lombok.AllArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -18,15 +19,18 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 
 @Configuration
 @EnableWebSecurity
+@AllArgsConstructor
 public class SecurityConfig {
 
     private final JwtAuthFilter jwtAuthFilter;
     private final UserDetailsService userDetailsService;
 
-    public SecurityConfig(JwtAuthFilter jwtAuthFilter, UserDetailsService userDetailsService) {
+    /*public SecurityConfig(JwtAuthFilter jwtAuthFilter,
+                          UserDetailsService userDetailsService) {
+
         this.jwtAuthFilter = jwtAuthFilter;
         this.userDetailsService = userDetailsService;
-    }
+    }*/
 
     // Các API không cần đăng nhập
     private static final String[] AUTH_WHITELIST = {
@@ -34,6 +38,7 @@ public class SecurityConfig {
             "/customer/login",
             "/manager/login",
             "/staff/login",
+            "/consultant/login",
             "/v3/api-docs/**",
             "/swagger-ui/**",
             "/swagger-ui.html"
@@ -46,7 +51,9 @@ public class SecurityConfig {
 
     // Các API cần quyền CUSTOMER
     private static final String[] CUSTOMER_AUTHLIST = {
-            "/customer/logout"
+            "/customer/logout",
+            "/customer/consultations/**"
+
     };
 
     // Các API cần quyền MANAGER
@@ -58,19 +65,20 @@ public class SecurityConfig {
     // Các API cần quyền STAFF
     private static final String[] STAFF_AUTHLIST = {
             "/staff/payments/**",
-            "/staff/login/",
             "/staff/logout/"
     };
 
     // Các API cần quyền CONSULTANT
     private static final String[] CONSULTANT_AUTHLIST = {
-            "/consultant/**",
+            "/consultant/consultations/**",
+            "/consultant/logout/"
+
     };
 
     //
-    private static final String[] CONSULTATION_AUTHLIST = {
+    /*private static final String[] CONSULTATION_AUTHLIST = {
             "api/consultation/**"
-    };
+    };*/
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -82,32 +90,37 @@ public class SecurityConfig {
                         .requestMatchers(MANAGER_AUTHLIST).hasAuthority("ROLE_MANAGER")
                         .requestMatchers(STAFF_AUTHLIST).hasAuthority("ROLE_STAFF")
                         .requestMatchers(CONSULTANT_AUTHLIST).hasAuthority("ROLE_CONSULTANT")
-                        .requestMatchers(CONSULTATION_AUTHLIST).hasAnyAuthority("ROLE_CUSTOMER", "ROLE_CONSULTANT") //Consultation API accessible by both CUSTOMER and CONSULTANT
+                        //.requestMatchers(CONSULTATION_AUTHLIST).hasAnyAuthority("ROLE_CUSTOMER", "ROLE_CONSULTANT") //Consultation API accessible by both CUSTOMER and CONSULTANT
                         .anyRequest().authenticated()
                 )
                 .sessionManagement(sess -> sess
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authenticationProvider(authenticationProvider())
-                .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(jwtAuthFilter,
+                        UsernamePasswordAuthenticationFilter.class)
                 .build();
     }
 
 
     @Bean
     public BCryptPasswordEncoder bCryptPasswordEncoder() {
+
         return new BCryptPasswordEncoder();
     }
 
     @Bean
     public AuthenticationProvider authenticationProvider() {
-        DaoAuthenticationProvider provider = new DaoAuthenticationProvider();
-        provider.setUserDetailsService(userDetailsService);
+
+        DaoAuthenticationProvider provider = new
+                DaoAuthenticationProvider(userDetailsService);
         provider.setPasswordEncoder(bCryptPasswordEncoder());
         return provider;
     }
 
     @Bean
-    public AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {
+    public AuthenticationManager authenticationManager
+            (AuthenticationConfiguration config) throws Exception {
+
         return config.getAuthenticationManager();
     }
 }

@@ -2,7 +2,6 @@ package com.gender_healthcare_system.entities.user;
 
 import com.gender_healthcare_system.entities.enu.Gender;
 import com.gender_healthcare_system.entities.todo.Consultation;
-import com.gender_healthcare_system.entities.todo.GenderSpecificDetails;
 import com.gender_healthcare_system.entities.todo.TestingServiceHistory;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -11,7 +10,6 @@ import lombok.NoArgsConstructor;
 import org.hibernate.annotations.Nationalized;
 
 import java.time.LocalDate;
-import java.util.Date;
 import java.util.List;
 
 @Entity
@@ -63,5 +61,17 @@ public class Customer {
     @MapsId // ✅ Map customerId = account.accountId
     @JoinColumn(name = "customer_id", nullable = false)
     private Account account;
+
+    public Customer(int customerId, String fullName, LocalDate dateOfBirth, Gender gender,
+                    String genderSpecificDetails, String email, String phone, String address) {
+        this.customerId = customerId;
+        this.fullName = fullName;
+        this.dateOfBirth = dateOfBirth;
+        this.gender = gender;
+        this.genderSpecificDetails = genderSpecificDetails;
+        this.email = email;
+        this.phone = phone;
+        this.address = address;
+    }
 
 }

@@ -12,7 +12,8 @@ public interface AccountRepo extends JpaRepository<Account, Integer> {
             "a.accountId, a.username, a.password, r) FROM Account AS a " +
             "JOIN a.role AS r " +
             "WHERE a.username = :username " +
-            "AND a.status = com.gender_healthcare_system.entities.enu.AccountStatus.ACTIVE")
+            "AND a.status = " +
+            "com.gender_healthcare_system.entities.enu.AccountStatus.ACTIVE")
     Optional<Account> findActiveAccountByUsername(String username);
 
 
