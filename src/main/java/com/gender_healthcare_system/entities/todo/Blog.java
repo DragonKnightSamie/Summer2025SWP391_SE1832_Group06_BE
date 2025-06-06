@@ -6,6 +6,8 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.Nationalized;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 
 import java.time.LocalDateTime;
 
@@ -22,14 +24,17 @@ public class Blog {
     @Column(name = "blog_id")
     private int blogId;
 
-    //Relationship with Manager
+    // Relationship with Manager
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "manager_id", nullable = false)
+    @JsonBackReference  // Thêm dòng này để tránh vòng lặp vô hạn khi serialize JSON
     private Manager manager;
 
+    @Nationalized
     @Column(name = "title", nullable = false, length = 100)
     private String title;
 
+    @Nationalized
     @Column(name = "content", nullable = false, length = 1000)
     private String content;
 
@@ -39,5 +44,4 @@ public class Blog {
     @Column(name = "status", nullable = false)
     @Enumerated(EnumType.STRING)
     private BlogStatus status;
-
 }

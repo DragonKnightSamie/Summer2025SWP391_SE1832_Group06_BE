@@ -1,12 +1,12 @@
 package com.gender_healthcare_system.entities.user;
 
 import com.gender_healthcare_system.entities.todo.Blog;
-import com.gender_healthcare_system.entities.todo.TestingServiceType;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.Nationalized;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import java.util.List;
 
@@ -37,11 +37,12 @@ public class Manager {
     @Nationalized  // Allows for Unicode characters
     private String address;
 
-    //Relationship with Blog
+    // Relationship with Blog
     @OneToMany(mappedBy = "manager", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JsonManagedReference   // <-- Thêm annotation này, tranh vong lap vo han không parse được JSON
     private List<Blog> blogs;
 
-    //One-to-One relationship with Account
+    // One-to-One relationship with Account
     @OneToOne
     @MapsId
     @JoinColumn(name = "manager_id", nullable = false)

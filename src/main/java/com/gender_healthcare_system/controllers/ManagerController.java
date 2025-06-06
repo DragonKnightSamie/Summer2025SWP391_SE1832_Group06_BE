@@ -117,7 +117,7 @@ public class ManagerController {
     }
 
     //MANAGER CREATE BLOGS
-    @GetMapping("/blogs/create")
+    @PostMapping("/blogs/create")
     @PreAuthorize("hasAuthority('ROLE_MANAGER')")
     public ResponseEntity<Blog> createBlog(@RequestBody Blog blog) {
         Blog newBlog = blogService.createBlog(blog);
@@ -129,7 +129,7 @@ public class ManagerController {
     }
 
     //MANGER UPDATE BLOGS
-    @GetMapping("/blogs/update/{id}")
+    @PutMapping("/blogs/update/{id}")
     @PreAuthorize("hasAuthority('ROLE_MANAGER')")
     public ResponseEntity<Blog> updateBlog(@PathVariable int id, @RequestBody Blog blog) {
         Blog updatedBlog = blogService.updateBlog(id, blog);
@@ -141,7 +141,7 @@ public class ManagerController {
     }
 
     //MANGER DELETE BLOGS
-    @GetMapping("/blogs/delete/{id}")
+    @DeleteMapping("/blogs/delete/{id}")
     @PreAuthorize("hasAuthority('ROLE_MANAGER')")
     public ResponseEntity<Void> deleteBlog(@PathVariable int id) {
         try {
