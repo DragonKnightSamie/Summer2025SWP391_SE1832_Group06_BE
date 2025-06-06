@@ -42,6 +42,7 @@ public class SecurityConfig {
             "/v3/api-docs/**",
             "/swagger-ui/**",
             "/swagger-ui.html"
+
     };
 
     // Các API blog công khai (xem, tìm kiếm)
@@ -56,10 +57,13 @@ public class SecurityConfig {
 
     };
 
+
     // Các API cần quyền MANAGER
     private static final String[] MANAGER_AUTHLIST = {
+            "/manager/login",
+            "/manager/logout",
             "/manager/blogs/**",
-            "/manager/logout"
+            "/manager/registerStaff"
     };
 
     // Các API cần quyền STAFF
@@ -74,6 +78,7 @@ public class SecurityConfig {
             "/consultant/logout/"
 
     };
+
 
     //
     /*private static final String[] CONSULTATION_AUTHLIST = {

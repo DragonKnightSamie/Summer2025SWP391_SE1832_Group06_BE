@@ -1,24 +1,18 @@
 package com.gender_healthcare_system.payloads;
 
-import com.gender_healthcare_system.entities.enu.Gender;
-import com.gender_healthcare_system.entities.todo.GenderSpecificDetails;
 import jakarta.persistence.Embedded;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.validator.constraints.Length;
-import org.springframework.format.annotation.DateTimeFormat;
-
-import java.time.LocalDate;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class CustomerPayload {
+public class StaffPayload {
 
     @NotBlank(message = "Username is required")
     @Length(min = 5, max = 50, message = "Username must be between 3 and 20 characters")
@@ -31,18 +25,6 @@ public class CustomerPayload {
     @NotBlank(message = "Full name is required")
     @Length(max = 70)
     private String fullName;
-
-    @NotNull(message = "Date of birth is required")
-    @DateTimeFormat(pattern = "DD-MM-YYYY")
-    //@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy")
-    private LocalDate dateOfBirth; //DD-MM-YYYY
-
-    @NotBlank(message = "Gender is required")
-    private Gender gender; //Enum
-
-    @NotBlank(message = "Gender specific details is required")
-    @Embedded
-    private GenderSpecificDetails genderSpecificDetails;
 
     @NotBlank(message = "Phone is required")
     @Length(max = 15)
@@ -59,3 +41,4 @@ public class CustomerPayload {
 
 
 }
+

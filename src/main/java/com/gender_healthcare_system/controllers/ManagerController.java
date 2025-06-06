@@ -4,6 +4,9 @@ import com.gender_healthcare_system.dtos.LoginResponse;
 import com.gender_healthcare_system.entities.todo.Blog;
 import com.gender_healthcare_system.entities.user.AccountInfoDetails;
 import com.gender_healthcare_system.payloads.LoginRequest;
+import com.gender_healthcare_system.payloads.ManagerPayload;
+import com.gender_healthcare_system.payloads.StaffPayload;
+import com.gender_healthcare_system.services.AccountService;
 import com.gender_healthcare_system.services.BlogService;
 import com.gender_healthcare_system.services.JwtService;
 import com.gender_healthcare_system.services.ManagerService;
@@ -30,6 +33,15 @@ public class ManagerController {
     private final JwtService jwtService;
 
     private final AuthenticationManager authenticationManager;
+    private final AccountService accountService;
+
+    //test
+    //Manager registration
+    @PostMapping("/register")
+    public String register(@RequestBody ManagerPayload payload) {
+        accountService.createManagerAccount(payload);
+        return "Manager registered successfully";
+    }
 
     //Manager login
     @PostMapping("/login")
@@ -139,5 +151,14 @@ public class ManagerController {
             return ResponseEntity.notFound().build();
         }
     }
+
+    //MANAGER CREATE STAFF ACCOUNT
+    @PostMapping("/registerStaff")
+    @PreAuthorize("hasAuthority('ROLE_MANAGER')")
+    public String createStaffAccount(@RequestBody StaffPayload payload) {
+        accountService.createStaffAccount(payload);
+        return "Staff account created successfully";
+    }
+
 
 }
