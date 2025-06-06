@@ -46,7 +46,7 @@ public class Consultant {
     private List<Consultation> consultations;
 
     //One-to-One relationship with Account
-    @OneToOne
+    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
     @MapsId
     @JoinColumn(name = "consultant_id", nullable = false)
     private Account account;

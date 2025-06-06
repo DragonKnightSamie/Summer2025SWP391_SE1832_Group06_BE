@@ -130,6 +130,41 @@ public class AccountService implements IAccountService {
         staffRepo.saveAndFlush(staff);
     }
 
+    @Transactional
+    public void updateStaffAndAccount(int staffId, StaffPayload payload) {
+        Staff staff = staffRepo.findById(staffId)
+                .orElseThrow(() -> new RuntimeException("Staff not found"));
+
+        Account account = staff.getAccount();
+        account.setUsername(payload.getUsername());
+
+        account.setPassword(payload.getPassword());
+
+        accountRepo.save(account);
+
+        staff.setFullName(payload.getFullName());
+        staff.setPhone(payload.getPhone());
+        staff.setEmail(payload.getEmail());
+        staff.setAddress(payload.getAddress());
+
+        staffRepo.save(staff);
+    }
+
+
+    @Transactional
+    public void deleteStaffById(int staffId) {
+        Staff staff = staffRepo.findById(staffId)
+                .orElseThrow(() -> new RuntimeException("Staff not found"));
+
+        Account account = staff.getAccount();
+
+        //xóa staff trước để tránh lỗi ràng buộc khóa ngoại
+        //sau đó mới xóa account
+        staffRepo.delete(staff);
+        accountRepo.delete(account);
+    }
+
+
 
 
 

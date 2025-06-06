@@ -35,6 +35,14 @@ public class Account {
     @Column(name = "status", nullable = false, length = 15)
     private AccountStatus status;
 
+    // nếu xóa tài khoản thì sẽ xóa luôn các thông tin trong cac role
+    @OneToOne(mappedBy = "account", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Staff staff;
+    @OneToOne(mappedBy = "account", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Consultant consultant;
+    @OneToOne(mappedBy = "account", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Customer customer;
+
     public Account(int accountId, String username, String password, Role role) {
         this.accountId = accountId;
         this.username = username;

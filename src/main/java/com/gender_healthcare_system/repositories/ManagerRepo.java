@@ -4,6 +4,7 @@ import com.gender_healthcare_system.dtos.LoginResponse;
 import com.gender_healthcare_system.entities.user.Customer;
 import com.gender_healthcare_system.entities.user.Manager;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 
 import java.util.Optional;
@@ -21,4 +22,6 @@ public interface ManagerRepo extends JpaRepository<Manager, Integer> {
             "FROM Customer c " +
             "WHERE c.customerId = :id")
     Optional<Customer> getCustomerById(int id);
+
+
 }

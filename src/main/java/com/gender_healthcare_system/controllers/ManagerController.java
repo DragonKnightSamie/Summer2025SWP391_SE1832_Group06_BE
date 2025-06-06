@@ -155,10 +155,23 @@ public class ManagerController {
     //MANAGER CREATE STAFF ACCOUNT
     @PostMapping("/registerStaff")
     @PreAuthorize("hasAuthority('ROLE_MANAGER')")
-    public String createStaffAccount(@RequestBody StaffPayload payload) {
+    public ResponseEntity<?> createStaffAccount(@RequestBody StaffPayload payload) {
         accountService.createStaffAccount(payload);
-        return "Staff account created successfully";
+        return ResponseEntity.ok("Staff account created successfully");
     }
 
+    @PutMapping("/updateStaff/{id}")
+    @PreAuthorize("hasAuthority('ROLE_MANAGER')")
+    public ResponseEntity<?> updateStaffAccount(@PathVariable int id, @RequestBody StaffPayload payload) {
+        accountService.updateStaffAndAccount(id, payload);
+        return ResponseEntity.ok("Staff details updated successfully");
+    }
+
+    @DeleteMapping("/deleteStaff/{id}")
+    @PreAuthorize("hasAuthority('ROLE_MANAGER')")
+    public ResponseEntity<?> deleteStaffAccount(@PathVariable int id) {
+        accountService.deleteStaffById(id);
+        return ResponseEntity.ok("Staff account deleted successfully");
+    }
 
 }
