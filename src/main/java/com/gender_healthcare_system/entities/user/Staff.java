@@ -42,7 +42,7 @@ public class Staff {
     private List<TestingServiceHistory> testingServiceHistories;
 
     //One-to-One relationship with Account
-    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true) // xóa thông tài khoản trong bảng staff th sẽ xóa luôn trong bảng account
+    @OneToOne // xóa thông tài khoản trong bảng staff th sẽ xóa luôn trong bảng account
     @MapsId
     @JoinColumn(name = "staff_id", nullable = false)
     private Account account;

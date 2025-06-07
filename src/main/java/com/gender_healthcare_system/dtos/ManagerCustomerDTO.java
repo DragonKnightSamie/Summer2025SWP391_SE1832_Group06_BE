@@ -1,6 +1,7 @@
 package com.gender_healthcare_system.dtos;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.gender_healthcare_system.entities.enu.AccountStatus;
 import com.gender_healthcare_system.entities.enu.Gender;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
@@ -12,9 +13,13 @@ import java.time.LocalDate;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class CustomerDTO {
+public class ManagerCustomerDTO {
 
     private int customerId;
+
+    private String userName;
+
+    private String password;
 
     private String fullName;
 
@@ -32,4 +37,5 @@ public class CustomerDTO {
 
     private String address;
 
+    private AccountStatus status;
 }

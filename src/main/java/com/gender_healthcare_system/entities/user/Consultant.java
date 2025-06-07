@@ -38,7 +38,7 @@ public class Consultant {
     private String address;
 
     // Assuming that a Consultant can have multiple certificates
-    @OneToMany(mappedBy = "consultant", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "consultant", cascade = CascadeType.ALL)
     private List<Certificate> certificates;
 
     // Assuming that a Consultant can have multiple consultations
@@ -46,7 +46,7 @@ public class Consultant {
     private List<Consultation> consultations;
 
     //One-to-One relationship with Account
-    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToOne
     @MapsId
     @JoinColumn(name = "consultant_id", nullable = false)
     private Account account;

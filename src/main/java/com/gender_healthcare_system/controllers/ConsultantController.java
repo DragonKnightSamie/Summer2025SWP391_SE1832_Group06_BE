@@ -1,17 +1,12 @@
 package com.gender_healthcare_system.controllers;
 
 import com.gender_healthcare_system.dtos.ConsultantConsultationDTO;
+import com.gender_healthcare_system.dtos.ConsultantDetailsDTO;
 import com.gender_healthcare_system.dtos.ConsultationsDTO;
 import com.gender_healthcare_system.dtos.LoginResponse;
-import com.gender_healthcare_system.entities.todo.Consultation;
 import com.gender_healthcare_system.entities.user.AccountInfoDetails;
-import com.gender_healthcare_system.payloads.ConsultationCompletePayload;
-import com.gender_healthcare_system.payloads.ConsultationConfirmPayload;
-import com.gender_healthcare_system.payloads.ConsultationRegisterPayload;
-import com.gender_healthcare_system.payloads.LoginRequest;
-import com.gender_healthcare_system.services.ConsultantService;
-import com.gender_healthcare_system.services.ConsultationService;
-import com.gender_healthcare_system.services.JwtService;
+import com.gender_healthcare_system.payloads.*;
+import com.gender_healthcare_system.services.*;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -28,10 +23,11 @@ import java.util.List;
 @AllArgsConstructor
 public class ConsultantController {
 
-    
     private final ConsultationService consultationService;
     
     private final ConsultantService consultantService;
+
+    private final CertificateService certificateService;
 
     private final JwtService jwtService;
 
@@ -81,6 +77,52 @@ public class ConsultantController {
         return "Logout successful";
     }
 
+
+    ////////////////////////////////// Manage Profile ///////////////////////////////////
+
+
+    //Consultant get profile infos
+    @GetMapping("/profile/{id}")
+    @PreAuthorize("hasAuthority('ROLE_MANAGER')")
+    public ResponseEntity<ConsultantDetailsDTO>
+    getConsultantProfile(@PathVariable int id) {
+
+        ConsultantDetailsDTO consultantDetails = consultantService.getConsultantDetails(id);
+        if (consultantDetails != null) {
+            return ResponseEntity.ok(consultantDetails);
+        } else {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
+    //Consultant update profile personal infos
+    @PutMapping("profile/update/{id}")
+    @PreAuthorize("hasAuthority('ROLE_CONSULTANT')")
+    public ResponseEntity<?> updateConsultantProfile
+    (@PathVariable int id, @RequestBody ConsultantUpdatePayload payload) {
+
+        consultantService.updateConsultantDetails(id, payload);
+        return ResponseEntity.ok("Consultant profile updated successfully");
+    }
+
+
+    ////////////////////////////////// Manage Certificates ///////////////////////////////////
+
+
+    //Consultant update certificate infos
+    @PutMapping("certificates/update/{id}")
+    @PreAuthorize("hasAuthority('ROLE_CONSULTANT')")
+    public ResponseEntity<?> updateConsultantCertificate
+    (@PathVariable int id, @RequestBody CertificateUpdatePayload payload) {
+
+        certificateService.updateConsultantCertificate(id, payload);
+        return ResponseEntity.ok("Consultant certificate updated successfully");
+    }
+
+
+    ////////////////////////////////// Manage Consultations ///////////////////////////////////
+
+
     //Get all consultations by consultant ID
     @GetMapping("/consultations/consultantId/{id}")
     @PreAuthorize("hasAuthority('ROLE_CONSULTANT')")
@@ -97,33 +139,23 @@ public class ConsultantController {
         return consultationService.getConsultationById(id);
     }
 
-    //register consultation
-    @PostMapping("/consultations/register")
-    @PreAuthorize("hasAuthority('ROLE_CONSULTANT')")
-    public ResponseEntity<String> registerConsulation
-    (@RequestBody ConsultationRegisterPayload payload) {
-
-        consultationService.registerConsultation(payload);
-        return ResponseEntity.ok("Consultation registered successfully");
-    }
-
     //Confirm consultation
-    @PostMapping("/consultations/confirm")
+    /*@PostMapping("/consultations/confirm")
     @PreAuthorize("hasAuthority('ROLE_CONSULTANT')")
     public ResponseEntity<String> confirmConsultation(@RequestBody ConsultationConfirmPayload payload) {
         consultationService.confirmConsultation(payload);
         return ResponseEntity.ok("Consultation confirmed successfully");
-    }
+    }*/
 
     //Cancel consultation
     //Can consultant actually cancel consultation
-    @PostMapping("/consultations/cancel/{id}")
+    /*@PostMapping("/consultations/cancel/{id}")
     @PreAuthorize("hasAuthority('ROLE_CONSULTANT')")
     public ResponseEntity<String> cancelConsultation
     (@PathVariable int id) {
         consultationService.cancelConsultation(id);
         return ResponseEntity.ok("Consultation cancelled successfully");
-    }
+    }*/
 
     //Reschedule consultation
     @PostMapping("/consultations/reschedule")
@@ -135,7 +167,7 @@ public class ConsultantController {
         return ResponseEntity.ok("Consultation rescheduled successfully");
     }
 
-    //Reschedule consultation
+    //Complete consultation
     @PostMapping("/consultations/complete")
     @PreAuthorize("hasAuthority('ROLE_CONSULTANT')")
     public ResponseEntity<String> completeConsultation

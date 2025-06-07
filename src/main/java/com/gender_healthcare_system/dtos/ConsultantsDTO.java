@@ -6,11 +6,11 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
-@AllArgsConstructor
 @NoArgsConstructor
-public class StaffDTO {
+@AllArgsConstructor
+public class ConsultantsDTO {
 
-    private int staffId;
+    private int consultantId;
     private String userName;
     private String password;
     private String fullName;
@@ -18,6 +18,4 @@ public class StaffDTO {
     private String email;
     private String address;
     private AccountStatus status;
-
 }
-

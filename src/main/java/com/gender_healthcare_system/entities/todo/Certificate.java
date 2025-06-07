@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import lombok.AllArgsConstructor;
 import org.hibernate.annotations.Nationalized;
 
+import java.time.LocalDate;
 import java.util.Date;
 
 @Data
@@ -35,10 +36,10 @@ public class Certificate {
     private String issuedBy;
 
     @Column(name = "issue_date", nullable = false)
-    private Date issueDate;
+    private LocalDate issueDate;
 
     @Column(name = "expiry_date")
-    private Date expiryDate;
+    private LocalDate expiryDate;
 
     @Nationalized
     @Column(name = "description", length = 255)

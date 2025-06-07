@@ -1,10 +1,5 @@
 package com.gender_healthcare_system.payloads;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
-import com.gender_healthcare_system.entities.enu.Gender;
-import com.gender_healthcare_system.entities.todo.GenderSpecificDetails;
-import io.swagger.v3.oas.annotations.media.Schema;
-import jakarta.persistence.Embedded;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -14,16 +9,15 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.validator.constraints.Length;
 
-
-import java.time.LocalDate;
+import java.util.List;
 
 @Data
-@NoArgsConstructor
 @AllArgsConstructor
-public class CustomerPayload {
+@NoArgsConstructor
+public class ConsultantRegisterPayload {
 
     @NotBlank(message = "Username is required")
-    @Length(min = 5, max = 50, message = "Username must be between 3 and 20 characters")
+    @Length(min = 5, max = 50, message = "Username must be between 3 and 50 characters")
     private String username;
 
     @NotBlank(message = "Password is required")
@@ -33,18 +27,6 @@ public class CustomerPayload {
     @NotBlank(message = "Full name is required")
     @Length(max = 70)
     private String fullName;
-
-    @NotNull(message = "Date of birth is required")
-    @Schema(type = "string", example = "05/06/2025")
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy")
-    private LocalDate dateOfBirth;
-
-    @NotBlank(message = "Gender is required")
-    private Gender gender; //Enum
-
-    @NotBlank(message = "Gender specific details is required")
-    @Embedded
-    private GenderSpecificDetails genderSpecificDetails;
 
     @NotBlank(message = "Phone is required")
     @Length(max = 15)
@@ -59,5 +41,6 @@ public class CustomerPayload {
     @Length(max = 100)
     private String address;
 
-
+    @NotNull
+    private List<CertificateRegisterPayload> certificates;
 }

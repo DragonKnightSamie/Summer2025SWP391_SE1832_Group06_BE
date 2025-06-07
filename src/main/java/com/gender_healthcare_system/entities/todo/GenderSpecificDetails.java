@@ -1,6 +1,7 @@
 package com.gender_healthcare_system.entities.todo;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.Embeddable;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -19,7 +20,8 @@ public class GenderSpecificDetails {
 
     private Integer cycleLengthDays;
 
-    @DateTimeFormat(pattern = "DD-MM-YYYY")
+    @Schema(type = "string", example = "05/06/2025")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy")
     private LocalDate lastCycleStart;
 
     private String notes;

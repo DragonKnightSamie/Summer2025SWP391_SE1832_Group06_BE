@@ -1,5 +1,6 @@
 package com.gender_healthcare_system.repositories;
 
+import com.gender_healthcare_system.entities.enu.AccountStatus;
 import com.gender_healthcare_system.entities.user.Account;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
@@ -21,12 +22,28 @@ public interface AccountRepo extends JpaRepository<Account, Integer> {
     Optional<Account> findActiveAccountByUsername(String username);
 
 
-    //update username and password of an account
+    //update password of an account
     @Modifying
-    @Transactional
-    @Query("UPDATE Account a SET a.username = :username, a.password = :password WHERE a.accountId = :accountId")
-    void updateAccountCredentials(@Param("accountId") int accountId,
-                                  @Param("username") String username,
+    //@Transactional
+    @Query("UPDATE Account a SET a.password = :password " +
+            "WHERE a.accountId = :accountId")
+    void updateAccountPassword(@Param("accountId") int accountId,
                                   @Param("password") String password);
 
+    //update password of an account
+    @Modifying
+    //@Transactional
+    @Query("UPDATE Account a SET a.status = :status " +
+            "WHERE a.accountId = :accountId")
+    void updateAccountStatus(@Param("accountId") int accountId,
+                               @Param("status") AccountStatus status);
+
+    //update password of an account
+    @Modifying
+    //@Transactional
+    @Query("DELETE FROM Account a " +
+            "WHERE a.accountId = :accountId")
+    void deleteAccountById(@Param("accountId") int accountId);
+
+    boolean existsAccountByAccountIdAndStatus(int accountId, AccountStatus status);
 }

@@ -36,28 +36,28 @@ public class Consultation {
     private Customer customer;
 
     @Column(name = "created_at", nullable = false)
-    //@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy HH:mm:ss")
-    @DateTimeFormat(pattern = "DD-MM-YYYY HH:mm:ss")
+    //@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy HH:mm")
+    //@DateTimeFormat(pattern = "DD-MM-YYYY HH:mm:ss")
     private LocalDateTime createdAt;
 
     @Column(name = "expected_start_time", nullable = false)
-    //@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy HH:mm:ss")
-    @DateTimeFormat(pattern = "DD-MM-YYYY HH:mm:ss")
+    //@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy HH:mm")
+    //@DateTimeFormat(pattern = "DD-MM-YYYY HH:mm:ss")
     private LocalDateTime expectedStartTime;
 
     @Column(name = "real_start_time", nullable = true)
-    //@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy HH:mm:ss")
-    @DateTimeFormat(pattern = "DD-MM-YYYY HH:mm:ss")
+    //@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy HH:mm")
+    //@DateTimeFormat(pattern = "DD-MM-YYYY HH:mm:ss")
     private LocalDateTime realStartTime;
 
     @Column(name = "expected_end_time", nullable = false)
-    //@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy HH:mm:ss")
-    @DateTimeFormat(pattern = "DD-MM-YYYY HH:mm:ss")
+    //@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy HH:mm")
+    //@DateTimeFormat(pattern = "DD-MM-YYYY HH:mm:ss")
     private LocalDateTime expectedEndTime;
 
     @Column(name = "real_end_time", nullable = true)
-    //@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy HH:mm:ss")
-    @DateTimeFormat(pattern = "DD-MM-YYYY HH:mm:ss")
+    //@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy HH:mm:")
+    //@DateTimeFormat(pattern = "DD-MM-YYYY HH:mm:ss")
     private LocalDateTime realEndTime;
 
     //Enum

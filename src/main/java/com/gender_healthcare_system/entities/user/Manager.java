@@ -38,7 +38,8 @@ public class Manager {
     private String address;
 
     // Relationship with Blog
-    @OneToMany(mappedBy = "manager", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToMany(cascade = CascadeType.ALL)
+    @JoinColumn(name = "manager_id")
     @JsonManagedReference   // <-- Thêm annotation này, tranh vong lap vo han không parse được JSON
     private List<Blog> blogs;
 

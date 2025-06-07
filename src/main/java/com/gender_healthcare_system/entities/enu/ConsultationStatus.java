@@ -4,8 +4,7 @@ public enum ConsultationStatus {
     CANCELLED,
     COMPLETED,
     RESCHEDULED,
-    CONFIRMED,
-    PENDING;
+    CONFIRMED;
 
     public String getStatus() {
         return this.name();

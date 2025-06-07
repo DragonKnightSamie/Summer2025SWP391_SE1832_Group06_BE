@@ -64,7 +64,7 @@ public class ConsultationService {
         consultation.setExpectedStartTime(payload.getExpectedStartTime());
         //LocalDateTime endtime = payload.getExpectedStartTime().plusMinutes(60);
         consultation.setExpectedEndTime(payload.getExpectedEndTime());
-        consultation.setStatus(ConsultationStatus.PENDING);
+        consultation.setStatus(ConsultationStatus.CONFIRMED);
         consultation.setCustomer(customer);
         consultation.setConsultant(consultant);
 
@@ -73,7 +73,7 @@ public class ConsultationService {
     }
 
     //confirm consultation : consultant xác nhận lịch hẹn
-    @Transactional
+    /*@Transactional
     public void confirmConsultation(ConsultationConfirmPayload payload) {
         Consultation consultation = consultationRepo
                 .findConsultationById(payload.getConsultationId())
@@ -83,21 +83,23 @@ public class ConsultationService {
             throw new AppException(400, "Only pending consultations can be approved");
         }
 
-        /*consultation.setStatus(ConsultationStatus.CONFIRMED);
+        *//*consultation.setStatus(ConsultationStatus.CONFIRMED);
         consultation.setExpectedStartTime(payload.getExpectedStartTime());
         consultation.setExpectedEndTime(payload.getExpectedEndTime());
 
-        consultationRepo.save(consultation);*/
+        consultationRepo.save(consultation);*//*
         consultationRepo.updateConsultation(payload, ConsultationStatus.CONFIRMED);
-    }
+    }*/
 
     @Transactional
     public void cancelConsultation(int id) {
         Consultation consultation = consultationRepo.findConsultationById(id)
                 .orElseThrow(() -> new AppException(404, "Consultation not found"));
 
-        if (consultation.getStatus() == ConsultationStatus.COMPLETED) {
-            throw new AppException(400, "Cannot cancel a completed consultation");
+        if (consultation.getStatus() == ConsultationStatus.COMPLETED
+                || consultation.getStatus() == ConsultationStatus.CANCELLED ) {
+            throw new AppException(400,
+                    "Cannot cancel an already cancelled or completed consultation");
         }
 
         /*consultation.setStatus(ConsultationStatus.CANCELLED);

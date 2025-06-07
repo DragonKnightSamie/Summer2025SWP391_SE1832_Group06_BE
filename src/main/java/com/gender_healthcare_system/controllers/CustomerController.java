@@ -1,10 +1,11 @@
 package com.gender_healthcare_system.controllers;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.gender_healthcare_system.dtos.ConsultantConsultationDTO;
 import com.gender_healthcare_system.dtos.ConsultationsDTO;
 import com.gender_healthcare_system.dtos.LoginResponse;
-import com.gender_healthcare_system.entities.todo.Consultation;
 import com.gender_healthcare_system.entities.user.AccountInfoDetails;
+import com.gender_healthcare_system.payloads.ConsultationRegisterPayload;
 import com.gender_healthcare_system.payloads.CustomerPayload;
 import com.gender_healthcare_system.payloads.LoginRequest;
 import com.gender_healthcare_system.services.AccountService;
@@ -86,6 +87,10 @@ public class CustomerController {
         return "Logout successful";
     }
 
+
+    ////////////////////////////////// Manage Consultations ///////////////////////////////////
+
+
     //Get consultations by customer ID
     @GetMapping("/consultations/{customerId}")
     @PreAuthorize("hasAuthority('ROLE_CUSTOMER')")
@@ -93,14 +98,22 @@ public class CustomerController {
         return consultationService.getConsultationsByCustomerId(customerId);
     }
 
-    /*@PostMapping("/consultations/register")
+    //Get consultation by ID
+    @GetMapping("/consultations/{id}")
+    @PreAuthorize("hasAuthority('ROLE_CUSTOMER')")
+    public ConsultantConsultationDTO getConsultationById(@PathVariable int id) {
+        return consultationService.getConsultationById(id);
+    }
+
+    //register consultation
+    @PostMapping("/consultations/register")
     @PreAuthorize("hasAuthority('ROLE_CUSTOMER')")
     public ResponseEntity<String> registerConsulation
             (@RequestBody ConsultationRegisterPayload payload) {
 
         consultationService.registerConsultation(payload);
         return ResponseEntity.ok("Consultation registered successfully");
-    }*/
+    }
 
     //Cancel consultation
     @PostMapping("/consultations/cancel/{id}")

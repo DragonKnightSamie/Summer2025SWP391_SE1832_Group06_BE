@@ -63,7 +63,9 @@ public class SecurityConfig {
             "/manager/login",
             "/manager/logout",
             "/manager/blogs/**",
-            "/manager/registerStaff"
+            "/manager/staffs/**",
+            "/manager/consultants/**",
+            "/manager/customers/**"
     };
 
     // Các API cần quyền STAFF
@@ -75,6 +77,8 @@ public class SecurityConfig {
     // Các API cần quyền CONSULTANT
     private static final String[] CONSULTANT_AUTHLIST = {
             "/consultant/consultations/**",
+            "/consultant/profile/**",
+            "/consultant/certificates/**",
             "/consultant/logout/"
 
     };

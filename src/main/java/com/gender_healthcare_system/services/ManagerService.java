@@ -1,8 +1,6 @@
 package com.gender_healthcare_system.services;
 
 import com.gender_healthcare_system.dtos.LoginResponse;
-import com.gender_healthcare_system.entities.user.Staff;
-import com.gender_healthcare_system.payloads.StaffPayload;
 import com.gender_healthcare_system.repositories.ManagerRepo;
 import com.gender_healthcare_system.repositories.StaffRepo;
 import lombok.AllArgsConstructor;

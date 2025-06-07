@@ -4,11 +4,11 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.gender_healthcare_system.entities.enu.AccountStatus;
+import com.gender_healthcare_system.entities.todo.Certificate;
 import com.gender_healthcare_system.entities.user.*;
+import com.gender_healthcare_system.exceptions.AppException;
 import com.gender_healthcare_system.iservices.IAccountService;
-import com.gender_healthcare_system.payloads.CustomerPayload;
-import com.gender_healthcare_system.payloads.ManagerPayload;
-import com.gender_healthcare_system.payloads.StaffPayload;
+import com.gender_healthcare_system.payloads.*;
 import com.gender_healthcare_system.repositories.*;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
@@ -30,7 +30,12 @@ public class AccountService implements IAccountService {
     private final RoleRepo roleRepo;
 
     private final StaffRepo staffRepo;
+
     private final ManagerRepo managerRepo;
+
+    private final ConsultantRepo consultantRepo;
+
+    private final CertificateRepo certificateRepo;
 
     @Override
     public UserDetails loadUserByUsername(String username) {
@@ -57,11 +62,8 @@ public class AccountService implements IAccountService {
         Role role = roleRepo.findByRoleId(5);
         account.setRole(role);
 
-        //account.setRoleId(2);
-
         accountRepo.saveAndFlush(account);
 
-        //customer.setCustomerId(account.getAccountId());
         customer.setAccount(account);
 
         customer.setFullName(payload.getFullName());
@@ -79,11 +81,91 @@ public class AccountService implements IAccountService {
         customerRepo.saveAndFlush(customer);
     }
 
-    //createManagerAccount by Admin
-    public void createManagerAccount(ManagerPayload payload) {
-        ObjectMapper mapper = new ObjectMapper();
-        mapper.registerModule(new JavaTimeModule());
+    @Transactional
+    public void updateCustomerStatus(int customerId, AccountStatus status){
+        boolean customerExist = customerRepo.existsById(customerId);
 
+        if(!customerExist) {
+
+            throw new AppException(404, "Customer not found");
+        }
+
+        boolean accountStatusIdentical = accountRepo
+                .existsAccountByAccountIdAndStatus(customerId, status);
+
+        if(!accountStatusIdentical){
+
+            accountRepo.updateAccountStatus(customerId, status);
+        }
+    }
+
+    @Transactional
+    public void deleteCustomerById(int customerId) {
+        boolean customerExist = customerRepo.existsById(customerId);
+
+        if(!customerExist) {
+
+            throw new AppException(404, "Customer not found");
+        }
+
+        customerRepo.deleteCustomerById(customerId);
+        accountRepo.deleteAccountById(customerId);
+    }
+
+    @Transactional
+    public void createConsultantAccount(ConsultantRegisterPayload payload){
+        Account account = new Account();
+        Consultant consultant = new Consultant();
+        Certificate certificate;
+
+        account.setUsername(payload.getUsername());
+        account.setPassword(payload.getPassword());
+        account.setStatus(AccountStatus.ACTIVE);
+
+        Role role = roleRepo.findByRoleId(4);
+        account.setRole(role);
+
+        accountRepo.saveAndFlush(account);
+
+        consultant.setAccount(account);
+
+        consultant.setFullName(payload.getFullName());
+        consultant.setPhone(payload.getPhone());
+        consultant.setEmail(payload.getEmail());
+        consultant.setAddress(payload.getAddress());
+
+        consultantRepo.saveAndFlush(consultant);
+
+        for(CertificateRegisterPayload item: payload.getCertificates()) {
+            certificate = new Certificate();
+            certificate.setConsultant(consultant);
+
+            certificate.setCertificateName(item.getCertificateName());
+            certificate.setIssuedBy(item.getIssuedBy());
+            certificate.setIssueDate(item.getIssueDate());
+            certificate.setExpiryDate(item.getExpiryDate());
+            certificate.setDescription(item.getDescription());
+
+            certificateRepo.saveAndFlush(certificate);
+        }
+    }
+
+    @Transactional
+    public void deleteConsultantById(int consultantId) {
+        boolean consultantExist = consultantRepo.existsById(consultantId);
+
+        if(!consultantExist) {
+
+            throw new AppException(404, "Consultant not found");
+        }
+
+        consultantRepo.deleteConsultantById(consultantId);
+        accountRepo.deleteAccountById(consultantId);
+    }
+
+    //createManagerAccount by Admin
+    @Transactional
+    public void createManagerAccount(ManagerPayload payload) {
         Account account = new Account();
         Manager manager = new Manager();
 
@@ -106,10 +188,8 @@ public class AccountService implements IAccountService {
     }
 
     //createStaffAccount by Manager
-    public void createStaffAccount(StaffPayload payload) {
-        ObjectMapper mapper = new ObjectMapper();
-        mapper.registerModule(new JavaTimeModule());
-
+    @Transactional
+    public void createStaffAccount(StaffRegisterPayload payload) {
         Account account = new Account();
         Staff staff = new Staff();
 
@@ -131,38 +211,18 @@ public class AccountService implements IAccountService {
     }
 
     @Transactional
-    public void updateStaffAndAccount(int staffId, StaffPayload payload) {
-        Staff staff = staffRepo.findById(staffId)
-                .orElseThrow(() -> new RuntimeException("Staff not found"));
-
-        Account account = staff.getAccount();
-        account.setUsername(payload.getUsername());
-
-        account.setPassword(payload.getPassword());
-
-        accountRepo.save(account);
-
-        staff.setFullName(payload.getFullName());
-        staff.setPhone(payload.getPhone());
-        staff.setEmail(payload.getEmail());
-        staff.setAddress(payload.getAddress());
-
-        staffRepo.save(staff);
-    }
-
-
-    @Transactional
     public void deleteStaffById(int staffId) {
-        Staff staff = staffRepo.findById(staffId)
-                .orElseThrow(() -> new RuntimeException("Staff not found"));
+        boolean staffExist = staffRepo.existsById(staffId);
 
-        Account account = staff.getAccount();
+        if(!staffExist) {
 
-        //xóa staff trước để tránh lỗi ràng buộc khóa ngoại
-        //sau đó mới xóa account
-        staffRepo.delete(staff);
-        accountRepo.delete(account);
+            throw new AppException(404, "Staff not found");
+        }
+
+        staffRepo.deleteStaffById(staffId);
+        accountRepo.deleteAccountById(staffId);
     }
+
 
 
 

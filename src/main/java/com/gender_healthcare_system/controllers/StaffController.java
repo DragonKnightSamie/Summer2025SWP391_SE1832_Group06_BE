@@ -32,6 +32,55 @@ public class StaffController {
 
     private final JwtService jwtService;
 
+    //Staff login
+    @PostMapping("/login")
+    public LoginResponse login(@RequestBody LoginRequest loginRequest) {
+        Authentication authentication = authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(loginRequest.getUsername(),
+                        loginRequest.getPassword())
+        );
+        if (!authentication.isAuthenticated()) {
+
+            throw new UsernameNotFoundException("Invalid username or password");
+        }
+        boolean hasRole = authentication
+                .getAuthorities()
+                .stream()
+                .anyMatch(x -> x
+                        .getAuthority().equals("ROLE_STAFF"));
+
+        if(!hasRole){
+            throw new UsernameNotFoundException
+                    ("Access denied for non-staff user");
+        }
+
+        AccountInfoDetails account =
+                (AccountInfoDetails) authentication.getPrincipal();
+        int id = account.getId();
+
+        LoginResponse loginDetails = staffService.getStaffLoginDetails(id);
+        loginDetails.setUsername(loginRequest.getUsername());
+
+        String jwtToken = jwtService.generateToken(loginRequest.getUsername());
+        loginDetails.setToken(jwtToken);
+
+        return loginDetails;
+        //return jwtService.generateToken(loginRequest.getUsername());
+
+    }
+
+    //Staff logout
+    @PostMapping("/logout")
+    @PreAuthorize("hasAuthority('ROLE_STAFF')")
+    public String logout(@RequestBody String token) {
+        jwtService.isTokenBlacklisted(token);
+        return "Logout successful";
+    }
+
+
+    ///////////////////////////// Manage Payments ///////////////////////////////
+
+
     // 1. Get all payments
     @GetMapping("/payments/")
     @PreAuthorize("hasAuthority('ROLE_STAFF')")
@@ -98,48 +147,4 @@ public class StaffController {
         }
     }
 
-    // 9. Staff login
-    @PostMapping("/login")
-    public LoginResponse login(@RequestBody LoginRequest loginRequest) {
-        Authentication authentication = authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(loginRequest.getUsername(),
-                        loginRequest.getPassword())
-        );
-        if (!authentication.isAuthenticated()) {
-
-            throw new UsernameNotFoundException("Invalid username or password");
-        }
-            boolean hasRole = authentication
-                    .getAuthorities()
-                    .stream()
-                    .anyMatch(x -> x
-                            .getAuthority().equals("ROLE_STAFF"));
-
-            if(!hasRole){
-                throw new UsernameNotFoundException
-                        ("Access denied for non-staff user");
-            }
-
-            AccountInfoDetails account =
-                    (AccountInfoDetails) authentication.getPrincipal();
-            int id = account.getId();
-
-            LoginResponse loginDetails = staffService.getStaffLoginDetails(id);
-            loginDetails.setUsername(loginRequest.getUsername());
-
-            String jwtToken = jwtService.generateToken(loginRequest.getUsername());
-            loginDetails.setToken(jwtToken);
-
-            return loginDetails;
-           //return jwtService.generateToken(loginRequest.getUsername());
-
-    }
-
-    //10. Staff logout
-    @PostMapping("/logout")
-    @PreAuthorize("hasAuthority('ROLE_STAFF')")
-    public String logout(@RequestBody String token) {
-        jwtService.isTokenBlacklisted(token);
-        return "Logout successful";
-    }
 }

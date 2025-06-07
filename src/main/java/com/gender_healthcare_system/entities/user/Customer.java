@@ -57,7 +57,7 @@ public class Customer {
     private List<TestingServiceHistory> testingServiceHistories;
 
     //One-to-One relationship with Account
-    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToOne
     @MapsId // ✅ Map customerId = account.accountId
     @JoinColumn(name = "customer_id", nullable = false)
     private Account account;
