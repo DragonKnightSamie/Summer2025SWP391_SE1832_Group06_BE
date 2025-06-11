@@ -41,8 +41,8 @@ public class SecurityConfig {
             "/consultant/login",
             "/v3/api-docs/**",
             "/swagger-ui/**",
-            "/swagger-ui.html"
-
+            "/swagger-ui.html",
+            "api/**" //api này là của Testing Service, test thử rồi sẽ sửa lại
     };
 
     // Các API blog công khai (xem, tìm kiếm)

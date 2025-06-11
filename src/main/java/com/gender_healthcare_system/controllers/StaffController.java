@@ -22,6 +22,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/staff")
 @AllArgsConstructor
+
 public class StaffController {
 
     private final PaymentService paymentService;

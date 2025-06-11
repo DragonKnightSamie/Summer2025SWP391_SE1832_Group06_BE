@@ -43,10 +43,20 @@ public class TestingService {
     @OneToMany(mappedBy = "testingService", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<TestingServiceHistory> testingServiceHistories;
 
-    //One-to-one relationship with TestingServiceForm
+    //One-to-one relationship with TestingServiceFormDTO
     @OneToOne
     @MapsId
     @JoinColumn(name = "service_id", nullable = false)
     private TestingServiceForm testingServiceForm;
 
+    //Relationship with PriceList
+    @OneToMany(mappedBy = "testingService", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<PriceList> priceLists;
+
+    public TestingService(int serviceId, String serviceName, String description, TestingServiceStatus status) {
+        this.serviceId = serviceId;
+        this.serviceName = serviceName;
+        this.description = description;
+        this.status = status;
+    }
 }
