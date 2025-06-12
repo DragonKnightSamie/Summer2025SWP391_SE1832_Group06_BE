@@ -12,7 +12,7 @@ import org.hibernate.validator.constraints.Length;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class ManagerPayload {
+public class ManagerRegisterPayload {
 
     @NotBlank(message = "Username is required")
     @Length(min = 5, max = 50, message = "Username must be between 3 and 20 characters")

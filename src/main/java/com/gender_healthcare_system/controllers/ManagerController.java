@@ -2,11 +2,12 @@ package com.gender_healthcare_system.controllers;
 
 import com.gender_healthcare_system.dtos.*;
 import com.gender_healthcare_system.entities.enu.AccountStatus;
-import com.gender_healthcare_system.entities.todo.Blog;
 import com.gender_healthcare_system.entities.user.AccountInfoDetails;
 import com.gender_healthcare_system.payloads.*;
 import com.gender_healthcare_system.services.*;
+import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
+import org.hibernate.validator.constraints.Length;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -15,7 +16,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/manager")
@@ -38,10 +39,20 @@ public class ManagerController {
 
     private final ConsultantService consultantService;
 
+    private final TestingServiceFormService testingServiceFormService;
+
+    private final TestingServiceTypeService testingServiceTypeService;
+
+    private final TestingServiceResultService testingServiceResultService;
+
+    private final TestingService_Service testingService_Service;
+
+    private final PriceListService priceListService;
+
     //test
     //Manager registration
     @PostMapping("/register")
-    public String register(@RequestBody ManagerPayload payload) {
+    public String register(@RequestBody ManagerRegisterPayload payload) {
         accountService.createManagerAccount(payload);
         return "Manager registered successfully";
     }
@@ -100,63 +111,59 @@ public class ManagerController {
     //getAllBlogs
     @GetMapping("/blogs/")
     @PreAuthorize("hasAuthority('ROLE_MANAGER')")
-    public ResponseEntity<List<Blog>> getAllBlogs() {
-        return ResponseEntity.ok(blogService.getAllBlogs());
+    public ResponseEntity<Map<String, Object>> getAllBlogs
+    (@RequestParam(defaultValue = "0") int page,
+     @RequestParam(defaultValue = "blogId") String sort,
+     @RequestParam(defaultValue = "asc") String order ) {
+
+        return ResponseEntity.ok(blogService.getAllBlogs(page, sort, order));
     }
 
     //getBlogsById
     @GetMapping("/blogs/{id}")
     @PreAuthorize("hasAuthority('ROLE_MANAGER')")
-    public ResponseEntity<Blog> getBlogById(@PathVariable int id) {
-        Blog blog = blogService.getBlogById(id);
-        if (blog != null) {
-            return ResponseEntity.ok(blog);
-        } else {
-            return ResponseEntity.notFound().build();
-        }
+    public ResponseEntity<BlogDTO> getBlogById(@PathVariable int id) {
+
+        return ResponseEntity.ok(blogService.getBlogById(id));
     }
 
     //searchBlogs
     @GetMapping("/blogs/search")
     @PreAuthorize("hasAuthority('ROLE_MANAGER')")
-    public ResponseEntity<List<Blog>> searchBlogs(@RequestParam String keyword) {
-        return ResponseEntity.ok(blogService.searchBlogs(keyword));
+    public ResponseEntity<Map<String, Object>> searchBlogs
+    (@RequestParam String keyword,
+     @RequestParam(defaultValue = "0") int page,
+     @RequestParam(defaultValue = "blogId") String sort,
+     @RequestParam(defaultValue = "asc") String order ) {
+        return ResponseEntity.ok(blogService.searchBlogs(keyword, page, sort, order));
     }
 
     //MANAGER CREATE BLOGS
     @PostMapping("/blogs/create")
     @PreAuthorize("hasAuthority('ROLE_MANAGER')")
-    public ResponseEntity<Blog> createBlog(@RequestBody Blog blog) {
-        Blog newBlog = blogService.createBlog(blog);
-        if (newBlog != null) {
-            return ResponseEntity.ok(newBlog);
-        } else {
-            return ResponseEntity.notFound().build();
-        }
+    public ResponseEntity<?> createBlog(@RequestBody BlogRegisterPayload payload) {
+
+        blogService.createBlog(payload);
+        return ResponseEntity.ok("Blog created successfully");
     }
 
     //MANGER UPDATE BLOGS
     @PutMapping("/blogs/update/{id}")
     @PreAuthorize("hasAuthority('ROLE_MANAGER')")
-    public ResponseEntity<Blog> updateBlog(@PathVariable int id, @RequestBody Blog blog) {
-        Blog updatedBlog = blogService.updateBlog(id, blog);
-        if (updatedBlog != null) {
-            return ResponseEntity.ok(updatedBlog);
-        } else {
-            return ResponseEntity.notFound().build();
-        }
+    public ResponseEntity<?> updateBlog
+    (@PathVariable int id, @RequestBody BlogUpdatePayload payload) {
+
+        blogService.updateBlog(id, payload);
+        return ResponseEntity.ok("Blog updated successfully");
     }
 
     //MANGER DELETE BLOGS
     @DeleteMapping("/blogs/delete/{id}")
     @PreAuthorize("hasAuthority('ROLE_MANAGER')")
-    public ResponseEntity<Void> deleteBlog(@PathVariable int id) {
-        try {
-            blogService.deleteBlog(id);
-            return ResponseEntity.noContent().build();
-        } catch (RuntimeException e) {
-            return ResponseEntity.notFound().build();
-        }
+    public ResponseEntity<?> deleteBlog(@PathVariable int id) {
+
+        blogService.deleteBlog(id);
+        return ResponseEntity.ok("Blog deleted successfully");
     }
 
 
@@ -166,9 +173,12 @@ public class ManagerController {
     //Manager get all Consultants
     @GetMapping("/consultants/")
     @PreAuthorize("hasAuthority('ROLE_MANAGER')")
-    public ResponseEntity<List<ConsultantsDTO>> getAllConsultants() {
+    public ResponseEntity<Map<String, Object>> getAllConsultants
+    (@RequestParam(defaultValue = "0") int page,
+     @RequestParam(defaultValue = "managerId") String sort,
+     @RequestParam(defaultValue = "asc") String order ) {
 
-        return ResponseEntity.ok(consultantService.getAllConsultants());
+        return ResponseEntity.ok(consultantService.getAllConsultants(page, sort, order));
     }
 
     //Manager get Consultant details by id
@@ -221,8 +231,11 @@ public class ManagerController {
     //Manager get all Staffs
     @GetMapping("/staffs/")
     @PreAuthorize("hasAuthority('ROLE_MANAGER')")
-    public ResponseEntity<List<StaffDTO>> getAllStaffs() {
-        return ResponseEntity.ok(staffService.getAllStaffs());
+    public ResponseEntity<Map<String, Object>> getAllStaffs
+    (@RequestParam(defaultValue = "0") int page,
+     @RequestParam(defaultValue = "staffId") String sort,
+     @RequestParam(defaultValue = "asc") String order ) {
+        return ResponseEntity.ok(staffService.getAllStaffs(page, sort, order));
     }
 
     //Manager get staff details by id
@@ -271,8 +284,11 @@ public class ManagerController {
     //Get all Customers
     @GetMapping("/customers/")
     @PreAuthorize("hasAuthority('ROLE_MANAGER')")
-    public ResponseEntity<List<ManagerCustomerDTO>> getAllCustomers() {
-        return ResponseEntity.ok(customerService.getAllCustomers());
+    public ResponseEntity<Map<String, Object>> getAllCustomers
+    (@RequestParam(defaultValue = "0") int page,
+     @RequestParam(defaultValue = "customerId") String sort,
+     @RequestParam(defaultValue = "asc") String order) {
+        return ResponseEntity.ok(customerService.getAllCustomers(page, sort, order));
     }
 
     //Get customer details by id
@@ -304,5 +320,172 @@ public class ManagerController {
 
         accountService.deleteCustomerById(id);
         return ResponseEntity.ok("Customer account deleted successfully");
+    }
+
+    /////////////////////////// Manage Testing Service Type /////////////////////////////////////
+
+
+    //get testing service type by ID
+    @GetMapping("/testing-service-types/{id}")
+    @PreAuthorize("hasAuthority('ROLE_MANAGER')")
+    public TestingServiceDTO getTestingServiceTypeById(@PathVariable int id) {
+        return testingService_Service.getTestingServiceById(id);
+    }
+
+    //get all testing service types
+    @GetMapping("/testing-services-types/")
+    @PreAuthorize("hasAuthority('ROLE_MANAGER')")
+    public Map<String, Object> getAllTestingServiceTypes
+    (@RequestParam(defaultValue = "0") int page,
+     @RequestParam(defaultValue = "serviceTypeId") String sort,
+     @RequestParam(defaultValue = "asc") String order) {
+        return testingServiceTypeService.getAllTestingServiceTypes(page, sort, order);
+    }
+
+    //create new testing service type
+    @PostMapping("/testing-services-types/create")
+    @PreAuthorize("hasAuthority('ROLE_MANAGER')")
+    public String createTestingServiceType
+    (@RequestBody TestingServiceTypeRegisterPayload payload) {
+        testingServiceTypeService.createTestingServiceType(payload);
+        return "Testing Service type created successfully";
+    }
+
+    //update testing service type
+    @PutMapping("/testing-services-types/update/{id}")
+    @PreAuthorize("hasAuthority('ROLE_MANAGER')")
+    public String updateTestingServiceType
+    (@PathVariable int id, @RequestBody TestingServiceTypeUpdatePayload payload) {
+
+        testingServiceTypeService.updateTestingServiceType(id, payload);
+        return "Testing Service type updated successfully";
+    }
+
+    //delete testing service type
+    @DeleteMapping("/testing-services-types/{id}")
+    @PreAuthorize("hasAuthority('ROLE_MANAGER')")
+    public String deleteTestingServiceType (@PathVariable int id) {
+
+        testingService_Service.deleteTestingService(id);
+        return "Testing Service type deleted successfully";
+    }
+
+
+    /////////////////////////// Manage Testing Service Results /////////////////////////////////////
+
+
+    //update testing service result
+    @PutMapping("/testing-services-results/update/{id}")
+    @PreAuthorize("hasAuthority('ROLE_MANAGER')")
+    public String updateTestingServiceResult
+    (@PathVariable int id, @RequestBody TestingServiceResultPayload payload) {
+
+        testingServiceResultService.updateTestingServiceResult(id, payload);
+        return "Testing Service result updated successfully";
+    }
+
+    //delete testing service result
+    @DeleteMapping("/testing-services-results/{id}")
+    @PreAuthorize("hasAuthority('ROLE_MANAGER')")
+    public String deleteTestingServiceResult (@PathVariable int id) {
+
+        testingService_Service.deleteTestingService(id);
+        return "Testing Service result deleted successfully";
+    }
+
+
+    /////////////////////////// Manage Testing Services /////////////////////////////////////
+
+
+    //get testing service by ID
+    @GetMapping("/testing-services/{id}")
+    @PreAuthorize("hasAuthority('ROLE_MANAGER')")
+    public TestingServiceDTO getTestingServiceById(@PathVariable int id) {
+        return testingService_Service.getTestingServiceById(id);
+    }
+
+    //get all testing services
+    @GetMapping("/testing-services/")
+    @PreAuthorize("hasAuthority('ROLE_MANAGER')")
+    public Map<String, Object> getAllTestingServices
+    (@RequestParam(defaultValue = "0") int page,
+     @RequestParam(defaultValue = "serviceId") String sort,
+     @RequestParam(defaultValue = "asc") String order) {
+
+        return testingService_Service.getAllTestingServices(page, sort, order);
+    }
+
+    //create new testing service
+    @PostMapping("/testing-services/create")
+    @PreAuthorize("hasAuthority('ROLE_MANAGER')")
+    public String createTestingService
+    (@RequestBody TestingServiceRegisterPayload payload) {
+        testingService_Service.createTestingService(payload);
+        return "Testing Service created successfully";
+    }
+
+    //Create new price list for existing testing service
+    @PostMapping("/testing-services/price-lists/create/{id}")
+    @PreAuthorize("hasAuthority('ROLE_MANAGER')")
+    public void createTestingServicePriceList(@PathVariable int id,
+                                @RequestBody PriceListPayload payload) {
+        priceListService.createNewPriceListForExistingService(id, payload);
+    }
+
+    //update testing service
+    @PutMapping("/testing-services/update/{id}")
+    @PreAuthorize("hasAuthority('ROLE_MANAGER')")
+    public String updateTestingService
+    (@PathVariable int id, @RequestBody TestingServiceUpdatePayload payload) {
+
+        testingService_Service.updateTestingService(id, payload);
+        return "Testing Service updated successfully";
+    }
+
+    //delete testing service
+    @PreAuthorize("hasAuthority('ROLE_MANAGER')")
+    @DeleteMapping("/testing-services/{id}")
+    public String deleteTestingService(@PathVariable int id) {
+
+        testingService_Service.deleteTestingService(id);
+        return "Testing Service deleted successfully";
+    }
+
+    /// //////////////////////////// Testing Service Form Operations ///////////////////////////////
+
+
+    //update testing service form by ID
+    @PutMapping("/testing-service-forms/{id}")
+    @PreAuthorize("hasAuthority('ROLE_MANAGER')")
+    public void updateTestingServiceFormById
+    (@PathVariable int id, @RequestBody @NotBlank
+    @Length(min = 5, max = 255, message = "Content must be between 5 and 255 characters")
+    String newContent) {
+        testingServiceFormService.updateTestingServiceFormById(id, newContent);
+    }
+
+    //delete testing service form by ID
+    @DeleteMapping("/testing-service-forms/{id}")
+    @PreAuthorize("hasAuthority('ROLE_MANAGER')")
+    public void deleteTestingServiceFormById(@PathVariable int id) {
+        testingServiceFormService.deleteTestingServiceFormById(id);
+    }
+
+    /// //////////////////////////// Price List Operations ///////////////////////////////
+
+
+    //update price list by ID
+    @PutMapping("/price-lists/{id}")
+    @PreAuthorize("hasAuthority('ROLE_MANAGER')")
+    public void updatePriceList(@PathVariable int id,
+                                @RequestBody PriceListPayload payload) {
+        priceListService.updatePriceList(id, payload);
+    }
+
+    //delete price list by ID
+    @DeleteMapping("/price-lists/{id}")
+    @PreAuthorize("hasAuthority('ROLE_MANAGER')")
+    public void deletePriceList(@PathVariable int id) {
+        priceListService.deletePriceList(id);
     }
 }

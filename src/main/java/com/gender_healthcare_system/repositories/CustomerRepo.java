@@ -4,6 +4,8 @@ import com.gender_healthcare_system.dtos.LoginResponse;
 import com.gender_healthcare_system.dtos.ManagerCustomerDTO;
 import com.gender_healthcare_system.entities.user.Consultant;
 import com.gender_healthcare_system.entities.user.Customer;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -38,7 +40,7 @@ public interface CustomerRepo extends JpaRepository<Customer, Integer> {
             "c.genderSpecificDetails, c.phone, c.email, c.address, a.status) " +
             "FROM Customer c " +
             "JOIN c.account a")
-    List<ManagerCustomerDTO> getAllCustomers();
+    Page<ManagerCustomerDTO> getAllCustomers(Pageable pageable);
 
     @Modifying
     @Query("DELETE FROM Customer c " +

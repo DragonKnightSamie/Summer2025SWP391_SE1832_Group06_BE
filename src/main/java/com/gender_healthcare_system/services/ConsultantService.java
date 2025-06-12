@@ -8,8 +8,15 @@ import com.gender_healthcare_system.repositories.ConsultantRepo;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Service
 @AllArgsConstructor
@@ -23,8 +30,36 @@ public class ConsultantService {
         return consultantRepo.getConsultantLoginDetails(id);
     }
 
-    public List<ConsultantsDTO> getAllConsultants() {
-        return consultantRepo.getAllConsultants();
+    public Map<String, Object> getAllConsultants(int page, String sortField, String sortOrder) {
+
+        final int itemSize = 10;
+
+        Sort sort = Sort.by(Sort.Direction.ASC, sortField);
+
+        if(sortOrder.equals("desc")){
+            sort = Sort.by(Sort.Direction.DESC, sortField);
+        }
+
+        Pageable pageRequest = PageRequest
+                .of(page, itemSize, sort);
+
+
+        Page<ConsultantsDTO> pageResult = consultantRepo.getAllConsultants(pageRequest);
+
+        if(!pageResult.hasContent()){
+
+            throw new AppException(404, "No Consultants found");
+        }
+
+        List<ConsultantsDTO> consultantList = pageResult.getContent();
+
+        Map<String, Object> map = new HashMap<>();
+        map.put("totalItems", pageResult.getTotalElements());
+        map.put("consultants", consultantList);
+        map.put("totalPages", pageResult.getTotalPages());
+        map.put("currentPage", pageResult.getNumber());
+
+        return map;
     }
 
     public ConsultantDetailsDTO getConsultantDetails(int consultantId) {

@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
+@AllArgsConstructor
 @NoArgsConstructor
 public class TestingServiceDTO {
 
@@ -19,21 +20,15 @@ public class TestingServiceDTO {
     private PriceListDTO priceList;
 
 
-    public TestingServiceDTO(
-            int serviceId,
-            String serviceName,
-            String description,
-            TestingServiceStatus status,
-            TestingServiceFormDTO testingServiceForm,
-            TestingServiceTypeDTO testingServiceType,
-            PriceListDTO priceList
-    ) {
+    public TestingServiceDTO(int serviceId, String serviceName, String description,
+            TestingServiceStatus status, TestingServiceFormDTO testingServiceForm,
+            TestingServiceTypeDTO testingServiceType) {
+
         this.serviceId = serviceId;
         this.serviceName = serviceName;
         this.description = description;
         this.status = status;
         this.testingServiceForm = testingServiceForm;
         this.testingServiceType = testingServiceType;
-        this.priceList = priceList;
     }
 }

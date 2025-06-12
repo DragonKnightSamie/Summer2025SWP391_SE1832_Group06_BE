@@ -1,12 +1,12 @@
 package com.gender_healthcare_system.controllers;
 
-import com.gender_healthcare_system.entities.todo.Blog;
+import com.gender_healthcare_system.dtos.BlogDTO;
 import com.gender_healthcare_system.services.BlogService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api")
@@ -17,14 +17,17 @@ public class BlogController {
 
     //getAllBlogs
     @GetMapping("/blogs")
-    public ResponseEntity<List<Blog>> getAllBlogs() {
-        return ResponseEntity.ok(blogService.getAllBlogs());
+    public ResponseEntity<Map<String, Object>> getAllBlogs
+    (@RequestParam(defaultValue = "0") int page,
+     @RequestParam(defaultValue = "blogId") String sort,
+     @RequestParam(defaultValue = "asc") String order ) {
+        return ResponseEntity.ok(blogService.getAllBlogs(page, sort, order));
     }
 
     //getBlogsById
     @GetMapping("/blogs/{id}")
-    public ResponseEntity<Blog> getBlogById(@PathVariable int id) {
-        Blog blog = blogService.getBlogById(id);
+    public ResponseEntity<BlogDTO> getBlogById(@PathVariable int id) {
+        BlogDTO blog = blogService.getBlogForCustomerById(id);
         if (blog != null) {
             return ResponseEntity.ok(blog);
         } else {
@@ -34,7 +37,11 @@ public class BlogController {
 
     //searchBlogs
     @GetMapping("/blogs/search")
-    public ResponseEntity<List<Blog>> searchBlogs(@RequestParam String keyword) {
-        return ResponseEntity.ok(blogService.searchBlogs(keyword));
+    public ResponseEntity<Map<String, Object>> searchBlogs
+    (@RequestParam String keyword,
+     @RequestParam(defaultValue = "0") int page,
+     @RequestParam(defaultValue = "blogId") String sort,
+     @RequestParam(defaultValue = "asc") String order ) {
+        return ResponseEntity.ok(blogService.searchBlogs(keyword, page, sort, order));
     }
 }

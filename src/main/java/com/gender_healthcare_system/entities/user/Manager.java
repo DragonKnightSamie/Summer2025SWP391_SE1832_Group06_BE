@@ -48,4 +48,13 @@ public class Manager {
     @MapsId
     @JoinColumn(name = "manager_id", nullable = false)
     private Account account;
+
+    public Manager(int managerId, String fullName, String email,
+                   String phone, String address) {
+        this.managerId = managerId;
+        this.fullName = fullName;
+        this.email = email;
+        this.phone = phone;
+        this.address = address;
+    }
 }

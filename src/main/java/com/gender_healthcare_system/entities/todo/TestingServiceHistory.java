@@ -41,11 +41,11 @@ public class TestingServiceHistory {
     private Staff staff;
 
     @Nationalized
-    @Column(name = "result", nullable = false, length = 255)
+    @Column(name = "result", length = 255)
     private String result;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "rating", nullable = false)
+    @Column(name = "rating")
     private Rating rating;
 
     @Column(name = "comment", length = 255)

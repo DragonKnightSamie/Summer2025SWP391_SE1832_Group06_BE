@@ -5,6 +5,8 @@ import com.gender_healthcare_system.dtos.ConsultantsDTO;
 import com.gender_healthcare_system.dtos.LoginResponse;
 import com.gender_healthcare_system.entities.user.Consultant;
 import com.gender_healthcare_system.payloads.ConsultantUpdatePayload;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -27,7 +29,7 @@ public interface ConsultantRepo extends JpaRepository<Consultant, Integer> {
             "c.email, c.address, a.status) " +
             "FROM Consultant c " +
             "JOIN c.account a")
-    List<ConsultantsDTO> getAllConsultants();
+    Page<ConsultantsDTO> getAllConsultants(Pageable pageable);
 
     @Query("SELECT new com.gender_healthcare_system.dtos.ConsultantDetailsDTO" +
             "(c.consultantId, a.username, a.password, c.fullName, c.phone, " +

@@ -1,7 +1,6 @@
 package com.gender_healthcare_system.repositories;
 
 import com.gender_healthcare_system.entities.todo.TestingServiceForm;
-import com.gender_healthcare_system.payloads.TestingServiceFormUpdatePayload;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -12,8 +11,10 @@ import org.springframework.stereotype.Repository;
 public interface TestingServiceFormRepo extends JpaRepository<TestingServiceForm, Integer> {
 
     @Modifying
-    @Query("UPDATE TestingServiceForm tsf SET tsf.content = :#{#payload.content} WHERE tsf.serviceFormId = :#{#payload.serviceFormId}")
-    void updateContentById(@Param("id") int id, @Param("payload")TestingServiceFormUpdatePayload payload);
+    @Query("UPDATE TestingServiceForm tsf " +
+            "SET tsf.content = :newContent " +
+            "WHERE tsf.serviceFormId = :id")
+    void updateContentById(int id, String newContent);
 
     @Modifying
     @Query("DELETE FROM TestingServiceForm tsf WHERE tsf.serviceFormId = :id")

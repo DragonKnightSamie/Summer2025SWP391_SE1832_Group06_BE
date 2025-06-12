@@ -9,9 +9,15 @@ import com.gender_healthcare_system.repositories.StaffRepo;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Service
 @AllArgsConstructor
@@ -31,8 +37,37 @@ public class StaffService {
     }
 
     //getConsultationByCustomerId
-    public List<StaffDTO> getAllStaffs() {
-        return staffRepo.getAllStaffs();
+    public Map<String, Object> getAllStaffs(int page, String sortField, String sortOrder) {
+
+        final int itemSize = 10;
+
+        Sort sort = Sort.by(Sort.Direction.ASC, sortField);
+
+        if(sortOrder.equals("desc")){
+            sort = Sort.by(Sort.Direction.DESC, sortField);
+        }
+
+        Pageable pageRequest = PageRequest
+                .of(page, itemSize, sort);
+
+
+        Page<StaffDTO> pageResult = staffRepo.getAllStaffs(pageRequest);
+
+        if(!pageResult.hasContent()){
+
+            throw new AppException(404, "No Staffs found");
+        }
+
+        List<StaffDTO> staffList = pageResult.getContent();
+
+        Map<String, Object> map = new HashMap<>();
+
+        map.put("totalItems", pageResult.getTotalElements());
+        map.put("staffs", staffList);
+        map.put("totalPages", pageResult.getTotalPages());
+        map.put("currentPage", pageResult.getNumber());
+
+        return map;
     }
 
     @Transactional

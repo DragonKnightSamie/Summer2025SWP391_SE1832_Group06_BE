@@ -25,17 +25,11 @@ public class SecurityConfig {
     private final JwtAuthFilter jwtAuthFilter;
     private final UserDetailsService userDetailsService;
 
-    /*public SecurityConfig(JwtAuthFilter jwtAuthFilter,
-                          UserDetailsService userDetailsService) {
-
-        this.jwtAuthFilter = jwtAuthFilter;
-        this.userDetailsService = userDetailsService;
-    }*/
-
     // Các API không cần đăng nhập
     private static final String[] AUTH_WHITELIST = {
             "/customer/register",
             "/customer/login",
+            "/admin/login",
             "/manager/login",
             "/staff/login",
             "/consultant/login",
@@ -57,6 +51,12 @@ public class SecurityConfig {
 
     };
 
+    // Các API cần quyền ADMIN
+    private static final String[] ADMIN_AUTHLIST = {
+            "/admin/logout",
+            "/admin/managers/**"
+
+    };
 
     // Các API cần quyền MANAGER
     private static final String[] MANAGER_AUTHLIST = {
@@ -65,7 +65,13 @@ public class SecurityConfig {
             "/manager/blogs/**",
             "/manager/staffs/**",
             "/manager/consultants/**",
-            "/manager/customers/**"
+            "/manager/customers/**",
+            "/manager/testing-service-types/**",
+            "/manager/testing-service-results/**",
+            "/manager/testing-services/**",
+            "/manager/testing-service-forms/**",
+            "/manager/price-lists/**",
+            
     };
 
     // Các API cần quyền STAFF
@@ -83,22 +89,17 @@ public class SecurityConfig {
 
     };
 
-
-    //
-    /*private static final String[] CONSULTATION_AUTHLIST = {
-            "api/consultation/**"
-    };*/
-
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         return http.csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(AUTH_WHITELIST).permitAll()
                         .requestMatchers(BLOG_PUBLIC_ENDPOINTS).permitAll()
-                        .requestMatchers(CUSTOMER_AUTHLIST).hasAuthority("ROLE_CUSTOMER")
+                        .requestMatchers(ADMIN_AUTHLIST).hasAuthority("ROLE_ADMIN")
                         .requestMatchers(MANAGER_AUTHLIST).hasAuthority("ROLE_MANAGER")
                         .requestMatchers(STAFF_AUTHLIST).hasAuthority("ROLE_STAFF")
                         .requestMatchers(CONSULTANT_AUTHLIST).hasAuthority("ROLE_CONSULTANT")
+                        .requestMatchers(CUSTOMER_AUTHLIST).hasAuthority("ROLE_CUSTOMER")
                         //.requestMatchers(CONSULTATION_AUTHLIST).hasAnyAuthority("ROLE_CUSTOMER", "ROLE_CONSULTANT") //Consultation API accessible by both CUSTOMER and CONSULTANT
                         .anyRequest().authenticated()
                 )

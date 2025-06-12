@@ -7,6 +7,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.Nationalized;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -53,10 +54,21 @@ public class TestingService {
     @OneToMany(mappedBy = "testingService", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<PriceList> priceLists;
 
-    public TestingService(int serviceId, String serviceName, String description, TestingServiceStatus status) {
+    public TestingService(int serviceId, String serviceName,
+                          String description, TestingServiceStatus status) {
         this.serviceId = serviceId;
         this.serviceName = serviceName;
         this.description = description;
         this.status = status;
+    }
+
+    public void addPriceItem(PriceList item){
+        item.setTestingService(this);
+
+        if(this.priceLists == null){
+            this.priceLists = new ArrayList<>();
+        }
+
+        this.priceLists.add(item);
     }
 }

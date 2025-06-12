@@ -15,8 +15,8 @@ import org.hibernate.validator.constraints.Length;
 @AllArgsConstructor
 public class TestingServiceUpdatePayload {
 
-    @NotNull
-    private int serviceId; // ID của dịch vụ xét nghiệm, dùng để cập nhật
+/*    @NotNull
+    private int serviceId; // ID của dịch vụ xét nghiệm, dùng để cập nhật*/
 
     @Nationalized
     @NotBlank(message = "Service name is required")

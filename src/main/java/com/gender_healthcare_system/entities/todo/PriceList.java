@@ -1,9 +1,17 @@
 package com.gender_healthcare_system.entities.todo;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.ToString;
 import org.hibernate.annotations.Nationalized;
 
 @Entity
+@Data
+@ToString(exclude = "testingService")
+@AllArgsConstructor
+@NoArgsConstructor
 @Table(name = "PriceList")
 public class PriceList {
 
@@ -24,6 +32,5 @@ public class PriceList {
     @Nationalized
     @Column(name = "description", length = 255)
     private String description;
-
 
 }

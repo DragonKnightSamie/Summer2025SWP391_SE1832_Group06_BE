@@ -17,6 +17,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/consultant")
@@ -126,10 +127,14 @@ public class ConsultantController {
     //Get all consultations by consultant ID
     @GetMapping("/consultations/consultantId/{id}")
     @PreAuthorize("hasAuthority('ROLE_CONSULTANT')")
-    public ResponseEntity<List<ConsultationsDTO>>
-    getConsultations(@PathVariable int id) {
+    public ResponseEntity<Map<String, Object>>
+    getConsultationsByConsultantId(@PathVariable int id,
+                     @RequestParam(defaultValue = "0") int page,
+                     @RequestParam(defaultValue = "consultationId") String sort,
+                     @RequestParam(defaultValue = "asc") String order ) {
+
         return ResponseEntity.ok(consultationService
-                .getConsultationsByConsultantId(id));
+                .getConsultationsByConsultantId(id, page, sort, order));
     }
 
     //Get consultation by ID

@@ -165,7 +165,7 @@ public class AccountService implements IAccountService {
 
     //createManagerAccount by Admin
     @Transactional
-    public void createManagerAccount(ManagerPayload payload) {
+    public void createManagerAccount(ManagerRegisterPayload payload) {
         Account account = new Account();
         Manager manager = new Manager();
 
@@ -185,6 +185,19 @@ public class AccountService implements IAccountService {
 
         // Save the manager entity
         managerRepo.saveAndFlush(manager);
+    }
+
+    @Transactional
+    public void deleteManagerById(int managerId) {
+        boolean managerExist = managerRepo.existsById(managerId);
+
+        if(!managerExist) {
+
+            throw new AppException(404, "Manager not found");
+        }
+
+        managerRepo.deleteManagerById(managerId);
+        accountRepo.deleteAccountById(managerId);
     }
 
     //createStaffAccount by Manager

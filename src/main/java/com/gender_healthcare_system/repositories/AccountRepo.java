@@ -45,5 +45,6 @@ public interface AccountRepo extends JpaRepository<Account, Integer> {
             "WHERE a.accountId = :accountId")
     void deleteAccountById(@Param("accountId") int accountId);
 
+
     boolean existsAccountByAccountIdAndStatus(int accountId, AccountStatus status);
 }

@@ -4,12 +4,22 @@ import io.swagger.v3.oas.annotations.Hidden;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 @Hidden
 @RestControllerAdvice
 public class GlobalExceptionHandler {
+
+    @ExceptionHandler(MethodArgumentTypeMismatchException.class)
+    public ResponseEntity<String> handleTypeMismatch(MethodArgumentTypeMismatchException ex) {
+    String paramName = ex.getName(); // Get the parameter name
+    Object invalidValue = ex.getValue(); // Get the invalid value
+    String message = "Invalid type for parameter '" + paramName + "': " + invalidValue;
+    
+    return ResponseEntity.status(400).body(message);
+    }
 
     @ExceptionHandler(UsernameNotFoundException.class)
     public ResponseEntity<String> handleUserNameNotFoundException(UsernameNotFoundException e){

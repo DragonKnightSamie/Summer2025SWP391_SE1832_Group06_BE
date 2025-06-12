@@ -6,6 +6,8 @@ import com.gender_healthcare_system.entities.enu.ConsultationStatus;
 import com.gender_healthcare_system.entities.todo.Consultation;
 import com.gender_healthcare_system.payloads.ConsultationCompletePayload;
 import com.gender_healthcare_system.payloads.ConsultationConfirmPayload;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -26,7 +28,7 @@ public interface ConsultationRepo extends JpaRepository<Consultation, Integer> {
             "FROM Consultation c " +
             "JOIN c.customer " +
             "WHERE c.customer.customerId = :customerId")
-    List<ConsultationsDTO> findByCustomerId(int customerId);
+    Page<ConsultationsDTO> findByCustomerId(int customerId, Pageable pageable);
 
     @Query("SELECT new com.gender_healthcare_system.dtos" +
             ".ConsultationsDTO(c.consultationId, c.createdAt, " +
@@ -35,7 +37,7 @@ public interface ConsultationRepo extends JpaRepository<Consultation, Integer> {
             "FROM Consultation c " +
             "JOIN c.consultant " +
             "WHERE c.consultant.consultantId = :consultantId")
-    List<ConsultationsDTO> findByConsultantId(int consultantId);
+    Page<ConsultationsDTO> findByConsultantId(int consultantId, Pageable pageable);
 
     @Query("SELECT new com.gender_healthcare_system.entities.todo" +
             ".Consultation(c.consultationId, c.createdAt, " +

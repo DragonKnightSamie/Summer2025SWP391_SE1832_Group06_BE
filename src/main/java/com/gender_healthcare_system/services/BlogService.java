@@ -1,12 +1,28 @@
 package com.gender_healthcare_system.services;
 
+import com.gender_healthcare_system.dtos.BlogDTO;
+import com.gender_healthcare_system.dtos.ManagerDTO;
+import com.gender_healthcare_system.entities.enu.BlogStatus;
 import com.gender_healthcare_system.entities.todo.Blog;
+import com.gender_healthcare_system.entities.user.Manager;
+import com.gender_healthcare_system.exceptions.AppException;
+import com.gender_healthcare_system.payloads.BlogRegisterPayload;
+import com.gender_healthcare_system.payloads.BlogUpdatePayload;
 import com.gender_healthcare_system.repositories.BlogRepo;
+import com.gender_healthcare_system.repositories.ManagerRepo;
 import lombok.AllArgsConstructor;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Service
 @AllArgsConstructor
@@ -14,45 +30,133 @@ public class BlogService {
 
     private final BlogRepo blogRepo;
 
-    //Get all
-    public List<Blog> getAllBlogs() {
-        return blogRepo.findAll();
+    private final ManagerRepo managerRepo;
+
+    //Get all blogs
+    public Map<String, Object> getAllBlogs(int page, String sortField, String sortOrder) {
+
+        final int itemSize = 10;
+
+        Sort sort = Sort.by(Sort.Direction.ASC, sortField);
+
+        if(sortOrder.equals("desc")){
+            sort = Sort.by(Sort.Direction.DESC, sortField);
+        }
+
+        Pageable pageRequest = PageRequest
+                .of(page, itemSize, sort);
+
+
+        Page<BlogDTO> pageResult = blogRepo.getAllBlogs(pageRequest);
+
+        if(!pageResult.hasContent()){
+
+            throw new AppException(404, "No Blogs found");
+        }
+
+        List<BlogDTO> blogList = pageResult.getContent();
+
+        Map<String, Object> map = new HashMap<>();
+        map.put("totalItems", pageResult.getTotalElements());
+        map.put("blogs", blogList);
+        map.put("totalPages", pageResult.getTotalPages());
+        map.put("currentPage", pageResult.getNumber());
+
+
+        return map;
     }
 
     //Get blog by id
-    public Blog getBlogById(int id) {
-        return blogRepo.findById(id).orElse(null);
+    public BlogDTO getBlogById(int id) {
+        return blogRepo.getBlogDetailsById(id)
+                .orElseThrow(() -> new AppException(404, "Blog not found with ID "+ id));
+    }
+
+    public BlogDTO getBlogForCustomerById(int id) {
+        return blogRepo.getBlogDetailsActiveById(id)
+                .orElseThrow(() -> new AppException(404, "Blog not found with ID "+ id));
     }
 
     //search blogs
-    public List<Blog> searchBlogs(String keyword) {
-        if (keyword == null || keyword.isEmpty()) {
-            return blogRepo.findAll();
+    public Map<String, Object> searchBlogs(String keyword, int page,
+                                           String sortField, String sortOrder) {
+
+        final int itemSize = 10;
+
+        Sort sort = Sort.by(Sort.Direction.ASC, sortField);
+
+        if(sortOrder.equals("desc")){
+            sort = Sort.by(Sort.Direction.DESC, sortField);
         }
-        return blogRepo.findByTitleContainingIgnoreCase(keyword);
+
+        Pageable pageRequest = PageRequest
+                .of(page, itemSize, sort);
+
+        Page<BlogDTO> pageResult;
+
+        if (keyword == null || keyword.isEmpty()) {
+            pageResult = blogRepo.getAllBlogs(pageRequest);
+        }
+        else {
+            pageResult = blogRepo.findByTitleContainingIgnoreCase(keyword, pageRequest);
+        }
+
+        if(!pageResult.hasContent()){
+
+            throw new AppException(404, "No Blogs found");
+        }
+
+        List<BlogDTO> blogList = pageResult.getContent();
+
+        Map<String, Object> map = new HashMap<>();
+        map.put("totalItems", pageResult.getTotalElements());
+        map.put("blogs", blogList);
+        map.put("totalPages", pageResult.getTotalPages());
+        map.put("currentPage", pageResult.getNumber());
+
+        return map;
     }
 
     //create blog
-    public Blog createBlog(Blog blog) {
-        return blogRepo.save(blog);
+    public void createBlog(BlogRegisterPayload payload) {
+        Manager manager = managerRepo.
+                getManagerById(payload.getManagerId())
+                .orElseThrow(() -> new AppException
+                        (404, "Manager not found with ID "+ payload.getManagerId()));
+
+        Blog blog = new Blog();
+
+        blog.setManager(manager);
+        blog.setTitle(payload.getTitle());
+        blog.setContent(payload.getContent());
+        blog.setCreatedAt(LocalDateTime.now());
+        blog.setStatus(BlogStatus.ACTIVE);
+
+        blogRepo.saveAndFlush(blog);
     }
 
     //update blog
-    public Blog updateBlog(int id, Blog blog) {
-        if (blogRepo.existsById(id)) {
-            blog.setBlogId(id);
-            return blogRepo.save(blog);
+    @Transactional
+    public void updateBlog(int id, BlogUpdatePayload payload) {
+        boolean blogExist = blogRepo.existsById(id);
+
+        if (!blogExist) {
+            throw new AppException(404, "Blog not found with ID "+ id);
         }
-        return null; // or throw an exception
+
+        blogRepo.updateBlogById(id, payload);
     }
 
     //delete blog
+    @Transactional
     public void deleteBlog(int id) {
-        if (blogRepo.existsById(id)) {
-            blogRepo.deleteById(id);
-        } else {
-            throw new RuntimeException("Blog not found with id: " + id);
+        boolean blogExist = blogRepo.existsById(id);
+
+        if (!blogExist) {
+            throw new AppException(404, "Blog not found with ID "+ id);
         }
+
+        blogRepo.deleteBlogById(id);
     }
 
 }

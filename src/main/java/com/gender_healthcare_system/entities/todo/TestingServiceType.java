@@ -1,6 +1,5 @@
 package com.gender_healthcare_system.entities.todo;
 
-import com.gender_healthcare_system.entities.user.Manager;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -8,6 +7,7 @@ import lombok.NoArgsConstructor;
 import org.hibernate.annotations.Nationalized;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -43,8 +43,27 @@ public class TestingServiceType {
     private List<TestingService> testingServices;
 
     //Relationship with TestingServiceResult
-    @OneToOne
-    @MapsId // ✅ Map serviceTypeId = serviceResultId
-    @JoinColumn(name = "service_type_id", nullable = false)
-    private TestingServiceResult testingServiceResult;
+    @OneToMany(mappedBy = "testingServiceType", cascade = CascadeType.ALL, orphanRemoval = true)
+    //@MapsId // ✅ Map serviceTypeId = serviceResultId
+    private List<TestingServiceResult> testingServiceResultList;
+
+    public TestingServiceType(int serviceTypeId, String serviceTypeName, String title,
+                              String content, LocalDateTime createdAt) {
+        this.serviceTypeId = serviceTypeId;
+        this.serviceTypeName = serviceTypeName;
+        this.title = title;
+        this.content = content;
+        this.createdAt = createdAt;
+    }
+
+    public void addResult(TestingServiceResult result){
+        result.setTestingServiceType(this);
+
+        if(this.testingServiceResultList == null){
+            this.testingServiceResultList = new ArrayList<>();
+        }
+
+        this.testingServiceResultList.add(result);
+
+    }
 }

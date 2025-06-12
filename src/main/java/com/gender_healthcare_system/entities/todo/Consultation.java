@@ -45,7 +45,7 @@ public class Consultation {
     //@DateTimeFormat(pattern = "DD-MM-YYYY HH:mm:ss")
     private LocalDateTime expectedStartTime;
 
-    @Column(name = "real_start_time", nullable = true)
+    @Column(name = "real_start_time")
     //@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy HH:mm")
     //@DateTimeFormat(pattern = "DD-MM-YYYY HH:mm:ss")
     private LocalDateTime realStartTime;
@@ -55,7 +55,7 @@ public class Consultation {
     //@DateTimeFormat(pattern = "DD-MM-YYYY HH:mm:ss")
     private LocalDateTime expectedEndTime;
 
-    @Column(name = "real_end_time", nullable = true)
+    @Column(name = "real_end_time")
     //@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy HH:mm:")
     //@DateTimeFormat(pattern = "DD-MM-YYYY HH:mm:ss")
     private LocalDateTime realEndTime;

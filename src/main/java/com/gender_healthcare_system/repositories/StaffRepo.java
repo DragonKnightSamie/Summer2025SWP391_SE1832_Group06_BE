@@ -4,12 +4,13 @@ import com.gender_healthcare_system.dtos.LoginResponse;
 import com.gender_healthcare_system.dtos.StaffDTO;
 import com.gender_healthcare_system.entities.user.Staff;
 import com.gender_healthcare_system.payloads.StaffUpdatePayload;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
-import java.util.List;
 import java.util.Optional;
 
 public interface StaffRepo extends JpaRepository<Staff, Integer> {
@@ -32,7 +33,7 @@ public interface StaffRepo extends JpaRepository<Staff, Integer> {
             "s.phone, s.email, s.address, a.status) " +
             "FROM Staff s " +
             "JOIN s.account a")
-    List<StaffDTO> getAllStaffs();
+    Page<StaffDTO> getAllStaffs(Pageable pageable);
 
     // Update staff details (không cập nhật username/password ở đây vì nằm ở Account)
     @Modifying

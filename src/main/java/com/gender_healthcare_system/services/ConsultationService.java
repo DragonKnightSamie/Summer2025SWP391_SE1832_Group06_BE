@@ -2,6 +2,7 @@ package com.gender_healthcare_system.services;
 
 import com.gender_healthcare_system.dtos.ConsultantConsultationDTO;
 import com.gender_healthcare_system.dtos.ConsultationsDTO;
+import com.gender_healthcare_system.dtos.TestingServiceListDTO;
 import com.gender_healthcare_system.entities.enu.ConsultationStatus;
 import com.gender_healthcare_system.entities.todo.Consultation;
 import com.gender_healthcare_system.entities.user.Consultant;
@@ -15,12 +16,18 @@ import com.gender_healthcare_system.repositories.ConsultationRepo;
 import com.gender_healthcare_system.repositories.CustomerRepo;
 import lombok.AllArgsConstructor;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Service
 @AllArgsConstructor
@@ -39,19 +46,79 @@ public class ConsultationService {
     }
 
     //getConsultationByCustomerId
-    public List<ConsultationsDTO> getConsultationsByCustomerId(int customerId) {
-        return consultationRepo.findByCustomerId(customerId);
+    public Map<String, Object> getConsultationsByCustomerId
+    (int customerId, int page, String sortField, String sortOrder) {
+
+        final int itemSize = 10;
+
+        Sort sort = Sort.by(Sort.Direction.ASC, sortField);
+
+        if(sortOrder.equals("desc")){
+            sort = Sort.by(Sort.Direction.DESC, sortField);
+        }
+
+        Pageable pageRequest = PageRequest
+                .of(page, itemSize, sort);
+
+
+        Page<ConsultationsDTO> pageResult =
+                consultationRepo.findByCustomerId(customerId, pageRequest);
+
+        if(!pageResult.hasContent()){
+
+            throw new AppException(404, "No Consultations found");
+        }
+
+        List<ConsultationsDTO> consultationList = pageResult.getContent();
+
+        Map<String, Object> map = new HashMap<>();
+
+        map.put("totalItems", pageResult.getTotalElements());
+        map.put("consultations", consultationList);
+        map.put("totalPages", pageResult.getTotalPages());
+        map.put("currentPage", pageResult.getNumber());
+
+        return map;
     }
 
     //getConsultationByConsultantId
-    public List<ConsultationsDTO>
-    getConsultationsByConsultantId(int consultantId) {
-        return consultationRepo.findByConsultantId(consultantId);
+    public Map<String, Object> getConsultationsByConsultantId
+    (int consultantId, int page, String sortField, String sortOrder) {
+
+        final int itemSize = 10;
+
+        Sort sort = Sort.by(Sort.Direction.ASC, sortField);
+
+        if(sortOrder.equals("desc")){
+            sort = Sort.by(Sort.Direction.DESC, sortField);
+        }
+
+        Pageable pageRequest = PageRequest
+                .of(page, itemSize, sort);
+
+
+        Page<ConsultationsDTO> pageResult =
+                consultationRepo.findByConsultantId(consultantId, pageRequest);
+
+        if(!pageResult.hasContent()){
+
+            throw new AppException(404, "No Consultations found");
+        }
+
+        List<ConsultationsDTO> consultationList = pageResult.getContent();
+
+        Map<String, Object> map = new HashMap<>();
+        map.put("totalItems", pageResult.getTotalElements());
+        map.put("consultations", consultationList);
+        map.put("totalPages", pageResult.getTotalPages());
+        map.put("currentPage", pageResult.getNumber());
+
+        return map;
     }
 
 
     //register
-    @Transactional(propagation = Propagation.REQUIRES_NEW)
+
     public void registerConsultation(ConsultationRegisterPayload payload) {
         Customer customer = customerRepo.getCustomerById(payload.getCustomerId())
                 .orElseThrow(() -> new AppException(404, "Customer not found"));

@@ -23,6 +23,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/customer")
@@ -94,8 +95,13 @@ public class CustomerController {
     //Get consultations by customer ID
     @GetMapping("/consultations/{customerId}")
     @PreAuthorize("hasAuthority('ROLE_CUSTOMER')")
-    public List<ConsultationsDTO> getConsultationsByCustomerId(@PathVariable int customerId) {
-        return consultationService.getConsultationsByCustomerId(customerId);
+    public Map<String, Object> getConsultationsByCustomerId
+    (@PathVariable int customerId,
+     @RequestParam(defaultValue = "0") int page,
+     @RequestParam(defaultValue = "consultationId") String sort,
+     @RequestParam(defaultValue = "asc") String order ) {
+
+        return consultationService.getConsultationsByCustomerId(customerId, page, sort, order);
     }
 
     //Get consultation by ID
