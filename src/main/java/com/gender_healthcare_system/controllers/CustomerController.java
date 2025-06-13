@@ -81,12 +81,7 @@ public class CustomerController {
             return loginDetails;
     }
 
-    @PostMapping("/logout")
-    @PreAuthorize("hasAuthority('ROLE_CUSTOMER')")
-    public String logout(@RequestBody String token) {
-        jwtService.isTokenBlacklisted(token);
-        return "Logout successful";
-    }
+
 
 
     ////////////////////////////////// Manage Consultations ///////////////////////////////////

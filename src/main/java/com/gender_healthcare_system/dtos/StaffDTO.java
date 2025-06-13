@@ -19,5 +19,12 @@ public class StaffDTO {
     private String address;
     private AccountStatus status;
 
+    public StaffDTO(int staffId, String fullName, String phone, String email, String address) {
+        this.staffId = staffId;
+        this.fullName = fullName;
+        this.phone = phone;
+        this.email = email;
+        this.address = address;
+    }
 }
 

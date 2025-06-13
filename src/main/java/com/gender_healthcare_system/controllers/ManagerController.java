@@ -96,13 +96,6 @@ public class ManagerController {
 
     }
 
-    // Manager logout
-    @PostMapping("/logout")
-    @PreAuthorize("hasAuthority('ROLE_MANAGER')")
-    public String logout(@RequestBody String token) {
-        jwtService.isTokenBlacklisted(token);
-        return "Logout successful";
-    }
 
 
     /////////////////////////// Manage Blogs /////////////////////////////////////

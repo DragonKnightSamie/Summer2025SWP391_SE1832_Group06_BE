@@ -38,7 +38,7 @@ public class TestingServiceType {
     @Column(name = "created_at", nullable = false)
     private LocalDateTime createdAt;
 
-    //Relationship with TestingService
+    //Relationship with TestingService.
     @OneToMany(mappedBy = "testingServiceType", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<TestingService> testingServices;
 

@@ -72,13 +72,6 @@ public class AdminController {
         return adminLoginDetails;
     }
 
-    // Admin logout
-    @PostMapping("/logout")
-    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
-    public String logout(@RequestBody String token) {
-        jwtService.isTokenBlacklisted(token);
-        return "Logout successful";
-    }
 
 
     /////////////////////////// Manage Managers /////////////////////////////////////

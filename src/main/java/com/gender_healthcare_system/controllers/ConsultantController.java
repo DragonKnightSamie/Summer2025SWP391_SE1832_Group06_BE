@@ -71,12 +71,6 @@ public class ConsultantController {
         //return jwtService.generateToken(loginRequest.getUsername());
     }
 
-    @PostMapping("/logout")
-    @PreAuthorize("hasAuthority('ROLE_CONSULTANT')")
-    public String logout(@RequestBody String token) {
-        jwtService.isTokenBlacklisted(token);
-        return "Logout successful";
-    }
 
 
     ////////////////////////////////// Manage Profile ///////////////////////////////////

@@ -1,13 +1,17 @@
 package com.gender_healthcare_system.controllers;
 
 import com.gender_healthcare_system.dtos.LoginResponse;
+import com.gender_healthcare_system.dtos.TestingServiceHistoryDTO;
 import com.gender_healthcare_system.entities.enu.PaymentStatus;
 import com.gender_healthcare_system.entities.todo.Payment;
+import com.gender_healthcare_system.entities.todo.TestingServiceHistory;
 import com.gender_healthcare_system.entities.user.AccountInfoDetails;
 import com.gender_healthcare_system.payloads.LoginRequest;
+import com.gender_healthcare_system.payloads.TestingServiceHistoryPayload;
 import com.gender_healthcare_system.services.JwtService;
 import com.gender_healthcare_system.services.PaymentService;
 import com.gender_healthcare_system.services.StaffService;
+import com.gender_healthcare_system.services.TestingServiceHistoryService;
 import lombok.AllArgsConstructor;
 
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -18,6 +22,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/staff")
@@ -32,6 +37,7 @@ public class StaffController {
     private final AuthenticationManager authenticationManager;
 
     private final JwtService jwtService;
+    private final TestingServiceHistoryService testingServiceHistoryService;
 
     //Staff login
     @PostMapping("/login")
@@ -68,14 +74,6 @@ public class StaffController {
         return loginDetails;
         //return jwtService.generateToken(loginRequest.getUsername());
 
-    }
-
-    //Staff logout
-    @PostMapping("/logout")
-    @PreAuthorize("hasAuthority('ROLE_STAFF')")
-    public String logout(@RequestBody String token) {
-        jwtService.isTokenBlacklisted(token);
-        return "Logout successful";
     }
 
 
@@ -148,4 +146,37 @@ public class StaffController {
         }
     }
 
+    /// ////////////////////////////////////// Manage Testing Service History //////////////////////////////////////
+
+    //get by id
+    @GetMapping("/testing-service-history/{id}")
+    @PreAuthorize("hasAuthority('ROLE_STAFF')")
+    public TestingServiceHistory getTestingServiceHistoryById(@PathVariable int id) {
+        return testingServiceHistoryService.getTestingServiceHistoryById(id);
+    }
+
+    //Lấy danh sách (có phân trang + sắp xếp)
+    // vd:/staff/testing-service-history?page=0&sortField=createdAt&sortOrder=desc
+    @GetMapping("/testing-service-history")
+    @PreAuthorize("hasAuthority('ROLE_STAFF')")
+    public Map<String, Object> getAllTestingServiceHistories(@RequestParam(defaultValue = "0") int page,
+                                                             @RequestParam(defaultValue = "serviceHistoryId") String sortField,
+                                                             @RequestParam(defaultValue = "asc") String sortOrder) {
+        return testingServiceHistoryService.getAllTestingServiceHistories(page, sortField, sortOrder);
+    }
+
+    // Update
+    @PutMapping("/testing-service-history/{id}")
+    @PreAuthorize("hasAuthority('ROLE_STAFF')")
+    public void updateTestingServiceHistory(@PathVariable int id,
+                                            @RequestBody TestingServiceHistoryPayload payload) {
+        testingServiceHistoryService.updateTestingServiceHistory(id, payload);
+    }
+
+
+    @DeleteMapping("/testing-service-history/{id}")
+    @PreAuthorize("hasAuthority('ROLE_STAFF')")
+    public void deleteTestingServiceHistory(@PathVariable int id) {
+        testingServiceHistoryService.deleteTestingServiceHistory(id);
+    }
 }

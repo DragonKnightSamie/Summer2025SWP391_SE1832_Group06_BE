@@ -32,7 +32,7 @@ public interface TestingServiceRepo extends JpaRepository<TestingService, Intege
             "WHERE ts.serviceId = :id")
     Optional<TestingServiceDTO> getTestingServiceById(@Param("id") int id);
 
-    // Get all TestingServices (only entity)
+    // Get a single TestingServices by id (only entity)
     @Query("SELECT new com.gender_healthcare_system.entities.todo.TestingService" +
             "(ts.serviceId, ts.serviceName, ts.description, ts.status) " +
             "FROM TestingService ts " +

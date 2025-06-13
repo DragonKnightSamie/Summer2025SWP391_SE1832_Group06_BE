@@ -35,8 +35,7 @@ public class SecurityConfig {
             "/consultant/login",
             "/v3/api-docs/**",
             "/swagger-ui/**",
-            "/swagger-ui.html",
-            "api/**" //api này là của Testing Service, test thử rồi sẽ sửa lại
+            "/swagger-ui.html"
     };
 
     // Các API blog công khai (xem, tìm kiếm)
@@ -77,7 +76,8 @@ public class SecurityConfig {
     // Các API cần quyền STAFF
     private static final String[] STAFF_AUTHLIST = {
             "/staff/payments/**",
-            "/staff/logout/"
+            "/staff/logout/",
+            "/staff/testing-service-history/**"
     };
 
     // Các API cần quyền CONSULTANT
