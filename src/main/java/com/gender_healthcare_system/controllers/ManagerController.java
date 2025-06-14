@@ -81,7 +81,7 @@ public class ManagerController {
                 .anyMatch(x -> x
                         .getAuthority().equals("ROLE_MANAGER"));
 
-        if(!hasRole) {
+        if (!hasRole) {
             throw new UsernameNotFoundException
                     ("Access denied for non-manager user");
         }
@@ -103,8 +103,7 @@ public class ManagerController {
     }
 
 
-
-    /////////////////////////// Manage Blogs /////////////////////////////////////
+    /// //////////////////////// Manage Blogs /////////////////////////////////////
 
 
     //getAllBlogs
@@ -113,7 +112,7 @@ public class ManagerController {
     public ResponseEntity<Map<String, Object>> getAllBlogs
     (@RequestParam(defaultValue = "0") int page,
      @RequestParam(defaultValue = "blogId") String sort,
-     @RequestParam(defaultValue = "asc") String order ) {
+     @RequestParam(defaultValue = "asc") String order) {
 
         return ResponseEntity.ok(blogService.getAllBlogs(page, sort, order));
     }
@@ -133,7 +132,7 @@ public class ManagerController {
     (@RequestParam String keyword,
      @RequestParam(defaultValue = "0") int page,
      @RequestParam(defaultValue = "blogId") String sort,
-     @RequestParam(defaultValue = "asc") String order ) {
+     @RequestParam(defaultValue = "asc") String order) {
         return ResponseEntity.ok(blogService.searchBlogs(keyword, page, sort, order));
     }
 
@@ -166,7 +165,7 @@ public class ManagerController {
     }
 
 
-    /////////////////////////// Manage Consultants /////////////////////////////////////
+    /// //////////////////////// Manage Consultants /////////////////////////////////////
 
 
     //Manager get all Consultants
@@ -175,7 +174,7 @@ public class ManagerController {
     public ResponseEntity<Map<String, Object>> getAllConsultants
     (@RequestParam(defaultValue = "0") int page,
      @RequestParam(defaultValue = "managerId") String sort,
-     @RequestParam(defaultValue = "asc") String order ) {
+     @RequestParam(defaultValue = "asc") String order) {
 
         return ResponseEntity.ok(consultantService.getAllConsultants(page, sort, order));
     }
@@ -198,7 +197,7 @@ public class ManagerController {
     @PostMapping("/consultants/register")
     @PreAuthorize("hasAuthority('ROLE_MANAGER')")
     public ResponseEntity<?> createConsultantAccount
-            (@RequestBody ConsultantRegisterPayload payload) {
+    (@RequestBody ConsultantRegisterPayload payload) {
 
         accountService.createConsultantAccount(payload);
         return ResponseEntity.ok("Staff account created successfully");
@@ -224,7 +223,7 @@ public class ManagerController {
     }
 
 
-    /////////////////////////// Manage Staffs /////////////////////////////////////
+    /// //////////////////////// Manage Staffs /////////////////////////////////////
 
 
     //Manager get all Staffs
@@ -233,7 +232,7 @@ public class ManagerController {
     public ResponseEntity<Map<String, Object>> getAllStaffs
     (@RequestParam(defaultValue = "0") int page,
      @RequestParam(defaultValue = "staffId") String sort,
-     @RequestParam(defaultValue = "asc") String order ) {
+     @RequestParam(defaultValue = "asc") String order) {
         return ResponseEntity.ok(staffService.getAllStaffs(page, sort, order));
     }
 
@@ -261,7 +260,7 @@ public class ManagerController {
     @PutMapping("/staffs/update/{id}")
     @PreAuthorize("hasAuthority('ROLE_MANAGER')")
     public ResponseEntity<?> updateStaffAccount
-            (@PathVariable int id, @RequestBody StaffUpdatePayload payload) {
+    (@PathVariable int id, @RequestBody StaffUpdatePayload payload) {
 
         staffService.updateStaffAccount(id, payload);
         return ResponseEntity.ok("Staff details updated successfully");
@@ -277,7 +276,7 @@ public class ManagerController {
     }
 
 
-    /////////////////////////// Manage Customer /////////////////////////////////////
+    /// //////////////////////// Manage Customer /////////////////////////////////////
 
 
     //Get all Customers
@@ -321,7 +320,7 @@ public class ManagerController {
         return ResponseEntity.ok("Customer account deleted successfully");
     }
 
-    /////////////////////////// Manage Testing Service Type /////////////////////////////////////
+    /// //////////////////////// Manage Testing Service Type /////////////////////////////////////
 
 
     //get testing service type by ID
@@ -363,14 +362,14 @@ public class ManagerController {
     //delete testing service type
     @DeleteMapping("/testing-services-types/{id}")
     @PreAuthorize("hasAuthority('ROLE_MANAGER')")
-    public String deleteTestingServiceType (@PathVariable int id) {
+    public String deleteTestingServiceType(@PathVariable int id) {
 
         testingService_Service.deleteTestingService(id);
         return "Testing Service type deleted successfully";
     }
 
 
-    /////////////////////////// Manage Testing Service Results /////////////////////////////////////
+    /// //////////////////////// Manage Testing Service Results /////////////////////////////////////
 
 
     //update testing service result
@@ -386,14 +385,14 @@ public class ManagerController {
     //delete testing service result
     @DeleteMapping("/testing-services-results/{id}")
     @PreAuthorize("hasAuthority('ROLE_MANAGER')")
-    public String deleteTestingServiceResult (@PathVariable int id) {
+    public String deleteTestingServiceResult(@PathVariable int id) {
 
         testingService_Service.deleteTestingService(id);
         return "Testing Service result deleted successfully";
     }
 
 
-    /////////////////////////// Manage Testing Services /////////////////////////////////////
+    /// //////////////////////// Manage Testing Services /////////////////////////////////////
 
 
     //get testing service by ID
@@ -427,7 +426,7 @@ public class ManagerController {
     @PostMapping("/testing-services/price-lists/create/{id}")
     @PreAuthorize("hasAuthority('ROLE_MANAGER')")
     public void createTestingServicePriceList(@PathVariable int id,
-                                @RequestBody PriceListPayload payload) {
+                                              @RequestBody PriceListPayload payload) {
         priceListService.createNewPriceListForExistingService(id, payload);
     }
 
@@ -484,29 +483,35 @@ public class ManagerController {
     //delete price list by ID
     @DeleteMapping("/price-lists/{id}")
     @PreAuthorize("hasAuthority('ROLE_MANAGER')")
+
     public void deletePriceList(@PathVariable int id) {
         priceListService.deletePriceList(id);
     }
 
 
-    /////////////////////////// API UPLOAD IMAGE /////////////////////////////////////
+    /// //////////////////////// API UPLOAD IMAGE /////////////////////////////////////
     private final Cloudinary cloudinary;
-    @PostMapping(value = "/upload", consumes = "multipart/form-data")
+
+    @PostMapping(value = "/image/upload", consumes = "multipart/form-data")
     @PreAuthorize("hasAuthority('ROLE_MANAGER')")
-    public ResponseEntity<?> uploadImage(@RequestParam("file") MultipartFile file) {
-        if (file.isEmpty()) {
-            return ResponseEntity.badRequest().body("File is empty");
-        }
-        try {
-            Map<?, ?> result = cloudinary.uploader().upload(
-                    file.getBytes(),
-                    ObjectUtils.asMap("resource_type", "image"));
-            return ResponseEntity.ok(result.get("secure_url"));         // trả URL
-        } catch (IOException e) {
-            return ResponseEntity.status(500).body("Failed to upload image: " + e.getMessage());
-        }
+    public ImageUploadDTO uploadImage(@RequestParam("file") MultipartFile file, @RequestParam("folder") String folder) throws IOException {
+        // Upload image to Cloudinary
+        return imageUploadService.uploadImage(file, folder);
     }
 
+    @PutMapping(value = "/image/replace", consumes = "multipart/form-data")
+    public ImageUploadDTO replaceImage(@RequestParam("file") MultipartFile file,
+                                       @RequestParam("folder") String folder,
+                                       @RequestParam("id") String publicId) throws IOException {
+        return imageUploadService.replaceImage(file, folder, publicId);
+    }
+
+    @DeleteMapping("/image/delete")
+    @PreAuthorize("hasAuthority('ROLE_MANAGER')")
+    public ResponseEntity<?> deleteImage(@RequestParam("id") String publicId) throws IOException {
+        boolean isDelete = imageUploadService.deleteImage(publicId);
+        return isDelete ? ResponseEntity.ok("Deleted") : ResponseEntity.status(404).body("Not found");
+    }
 
 }
 
