@@ -1,5 +1,7 @@
 package com.gender_healthcare_system.controllers;
 
+import com.cloudinary.Cloudinary;
+import com.cloudinary.utils.ObjectUtils;
 import com.gender_healthcare_system.dtos.*;
 import com.gender_healthcare_system.entities.enu.AccountStatus;
 import com.gender_healthcare_system.entities.user.AccountInfoDetails;
@@ -15,13 +17,17 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.Map;
 
 @RestController
 @RequestMapping("/manager")
 @AllArgsConstructor
 public class ManagerController {
+
+    private final ImageUploadService imageUploadService; //Cloudinary image upload service
 
     private final BlogService blogService;
 
@@ -481,4 +487,26 @@ public class ManagerController {
     public void deletePriceList(@PathVariable int id) {
         priceListService.deletePriceList(id);
     }
+
+
+    /////////////////////////// API UPLOAD IMAGE /////////////////////////////////////
+    private final Cloudinary cloudinary;
+    @PostMapping(value = "/upload", consumes = "multipart/form-data")
+    @PreAuthorize("hasAuthority('ROLE_MANAGER')")
+    public ResponseEntity<?> uploadImage(@RequestParam("file") MultipartFile file) {
+        if (file.isEmpty()) {
+            return ResponseEntity.badRequest().body("File is empty");
+        }
+        try {
+            Map<?, ?> result = cloudinary.uploader().upload(
+                    file.getBytes(),
+                    ObjectUtils.asMap("resource_type", "image"));
+            return ResponseEntity.ok(result.get("secure_url"));         // trả URL
+        } catch (IOException e) {
+            return ResponseEntity.status(500).body("Failed to upload image: " + e.getMessage());
+        }
+    }
+
+
 }
+

@@ -70,6 +70,7 @@ public class SecurityConfig {
             "/manager/testing-services/**",
             "/manager/testing-service-forms/**",
             "/manager/price-lists/**",
+            "/manager/uploads/**",
             
     };
 
