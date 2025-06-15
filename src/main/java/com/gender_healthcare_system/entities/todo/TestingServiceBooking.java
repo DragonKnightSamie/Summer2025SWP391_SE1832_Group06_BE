@@ -1,0 +1,104 @@
+package com.gender_healthcare_system.entities.todo;
+
+import com.gender_healthcare_system.entities.user.Customer;
+import com.gender_healthcare_system.entities.enu.Rating;
+import com.gender_healthcare_system.entities.enu.TestingServiceBookingStatus;
+import com.gender_healthcare_system.entities.user.Staff;
+import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.ToString;
+import org.hibernate.annotations.Nationalized;
+
+import java.time.LocalDateTime;
+
+@Entity
+@Table(name = "TestingServiceBooking")
+@ToString(exclude = {"testingService", "customer", "staff"})
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+public class TestingServiceBooking {
+
+    @Id
+    @SequenceGenerator(name = "testing_service_booking_seq",
+            sequenceName = "testing_service_booking_seq", allocationSize = 1)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "testing_service_booking_seq")
+    @Column(name = "service_booking_id")
+    private int serviceBookingId;
+
+    //One-to-One relationship with TestingServicePayment
+    @OneToOne(mappedBy = "testingServiceBooking")
+    private TestingServicePayment testingServicePayment;
+
+    // Relationship with TestingService
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "service_id", nullable = false)
+    private TestingService testingService;
+
+    // Relationship with Customer
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "customer_id", nullable = false)
+    private Customer customer;
+
+    // Relationship with Customer
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "staff_id")
+    private Staff staff;
+
+    @Nationalized
+    @Column(name = "result", length = 255)
+    private String result;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "rating", length = 15)
+    private Rating rating;
+
+    @Nationalized
+    @Column(name = "comment", length = 255)
+    private String comment;
+
+    @Column(name = "created_at", nullable = false)
+    private LocalDateTime createdAt;
+
+    @Column(name = "expected_start_time")
+    private LocalDateTime expectedStartTime;
+
+    @Column(name = "real_start_time")
+    private LocalDateTime realStartTime;
+
+    @Column(name = "expected_end_time")
+    private LocalDateTime expectedEndTime;
+
+    @Column(name = "real_end_time")
+    private LocalDateTime realEndTime;
+
+    @Column(name = "status", nullable = false, length = 15)
+    @Enumerated(EnumType.STRING)
+    private TestingServiceBookingStatus status;
+
+    public TestingServiceBooking(TestingServiceBookingStatus status) {
+        this.status = status;
+    }
+
+    public TestingServiceBooking(int serviceBookingId, String result, Rating rating,
+                                 String comment, LocalDateTime createdAt,
+                                 LocalDateTime expectedStartTime,
+                                 LocalDateTime realStartTime,
+                                 LocalDateTime expectedEndTime,
+                                 LocalDateTime realEndTime,
+                                 TestingServiceBookingStatus status) {
+
+        this.serviceBookingId = serviceBookingId;
+        this.result = result;
+        this.rating = rating;
+        this.comment = comment;
+        this.createdAt = createdAt;
+        this.expectedStartTime = expectedStartTime;
+        this.realStartTime = realStartTime;
+        this.expectedEndTime = expectedEndTime;
+        this.realEndTime = realEndTime;
+        this.status = status;
+    }
+}

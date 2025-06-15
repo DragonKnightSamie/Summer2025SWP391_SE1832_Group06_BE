@@ -23,6 +23,9 @@ public class TestingService {
     @Column(name = "service_id")
     private int serviceId;
 
+    @OneToMany(mappedBy = "testingService", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<PriceList> priceLists;
+
     //Relationship with TestingServiceType
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "service_type_id", nullable = false)
@@ -36,23 +39,21 @@ public class TestingService {
     @Column(name = "description", length = 255)
     private String description;
 
-    @Column(name = "status", nullable = false)
+    @Column(name = "status", nullable = false, length = 15)
     @Enumerated(EnumType.STRING)
     private TestingServiceStatus status;
 
-    // Relationship with TestingServiceHistory
+    // Relationship with TestingServiceBooking
     @OneToMany(mappedBy = "testingService", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private List<TestingServiceHistory> testingServiceHistories;
+    private List<TestingServiceBooking> testingServiceHistories;
 
-    //One-to-one relationship with TestingServiceFormDTO
-    @OneToOne
+    //One-to-one relationship with ConsultationPaymentDTO
+    /*@OneToOne
     @MapsId
     @JoinColumn(name = "service_id", nullable = false)
-    private TestingServiceForm testingServiceForm;
+    private ConsultationPayment testingServiceForm;*/
 
     //Relationship with PriceList
-    @OneToMany(mappedBy = "testingService", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private List<PriceList> priceLists;
 
     public TestingService(int serviceId, String serviceName,
                           String description, TestingServiceStatus status) {

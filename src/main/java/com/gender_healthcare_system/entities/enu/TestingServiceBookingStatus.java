@@ -1,12 +1,12 @@
 package com.gender_healthcare_system.entities.enu;
 
-public enum TestingServiceHistoryStatus {
-    CANCELLED,
-    COMPLETED,
-    IN_PROGRESS,
-    SCHEDULED,
+public enum TestingServiceBookingStatus {
+    PENDING,
     CONFIRMED,
-    PENDING;
+    IN_PROGRESS,
+    COMPLETED,
+    CANCELLED
+    ;
 
     public String getTestingServiceHistoryStatus() {
         return this.name();

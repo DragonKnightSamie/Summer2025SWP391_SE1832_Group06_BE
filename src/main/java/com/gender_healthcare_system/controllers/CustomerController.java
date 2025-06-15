@@ -1,17 +1,15 @@
 package com.gender_healthcare_system.controllers;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.gender_healthcare_system.dtos.ConsultantConsultationDTO;
-import com.gender_healthcare_system.dtos.ConsultationsDTO;
+import com.gender_healthcare_system.dtos.ConsultantScheduleDTO;
 import com.gender_healthcare_system.dtos.LoginResponse;
+import com.gender_healthcare_system.dtos.TestingServiceBookingDTO;
 import com.gender_healthcare_system.entities.user.AccountInfoDetails;
-import com.gender_healthcare_system.payloads.ConsultationRegisterPayload;
-import com.gender_healthcare_system.payloads.CustomerPayload;
-import com.gender_healthcare_system.payloads.LoginRequest;
-import com.gender_healthcare_system.services.AccountService;
-import com.gender_healthcare_system.services.ConsultationService;
-import com.gender_healthcare_system.services.CustomerService;
-import com.gender_healthcare_system.services.JwtService;
+import com.gender_healthcare_system.payloads.*;
+import com.gender_healthcare_system.services.*;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 
 import org.springframework.http.ResponseEntity;
@@ -22,7 +20,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
+import java.time.LocalDate;
 import java.util.Map;
 
 @RestController
@@ -40,6 +38,8 @@ public class CustomerController {
     private final JwtService jwtService;
 
     private final AuthenticationManager authenticationManager;
+
+    private final TestingServiceBookingService testingServiceBookingService;
 
     @PostMapping("/register")
     public String register(@RequestBody CustomerPayload customerPayload) throws JsonProcessingException {
@@ -82,13 +82,54 @@ public class CustomerController {
     }
 
 
+    ////////////////////////////////// Manage Testing Service Bookings /////////////////////////
 
+    //Get Service bookings by customer ID
+    @GetMapping("/testing-service-bookings/customer/{customerId}")
+    @PreAuthorize("hasAuthority('ROLE_CUSTOMER')")
+    public Map<String, Object> getTestingServiceBookingsByCustomerId
+    (@PathVariable int customerId,
+     @RequestParam(defaultValue = "0") int page,
+     @RequestParam(defaultValue = "serviceBookingId") String sort,
+     @RequestParam(defaultValue = "asc") String order ) {
+
+        return testingServiceBookingService
+                .getAllTestingServiceBookingsByCustomerId(customerId, page, sort, order);
+    }
+
+    //Get Testing Service Booking details by ID
+    @GetMapping("/testing-service-bookings/{id}")
+    @PreAuthorize("hasAuthority('ROLE_CUSTOMER')")
+    public TestingServiceBookingDTO
+    getTestingServiceBookingDetailsById(@PathVariable int id) {
+
+        return testingServiceBookingService.getTestingServiceBookingDetailsById(id);
+    }
+
+    //register testing service booking
+    @PostMapping("/testing-service-bookings/register")
+    @PreAuthorize("hasAuthority('ROLE_CUSTOMER')")
+    public ResponseEntity<String> registerTestingServiceBooking
+    (@RequestBody TestingServiceBookingRegisterPayload payload) {
+
+        testingServiceBookingService.createTestingServiceBooking(payload);
+        return ResponseEntity.ok("Testing Service Booking registered successfully");
+    }
+
+    //Cancel consultation
+    @PostMapping("/testing-service-bookings/cancel/{id}")
+    @PreAuthorize("hasAuthority('ROLE_CUSTOMER ')")
+    public ResponseEntity<String> cancelTestingServiceBooking
+    (@PathVariable int id) {
+        testingServiceBookingService.cancelTestingServiceBooking(id);
+        return ResponseEntity.ok("Testing Service Booking cancelled successfully");
+    }
 
     ////////////////////////////////// Manage Consultations ///////////////////////////////////
 
 
     //Get consultations by customer ID
-    @GetMapping("/consultations/{customerId}")
+    @GetMapping("/consultations/customer/{customerId}")
     @PreAuthorize("hasAuthority('ROLE_CUSTOMER')")
     public Map<String, Object> getConsultationsByCustomerId
     (@PathVariable int customerId,
@@ -106,6 +147,20 @@ public class CustomerController {
         return consultationService.getConsultationById(id);
     }
 
+    //Get consultant schedule in a specific date for check
+    @GetMapping("/consultations/consultant/{consultantId}/check-schedule")
+    @PreAuthorize("hasAuthority('ROLE_CUSTOMER')")
+    public ResponseEntity<ConsultantScheduleDTO> getConsultantScheduleByDate
+    (@PathVariable int consultantId,
+     @RequestParam
+     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy")
+     @Schema(type = "string", example = "05/06/2025")
+     LocalDate date) {
+
+        return ResponseEntity.ok(consultationService
+                .getConsultantScheduleByDate(consultantId, date));
+    }
+
     //register consultation
     @PostMapping("/consultations/register")
     @PreAuthorize("hasAuthority('ROLE_CUSTOMER')")
@@ -113,6 +168,17 @@ public class CustomerController {
             (@RequestBody ConsultationRegisterPayload payload) {
 
         consultationService.registerConsultation(payload);
+        return ResponseEntity.ok("Consultation registered successfully");
+    }
+
+    //register consultation
+    @PostMapping("/consultations/{id}/evaluate")
+    @PreAuthorize("hasAuthority('ROLE_CUSTOMER')")
+    public ResponseEntity<String> updateConsultationCommentAndRating
+    (@PathVariable int id,
+     @RequestBody ConsultationEvaluatePayload payload) {
+
+        consultationService.updateConsultationCommentAndRating(id, payload);
         return ResponseEntity.ok("Consultation registered successfully");
     }
 

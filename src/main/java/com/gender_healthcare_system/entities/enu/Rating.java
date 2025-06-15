@@ -1,10 +1,12 @@
 package com.gender_healthcare_system.entities.enu;
 
 public enum Rating {
-    EXCELLENT,
-    GOOD,
+    VERY_BAD,
+    BAD,
     AVERAGE,
-    POOR;
+    GOOD,
+    EXCELLENT
+    ;
 
     public String getRating() {
         return this.name();

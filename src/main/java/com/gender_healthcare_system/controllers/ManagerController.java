@@ -1,15 +1,13 @@
 package com.gender_healthcare_system.controllers;
 
 import com.cloudinary.Cloudinary;
-import com.cloudinary.utils.ObjectUtils;
 import com.gender_healthcare_system.dtos.*;
 import com.gender_healthcare_system.entities.enu.AccountStatus;
 import com.gender_healthcare_system.entities.user.AccountInfoDetails;
 import com.gender_healthcare_system.payloads.*;
 import com.gender_healthcare_system.services.*;
-import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
-import org.hibernate.validator.constraints.Length;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -44,8 +42,6 @@ public class ManagerController {
     private final CustomerService customerService;
 
     private final ConsultantService consultantService;
-
-    private final TestingServiceFormService testingServiceFormService;
 
     private final TestingServiceTypeService testingServiceTypeService;
 
@@ -449,25 +445,6 @@ public class ManagerController {
         return "Testing Service deleted successfully";
     }
 
-    /// //////////////////////////// Testing Service Form Operations ///////////////////////////////
-
-
-    //update testing service form by ID
-    @PutMapping("/testing-service-forms/{id}")
-    @PreAuthorize("hasAuthority('ROLE_MANAGER')")
-    public void updateTestingServiceFormById
-    (@PathVariable int id, @RequestBody @NotBlank
-    @Length(min = 5, max = 255, message = "Content must be between 5 and 255 characters")
-    String newContent) {
-        testingServiceFormService.updateTestingServiceFormById(id, newContent);
-    }
-
-    //delete testing service form by ID
-    @DeleteMapping("/testing-service-forms/{id}")
-    @PreAuthorize("hasAuthority('ROLE_MANAGER')")
-    public void deleteTestingServiceFormById(@PathVariable int id) {
-        testingServiceFormService.deleteTestingServiceFormById(id);
-    }
 
     /// //////////////////////////// Price List Operations ///////////////////////////////
 

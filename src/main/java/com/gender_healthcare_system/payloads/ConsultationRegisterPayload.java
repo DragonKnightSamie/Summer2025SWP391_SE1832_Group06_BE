@@ -21,13 +21,11 @@ public class ConsultationRegisterPayload {
     private LocalDateTime expectedStartTime;
 
     @NotNull
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy HH:mm")
-    @Schema(type = "string", example = "05/06/2025 07:00")
-    private LocalDateTime expectedEndTime;
-
-    @NotNull
     private int customerId;
 
     @NotNull
     private int consultantId;
+
+    @NotNull
+    private ConsultationPaymentPayload payment;
 }

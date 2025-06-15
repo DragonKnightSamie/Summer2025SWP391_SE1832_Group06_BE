@@ -3,7 +3,6 @@ package com.gender_healthcare_system.controllers;
 import com.gender_healthcare_system.dtos.TestingServiceDTO;
 import com.gender_healthcare_system.dtos.TestingServiceListDTO;
 import com.gender_healthcare_system.services.PriceListService;
-import com.gender_healthcare_system.services.TestingServiceFormService;
 import com.gender_healthcare_system.services.TestingService_Service;
 import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
@@ -17,7 +16,7 @@ import java.util.List;
 //@RequestMapping("/api")
 public class TestingServiceController {
 
-/*    private final TestingServiceFormService testingServiceFormService;
+/*    private final ConsultationPaymentService testingServiceFormService;
     private final TestingService_Service testingService_Service;
     private final PriceListService priceListService;
 

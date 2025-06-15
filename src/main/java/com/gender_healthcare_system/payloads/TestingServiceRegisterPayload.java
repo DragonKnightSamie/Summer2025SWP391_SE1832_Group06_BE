@@ -30,11 +30,6 @@ public class TestingServiceRegisterPayload {
     @NotNull
     private int serviceTypeId; // foreign key tới TestingServiceType
 
-    @Nationalized
-    @NotBlank
-    @Length(min = 5, max = 255, message = "Description must be between 5 and 255 characters")
-    private String serviceFormContent; // dữ liệu điền trong form
-
     @NotNull(message = "Service price list is required")
     private List<PriceListPayload> priceList;
 

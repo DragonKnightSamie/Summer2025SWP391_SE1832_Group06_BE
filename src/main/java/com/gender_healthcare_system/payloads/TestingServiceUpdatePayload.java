@@ -1,6 +1,5 @@
 package com.gender_healthcare_system.payloads;
 
-import com.gender_healthcare_system.dtos.TestingServiceFormDTO;
 import com.gender_healthcare_system.entities.enu.TestingServiceStatus;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;

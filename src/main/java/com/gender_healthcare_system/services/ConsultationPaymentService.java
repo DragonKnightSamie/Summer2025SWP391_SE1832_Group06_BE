@@ -1,19 +1,17 @@
 package com.gender_healthcare_system.services;
 
-import com.gender_healthcare_system.exceptions.AppException;
-import com.gender_healthcare_system.repositories.TestingServiceFormRepo;
+import com.gender_healthcare_system.repositories.ConsultationPaymentRepo;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @AllArgsConstructor
-public class TestingServiceFormService {
+public class ConsultationPaymentService {
 
-    private final TestingServiceFormRepo testingServiceFormRepo;
+    private final ConsultationPaymentRepo consultationPaymentRepo;
 
     //updateTestingServiceFormById
-    @Transactional
+    /*@Transactional
     public void updateTestingServiceFormById(int id, String newContent){
         boolean formExists = testingServiceFormRepo.existsById(id);
         if (!formExists) {
@@ -29,5 +27,5 @@ public class TestingServiceFormService {
             throw new AppException(404, "Testing Service Form not found with ID: " + id);
         }
         testingServiceFormRepo.deleteByServiceFormId(id);
-    }
+    }*/
 }

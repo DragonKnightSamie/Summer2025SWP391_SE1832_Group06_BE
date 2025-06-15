@@ -1,27 +1,28 @@
-package com.gender_healthcare_system.payloads;
+package com.gender_healthcare_system.dtos;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.gender_healthcare_system.entities.enu.TestingServiceBookingStatus;
 import io.swagger.v3.oas.annotations.media.Schema;
-import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDateTime;
 
 @Data
-@NoArgsConstructor
 @AllArgsConstructor
-public class ConsultationConfirmPayload {
+@NoArgsConstructor
+public class StaffServiceBookingListDTO {
 
-    @NotNull
-    private int consultantId;
+    private int serviceBookingId;
 
-    @NotNull
+    private String serviceName;
+
+    private String customerName;
+
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy HH:mm")
     @Schema(type = "string", example = "05/06/2025 07:00")
-    private LocalDateTime expectedStartTime;
+    private LocalDateTime createdAt;
 
+    private TestingServiceBookingStatus status;
 }
-

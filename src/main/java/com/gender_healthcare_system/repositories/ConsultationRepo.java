@@ -1,11 +1,13 @@
 package com.gender_healthcare_system.repositories;
 
 import com.gender_healthcare_system.dtos.ConsultantConsultationDTO;
+import com.gender_healthcare_system.dtos.ConsultantScheduleDTO;
 import com.gender_healthcare_system.dtos.ConsultationsDTO;
 import com.gender_healthcare_system.entities.enu.ConsultationStatus;
 import com.gender_healthcare_system.entities.todo.Consultation;
 import com.gender_healthcare_system.payloads.ConsultationCompletePayload;
 import com.gender_healthcare_system.payloads.ConsultationConfirmPayload;
+import com.gender_healthcare_system.payloads.ConsultationEvaluatePayload;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -14,6 +16,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
@@ -60,14 +63,30 @@ public interface ConsultationRepo extends JpaRepository<Consultation, Integer> {
             "WHERE c.consultationId = :id")
     Optional<ConsultantConsultationDTO> getConsultationDetailsById(int id);
 
+    @Query("SELECT c.expectedStartTime " +
+            "FROM Consultation c " +
+            "WHERE c.consultationId = :id " +
+            "AND DATE(c.expectedStartTime) = :date")
+    List<LocalDateTime> getConsultantScheduleByDate(int id, LocalDate date);
+
     @Modifying
     @Query("UPDATE Consultation c SET " +
             "c.expectedStartTime = :#{#payload.expectedStartTime}, " +
-            "c.expectedEndTime = :#{#payload.expectedEndTime}, " +
+            "c.expectedEndTime = :expectedEndTime, " +
             "c.status = :status " +
-            "WHERE c.consultationId = :#{#payload.consultationId}")
-    void updateConsultation(@Param("payload") ConsultationConfirmPayload payload,
+            "WHERE c.consultationId = :consultationId")
+    void updateConsultation(int consultationId,
+                            @Param("payload") ConsultationConfirmPayload payload,
+                            LocalDateTime expectedEndTime,
                             ConsultationStatus status);
+
+    @Modifying
+    @Query("UPDATE Consultation c SET " +
+            "c.comment = :#{#payload.comment}, " +
+            "c.rating = :#{#payload.rating} " +
+            "WHERE c.consultationId = :consultationId")
+    void updateConsultationCommentAndRatingById(int consultationId,
+                            @Param("payload") ConsultationEvaluatePayload payload);
 
     @Modifying
     @Query("UPDATE Consultation c SET " +
@@ -83,4 +102,8 @@ public interface ConsultationRepo extends JpaRepository<Consultation, Integer> {
             "c.status = com.gender_healthcare_system.entities.enu.ConsultationStatus.CANCELLED " +
             "WHERE c.consultationId = :id")
     void cancelConsultation(int id);
+
+    boolean existsConsultationByConsultantConsultantIdAndExpectedStartTime
+            (int consultantConsultantId, LocalDateTime expectedStartTime);
+
 }

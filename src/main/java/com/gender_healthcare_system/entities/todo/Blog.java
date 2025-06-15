@@ -42,7 +42,7 @@ public class Blog {
     @Column(name = "created_at", nullable = false)
     private LocalDateTime createdAt;
 
-    @Column(name = "status", nullable = false)
+    @Column(name = "status", nullable = false, length = 15)
     @Enumerated(EnumType.STRING)
     private BlogStatus status;
 }

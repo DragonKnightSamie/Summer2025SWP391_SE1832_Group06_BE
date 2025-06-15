@@ -45,14 +45,13 @@ public class SecurityConfig {
 
     // Các API cần quyền CUSTOMER
     private static final String[] CUSTOMER_AUTHLIST = {
-            "/customer/logout",
-            "/customer/consultations/**"
+            "/customer/consultations/**",
+            "/customer/testing-service-bookings/**"
 
     };
 
     // Các API cần quyền ADMIN
     private static final String[] ADMIN_AUTHLIST = {
-            "/admin/logout",
             "/admin/managers/**"
 
     };
@@ -60,7 +59,6 @@ public class SecurityConfig {
     // Các API cần quyền MANAGER
     private static final String[] MANAGER_AUTHLIST = {
             "/manager/login",
-            "/manager/logout",
             "/manager/blogs/**",
             "/manager/staffs/**",
             "/manager/consultants/**",
@@ -77,17 +75,14 @@ public class SecurityConfig {
     // Các API cần quyền STAFF
     private static final String[] STAFF_AUTHLIST = {
             "/staff/payments/**",
-            "/staff/logout/",
-            "/staff/testing-service-history/**"
+            "/staff/testing-service-bookings/**"
     };
 
     // Các API cần quyền CONSULTANT
     private static final String[] CONSULTANT_AUTHLIST = {
             "/consultant/consultations/**",
             "/consultant/profile/**",
-            "/consultant/certificates/**",
-            "/consultant/logout/"
-
+            "/consultant/certificates/**"
     };
 
     @Bean

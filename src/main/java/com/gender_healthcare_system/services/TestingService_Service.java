@@ -5,7 +5,7 @@ import com.gender_healthcare_system.dtos.TestingServiceListDTO;
 import com.gender_healthcare_system.entities.enu.TestingServiceStatus;
 import com.gender_healthcare_system.entities.todo.PriceList;
 import com.gender_healthcare_system.entities.todo.TestingService;
-import com.gender_healthcare_system.entities.todo.TestingServiceForm;
+import com.gender_healthcare_system.entities.todo.ConsultationPayment;
 import com.gender_healthcare_system.entities.todo.TestingServiceType;
 import com.gender_healthcare_system.exceptions.AppException;
 import com.gender_healthcare_system.payloads.PriceListPayload;
@@ -79,7 +79,6 @@ public class TestingService_Service {
     (TestingServiceRegisterPayload payload) {
 
         TestingService newService = new TestingService();
-        TestingServiceForm newForm = new TestingServiceForm();
 
         TestingServiceType service = testingServiceTypeRepo
                 .findById(payload.getServiceTypeId())
@@ -90,10 +89,6 @@ public class TestingService_Service {
         newService.setServiceName(payload.getServiceName());
         newService.setDescription(payload.getDescription());
         newService.setStatus(TestingServiceStatus.AVAILABLE);
-
-        newForm.setContent(payload.getServiceFormContent());
-        newService.setTestingServiceForm(newForm);
-
 
         for(PriceListPayload item: payload.getPriceList()) {
             PriceList priceItem = new PriceList();

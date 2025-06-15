@@ -2,7 +2,7 @@ package com.gender_healthcare_system.entities.user;
 
 import com.gender_healthcare_system.entities.enu.Gender;
 import com.gender_healthcare_system.entities.todo.Consultation;
-import com.gender_healthcare_system.entities.todo.TestingServiceHistory;
+import com.gender_healthcare_system.entities.todo.TestingServiceBooking;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -52,9 +52,9 @@ public class Customer {
     @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Consultation> consultations;
 
-    //Relationship with TestingServiceHistory
+    //Relationship with TestingServiceBooking
     @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private List<TestingServiceHistory> testingServiceHistories;
+    private List<TestingServiceBooking> testingServiceHistories;
 
     //One-to-One relationship with Account
     @OneToOne

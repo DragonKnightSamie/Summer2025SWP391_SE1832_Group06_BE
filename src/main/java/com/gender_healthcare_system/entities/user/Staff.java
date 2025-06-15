@@ -1,7 +1,6 @@
 package com.gender_healthcare_system.entities.user;
 
-import com.gender_healthcare_system.entities.todo.Payment;
-import com.gender_healthcare_system.entities.todo.TestingServiceHistory;
+import com.gender_healthcare_system.entities.todo.TestingServiceBooking;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -37,9 +36,9 @@ public class Staff {
     @Nationalized
     private String address;
 
-    //One-to-Many relationship with Payment
+    //One-to-Many relationship with TestingServicePayment
     @OneToMany(mappedBy = "staff", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private List<TestingServiceHistory> testingServiceHistories;
+    private List<TestingServiceBooking> testingServiceHistories;
 
     //One-to-One relationship with Account
     @OneToOne // xóa thông tài khoản trong bảng staff th sẽ xóa luôn trong bảng account

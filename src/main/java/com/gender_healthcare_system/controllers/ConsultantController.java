@@ -2,7 +2,6 @@ package com.gender_healthcare_system.controllers;
 
 import com.gender_healthcare_system.dtos.ConsultantConsultationDTO;
 import com.gender_healthcare_system.dtos.ConsultantDetailsDTO;
-import com.gender_healthcare_system.dtos.ConsultationsDTO;
 import com.gender_healthcare_system.dtos.LoginResponse;
 import com.gender_healthcare_system.entities.user.AccountInfoDetails;
 import com.gender_healthcare_system.payloads.*;
@@ -16,7 +15,6 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -157,12 +155,12 @@ public class ConsultantController {
     }*/
 
     //Reschedule consultation
-    @PostMapping("/consultations/reschedule")
+    @PostMapping("/consultations/{id}/reschedule/")
     @PreAuthorize("hasAuthority('ROLE_CONSULTANT')")
     public ResponseEntity<String> reScheduleConsultation
-    (@RequestBody ConsultationConfirmPayload payload) {
+    (@PathVariable int id, @RequestBody ConsultationConfirmPayload payload) {
 
-        consultationService.reScheduleConsultation(payload);
+        consultationService.reScheduleConsultation(id, payload);
         return ResponseEntity.ok("Consultation rescheduled successfully");
     }
 
