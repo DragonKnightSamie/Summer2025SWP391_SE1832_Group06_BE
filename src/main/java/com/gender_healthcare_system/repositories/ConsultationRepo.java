@@ -65,8 +65,8 @@ public interface ConsultationRepo extends JpaRepository<Consultation, Integer> {
 
     @Query("SELECT c.expectedStartTime " +
             "FROM Consultation c " +
-            "WHERE c.consultationId = :id " +
-            "AND DATE(c.expectedStartTime) = :date")
+            "WHERE c.consultant.consultantId = :id " +
+            "AND CAST(c.expectedStartTime as date) = :date")
     List<LocalDateTime> getConsultantScheduleByDate(int id, LocalDate date);
 
     @Modifying

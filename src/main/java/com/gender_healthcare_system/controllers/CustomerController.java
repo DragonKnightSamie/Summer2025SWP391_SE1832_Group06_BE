@@ -10,7 +10,6 @@ import com.gender_healthcare_system.entities.user.AccountInfoDetails;
 import com.gender_healthcare_system.payloads.*;
 import com.gender_healthcare_system.services.*;
 import io.swagger.v3.oas.annotations.Parameter;
-import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 
 import org.springframework.http.ResponseEntity;
