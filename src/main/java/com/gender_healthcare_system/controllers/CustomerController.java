@@ -9,6 +9,7 @@ import com.gender_healthcare_system.dtos.TestingServiceBookingDTO;
 import com.gender_healthcare_system.entities.user.AccountInfoDetails;
 import com.gender_healthcare_system.payloads.*;
 import com.gender_healthcare_system.services.*;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 
@@ -152,9 +153,9 @@ public class CustomerController {
     @PreAuthorize("hasAuthority('ROLE_CUSTOMER')")
     public ResponseEntity<ConsultantScheduleDTO> getConsultantScheduleByDate
     (@PathVariable int consultantId,
-     @RequestParam
+     @Parameter(example = "05/06/2025")
+     @RequestParam("date")
      @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy")
-     @Schema(type = "string", example = "05/06/2025")
      LocalDate date) {
 
         return ResponseEntity.ok(consultationService
