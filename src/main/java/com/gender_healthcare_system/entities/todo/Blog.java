@@ -20,8 +20,9 @@ import java.time.LocalDateTime;
 public class Blog {
 
     @Id
-    @SequenceGenerator(name = "blog_sequence", sequenceName = "blog_sequence", allocationSize = 1)
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "blog_sequence")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    //@SequenceGenerator(name = "blog_sequence", sequenceName = "blog_sequence", allocationSize = 1)
+    //@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "blog_sequence")
     @Column(name = "blog_id")
     private int blogId;
 

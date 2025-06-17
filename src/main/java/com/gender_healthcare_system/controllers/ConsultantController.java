@@ -1,10 +1,14 @@
 package com.gender_healthcare_system.controllers;
 
-import com.gender_healthcare_system.dtos.ConsultantConsultationDTO;
-import com.gender_healthcare_system.dtos.ConsultantDetailsDTO;
-import com.gender_healthcare_system.dtos.LoginResponse;
+import com.gender_healthcare_system.dtos.todo.ConsultantConsultationDTO;
+import com.gender_healthcare_system.dtos.todo.ConsultantDetailsDTO;
+import com.gender_healthcare_system.dtos.login.LoginResponse;
 import com.gender_healthcare_system.entities.user.AccountInfoDetails;
-import com.gender_healthcare_system.payloads.*;
+import com.gender_healthcare_system.payloads.login.LoginRequest;
+import com.gender_healthcare_system.payloads.todo.CertificateUpdatePayload;
+import com.gender_healthcare_system.payloads.todo.ConsultationCompletePayload;
+import com.gender_healthcare_system.payloads.todo.ConsultationConfirmPayload;
+import com.gender_healthcare_system.payloads.user.ConsultantUpdatePayload;
 import com.gender_healthcare_system.services.*;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;

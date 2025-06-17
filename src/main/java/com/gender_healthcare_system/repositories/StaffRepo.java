@@ -1,9 +1,9 @@
 package com.gender_healthcare_system.repositories;
 
-import com.gender_healthcare_system.dtos.LoginResponse;
-import com.gender_healthcare_system.dtos.StaffDTO;
+import com.gender_healthcare_system.dtos.login.LoginResponse;
+import com.gender_healthcare_system.dtos.user.StaffDTO;
 import com.gender_healthcare_system.entities.user.Staff;
-import com.gender_healthcare_system.payloads.StaffUpdatePayload;
+import com.gender_healthcare_system.payloads.user.StaffUpdatePayload;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;

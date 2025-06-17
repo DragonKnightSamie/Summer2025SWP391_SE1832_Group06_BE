@@ -2,12 +2,18 @@ package com.gender_healthcare_system.controllers;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.gender_healthcare_system.dtos.ConsultantConsultationDTO;
-import com.gender_healthcare_system.dtos.ConsultantScheduleDTO;
-import com.gender_healthcare_system.dtos.LoginResponse;
-import com.gender_healthcare_system.dtos.TestingServiceBookingDTO;
+import com.gender_healthcare_system.dtos.login.LoginResponse;
+import com.gender_healthcare_system.dtos.todo.CertificateDTO;
+import com.gender_healthcare_system.dtos.todo.ConsultantConsultationDTO;
+import com.gender_healthcare_system.dtos.todo.ConsultantScheduleDTO;
+import com.gender_healthcare_system.dtos.todo.TestingServiceBookingDTO;
+import com.gender_healthcare_system.dtos.user.ListConsultantDTO;
 import com.gender_healthcare_system.entities.user.AccountInfoDetails;
-import com.gender_healthcare_system.payloads.*;
+import com.gender_healthcare_system.payloads.login.LoginRequest;
+import com.gender_healthcare_system.payloads.todo.ConsultationEvaluatePayload;
+import com.gender_healthcare_system.payloads.todo.ConsultationRegisterPayload;
+import com.gender_healthcare_system.payloads.todo.TestingServiceBookingRegisterPayload;
+import com.gender_healthcare_system.payloads.user.CustomerPayload;
 import com.gender_healthcare_system.services.*;
 import io.swagger.v3.oas.annotations.Parameter;
 import lombok.AllArgsConstructor;
@@ -21,6 +27,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -28,18 +35,20 @@ import java.util.Map;
 @AllArgsConstructor
 public class CustomerController {
 
-    
+
     private final AccountService accountService;
 
     private final CustomerService customerService;
 
     private final ConsultationService consultationService;
-    
+
     private final JwtService jwtService;
 
     private final AuthenticationManager authenticationManager;
 
     private final TestingServiceBookingService testingServiceBookingService;
+    private final ConsultantService consultantService;
+    private final CertificateService certificateService;
 
     @PostMapping("/register")
     public String register(@RequestBody CustomerPayload customerPayload) throws JsonProcessingException {
@@ -54,7 +63,7 @@ public class CustomerController {
                         loginRequest.getPassword())
         );
 
-        if(!authentication.isAuthenticated()){
+        if (!authentication.isAuthenticated()) {
             throw new UsernameNotFoundException("Invalid Username or Password");
         }
 
@@ -64,25 +73,26 @@ public class CustomerController {
                 .anyMatch(x -> x
                         .getAuthority().equals("ROLE_CUSTOMER"));
 
-        if(!hasRole){
+        if (!hasRole) {
             throw new UsernameNotFoundException
                     ("Access denied for non-customer user");
         }
 
         AccountInfoDetails account = (AccountInfoDetails) authentication.getPrincipal();
-            int id = account.getId();
+        int id = account.getId();
 
-            LoginResponse loginDetails = customerService.getCustomerLoginDetails(id);
-            loginDetails.setUsername(loginRequest.getUsername());
+        LoginResponse loginDetails = customerService.getCustomerLoginDetails(id);
+        loginDetails.setUsername(loginRequest.getUsername());
 
-            String jwtToken = jwtService.generateToken(loginRequest.getUsername());
-            loginDetails.setToken(jwtToken);
+        String jwtToken = jwtService.generateToken(loginRequest.getUsername());
+        loginDetails.setToken(jwtToken);
 
-            return loginDetails;
+        return loginDetails;
     }
 
 
-    ////////////////////////////////// Manage Testing Service Bookings /////////////////////////
+    /// /////////////////////////////// Manage Testing Service Bookings /////////////////////////
+
 
     //Get Service bookings by customer ID
     @GetMapping("/testing-service-bookings/customer/{customerId}")
@@ -91,7 +101,7 @@ public class CustomerController {
     (@PathVariable int customerId,
      @RequestParam(defaultValue = "0") int page,
      @RequestParam(defaultValue = "serviceBookingId") String sort,
-     @RequestParam(defaultValue = "asc") String order ) {
+     @RequestParam(defaultValue = "asc") String order) {
 
         return testingServiceBookingService
                 .getAllTestingServiceBookingsByCustomerId(customerId, page, sort, order);
@@ -125,8 +135,23 @@ public class CustomerController {
         return ResponseEntity.ok("Testing Service Booking cancelled successfully");
     }
 
-    ////////////////////////////////// Manage Consultations ///////////////////////////////////
+    /// /////////////////////////////// Manage Consultations ///////////////////////////////////
 
+    //
+    //Get all consultant
+    //lấy danh sách consltant cho customer chon và xem thông tin
+    @GetMapping("/consultant-list/")
+    @PreAuthorize("hasAuthority('ROLE_CUSTOMER')")
+    public List<ListConsultantDTO> getAllConsultantForCustomer() {
+        return consultantService.getAllConsultantsForCustomer();
+    }
+
+    //get consultant certificate by ID
+    @GetMapping("/consultant-list/certificates/{consultantId}")
+    @PreAuthorize("hasAuthority('ROLE_CUSTOMER')")
+    public List<CertificateDTO> getConsultantCertificates(@PathVariable int consultantId) {
+        return certificateService.getConsultantCertificates(consultantId);
+    }
 
     //Get consultations by customer ID
     @GetMapping("/consultations/customer/{customerId}")
@@ -135,7 +160,7 @@ public class CustomerController {
     (@PathVariable int customerId,
      @RequestParam(defaultValue = "0") int page,
      @RequestParam(defaultValue = "consultationId") String sort,
-     @RequestParam(defaultValue = "asc") String order ) {
+     @RequestParam(defaultValue = "asc") String order) {
 
         return consultationService.getConsultationsByCustomerId(customerId, page, sort, order);
     }
@@ -165,7 +190,7 @@ public class CustomerController {
     @PostMapping("/consultations/register")
     @PreAuthorize("hasAuthority('ROLE_CUSTOMER')")
     public ResponseEntity<String> registerConsulation
-            (@RequestBody ConsultationRegisterPayload payload) {
+    (@RequestBody ConsultationRegisterPayload payload) {
 
         consultationService.registerConsultation(payload);
         return ResponseEntity.ok("Consultation registered successfully");

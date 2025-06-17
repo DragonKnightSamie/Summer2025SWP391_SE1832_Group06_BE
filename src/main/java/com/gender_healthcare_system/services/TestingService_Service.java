@@ -1,16 +1,15 @@
 package com.gender_healthcare_system.services;
 
-import com.gender_healthcare_system.dtos.TestingServiceDTO;
-import com.gender_healthcare_system.dtos.TestingServiceListDTO;
+import com.gender_healthcare_system.dtos.todo.TestingServiceDTO;
+import com.gender_healthcare_system.dtos.todo.TestingServiceListDTO;
 import com.gender_healthcare_system.entities.enu.TestingServiceStatus;
 import com.gender_healthcare_system.entities.todo.PriceList;
 import com.gender_healthcare_system.entities.todo.TestingService;
-import com.gender_healthcare_system.entities.todo.ConsultationPayment;
 import com.gender_healthcare_system.entities.todo.TestingServiceType;
 import com.gender_healthcare_system.exceptions.AppException;
-import com.gender_healthcare_system.payloads.PriceListPayload;
-import com.gender_healthcare_system.payloads.TestingServiceRegisterPayload;
-import com.gender_healthcare_system.payloads.TestingServiceUpdatePayload;
+import com.gender_healthcare_system.payloads.todo.PriceListPayload;
+import com.gender_healthcare_system.payloads.todo.TestingServiceRegisterPayload;
+import com.gender_healthcare_system.payloads.todo.TestingServiceUpdatePayload;
 import com.gender_healthcare_system.repositories.TestingServiceRepo;
 import com.gender_healthcare_system.repositories.TestingServiceTypeRepo;
 import lombok.AllArgsConstructor;

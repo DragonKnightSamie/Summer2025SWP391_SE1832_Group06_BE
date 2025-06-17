@@ -1,10 +1,9 @@
 package com.gender_healthcare_system.repositories;
 
-import com.gender_healthcare_system.dtos.LoginResponse;
-import com.gender_healthcare_system.dtos.ManagerDTO;
-import com.gender_healthcare_system.entities.user.Customer;
+import com.gender_healthcare_system.dtos.login.LoginResponse;
+import com.gender_healthcare_system.dtos.user.ManagerDTO;
 import com.gender_healthcare_system.entities.user.Manager;
-import com.gender_healthcare_system.payloads.ManagerUpdatePayload;
+import com.gender_healthcare_system.payloads.user.ManagerUpdatePayload;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -12,7 +11,6 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
-import java.util.List;
 import java.util.Optional;
 
 public interface ManagerRepo extends JpaRepository<Manager, Integer> {

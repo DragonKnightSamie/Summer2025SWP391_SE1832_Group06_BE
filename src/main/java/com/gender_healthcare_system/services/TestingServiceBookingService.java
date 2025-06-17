@@ -1,8 +1,8 @@
 package com.gender_healthcare_system.services;
 
-import com.gender_healthcare_system.dtos.StaffServiceBookingListDTO;
-import com.gender_healthcare_system.dtos.TestingServiceBookingDTO;
-import com.gender_healthcare_system.dtos.CustomerServiceBookingListDTO;
+import com.gender_healthcare_system.dtos.todo.StaffServiceBookingListDTO;
+import com.gender_healthcare_system.dtos.todo.TestingServiceBookingDTO;
+import com.gender_healthcare_system.dtos.todo.CustomerServiceBookingListDTO;
 import com.gender_healthcare_system.entities.enu.PaymentStatus;
 import com.gender_healthcare_system.entities.enu.TestingServiceBookingStatus;
 import com.gender_healthcare_system.entities.todo.TestingService;
@@ -10,8 +10,8 @@ import com.gender_healthcare_system.entities.todo.TestingServiceBooking;
 import com.gender_healthcare_system.entities.todo.TestingServicePayment;
 import com.gender_healthcare_system.entities.user.Customer;
 import com.gender_healthcare_system.exceptions.AppException;
-import com.gender_healthcare_system.payloads.TestingServiceBookingPayload;
-import com.gender_healthcare_system.payloads.TestingServiceBookingRegisterPayload;
+import com.gender_healthcare_system.payloads.todo.TestingServiceBookingPayload;
+import com.gender_healthcare_system.payloads.todo.TestingServiceBookingRegisterPayload;
 import com.gender_healthcare_system.repositories.*;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;

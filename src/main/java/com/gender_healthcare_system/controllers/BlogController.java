@@ -1,6 +1,6 @@
 package com.gender_healthcare_system.controllers;
 
-import com.gender_healthcare_system.dtos.BlogDTO;
+import com.gender_healthcare_system.dtos.todo.BlogDTO;
 import com.gender_healthcare_system.services.BlogService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;

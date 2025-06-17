@@ -1,10 +1,9 @@
 package com.gender_healthcare_system.repositories;
 
-import com.gender_healthcare_system.dtos.TestingServiceResultDTO;
-import com.gender_healthcare_system.dtos.TestingServiceTypeDTO;
-import com.gender_healthcare_system.dtos.TestingServiceTypeDetailsDTO;
+import com.gender_healthcare_system.dtos.todo.TestingServiceTypeDTO;
+import com.gender_healthcare_system.dtos.todo.TestingServiceTypeDetailsDTO;
 import com.gender_healthcare_system.entities.todo.TestingServiceType;
-import com.gender_healthcare_system.payloads.TestingServiceTypeUpdatePayload;
+import com.gender_healthcare_system.payloads.todo.TestingServiceTypeUpdatePayload;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -12,7 +11,6 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
-import java.util.List;
 import java.util.Optional;
 
 public interface TestingServiceTypeRepo extends JpaRepository<TestingServiceType, Integer> {

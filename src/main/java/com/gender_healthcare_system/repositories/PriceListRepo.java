@@ -1,7 +1,7 @@
 package com.gender_healthcare_system.repositories;
 
 import com.gender_healthcare_system.entities.todo.PriceList;
-import com.gender_healthcare_system.payloads.PriceListPayload;
+import com.gender_healthcare_system.payloads.todo.PriceListPayload;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;

@@ -1,16 +1,5 @@
 package com.gender_healthcare_system.controllers;
 
-import com.gender_healthcare_system.dtos.TestingServiceDTO;
-import com.gender_healthcare_system.dtos.TestingServiceListDTO;
-import com.gender_healthcare_system.services.PriceListService;
-import com.gender_healthcare_system.services.TestingService_Service;
-import jakarta.validation.constraints.NotBlank;
-import lombok.AllArgsConstructor;
-import org.hibernate.validator.constraints.Length;
-import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
-
 //@AllArgsConstructor
 //@RestController
 //@RequestMapping("/api")

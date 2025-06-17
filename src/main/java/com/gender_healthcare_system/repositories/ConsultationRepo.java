@@ -1,13 +1,12 @@
 package com.gender_healthcare_system.repositories;
 
-import com.gender_healthcare_system.dtos.ConsultantConsultationDTO;
-import com.gender_healthcare_system.dtos.ConsultantScheduleDTO;
-import com.gender_healthcare_system.dtos.ConsultationsDTO;
+import com.gender_healthcare_system.dtos.todo.ConsultantConsultationDTO;
+import com.gender_healthcare_system.dtos.todo.ConsultationsDTO;
 import com.gender_healthcare_system.entities.enu.ConsultationStatus;
 import com.gender_healthcare_system.entities.todo.Consultation;
-import com.gender_healthcare_system.payloads.ConsultationCompletePayload;
-import com.gender_healthcare_system.payloads.ConsultationConfirmPayload;
-import com.gender_healthcare_system.payloads.ConsultationEvaluatePayload;
+import com.gender_healthcare_system.payloads.todo.ConsultationCompletePayload;
+import com.gender_healthcare_system.payloads.todo.ConsultationConfirmPayload;
+import com.gender_healthcare_system.payloads.todo.ConsultationEvaluatePayload;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;

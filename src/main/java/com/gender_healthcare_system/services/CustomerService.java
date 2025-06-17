@@ -1,7 +1,7 @@
 package com.gender_healthcare_system.services;
 
-import com.gender_healthcare_system.dtos.LoginResponse;
-import com.gender_healthcare_system.dtos.ManagerCustomerDTO;
+import com.gender_healthcare_system.dtos.login.LoginResponse;
+import com.gender_healthcare_system.dtos.todo.ManagerCustomerDTO;
 
 import com.gender_healthcare_system.exceptions.AppException;
 import com.gender_healthcare_system.iservices.ICustomerService;

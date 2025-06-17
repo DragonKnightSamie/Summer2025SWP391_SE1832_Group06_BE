@@ -46,7 +46,8 @@ public class SecurityConfig {
     // Các API cần quyền CUSTOMER
     private static final String[] CUSTOMER_AUTHLIST = {
             "/customer/consultations/**",
-            "/customer/testing-service-bookings/**"
+            "/customer/testing-service-bookings/**",
+            "/consultant-list/**",
 
     };
 
@@ -69,7 +70,7 @@ public class SecurityConfig {
             "/manager/testing-service-forms/**",
             "/manager/price-lists/**",
             "/manager/image/**",
-            
+
     };
 
     // Các API cần quyền STAFF

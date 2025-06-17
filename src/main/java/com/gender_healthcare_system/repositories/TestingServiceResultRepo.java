@@ -1,9 +1,8 @@
 package com.gender_healthcare_system.repositories;
 
-import com.gender_healthcare_system.dtos.TestingServiceResultDTO;
+import com.gender_healthcare_system.dtos.todo.TestingServiceResultDTO;
 import com.gender_healthcare_system.entities.todo.TestingServiceResult;
-import com.gender_healthcare_system.payloads.TestingServiceResultPayload;
-import com.gender_healthcare_system.payloads.TestingServiceTypeUpdatePayload;
+import com.gender_healthcare_system.payloads.todo.TestingServiceResultPayload;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;

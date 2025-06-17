@@ -17,6 +17,7 @@ import java.util.List;
 public class Staff {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     //@SequenceGenerator(name = "staff_sequence", sequenceName = "staff_sequence", allocationSize = 1)
     //@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "staff_sequence")
     @Column(name = "staff_id")

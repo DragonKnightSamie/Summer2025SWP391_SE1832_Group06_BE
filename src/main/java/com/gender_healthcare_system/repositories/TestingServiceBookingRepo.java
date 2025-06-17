@@ -1,11 +1,11 @@
 package com.gender_healthcare_system.repositories;
 
-import com.gender_healthcare_system.dtos.StaffServiceBookingListDTO;
-import com.gender_healthcare_system.dtos.TestingServiceBookingDTO;
-import com.gender_healthcare_system.dtos.CustomerServiceBookingListDTO;
+import com.gender_healthcare_system.dtos.todo.StaffServiceBookingListDTO;
+import com.gender_healthcare_system.dtos.todo.TestingServiceBookingDTO;
+import com.gender_healthcare_system.dtos.todo.CustomerServiceBookingListDTO;
 import com.gender_healthcare_system.entities.enu.TestingServiceBookingStatus;
 import com.gender_healthcare_system.entities.todo.TestingServiceBooking;
-import com.gender_healthcare_system.payloads.TestingServiceBookingPayload;
+import com.gender_healthcare_system.payloads.todo.TestingServiceBookingPayload;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;

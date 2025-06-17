@@ -3,7 +3,7 @@ package com.gender_healthcare_system.services;
 import com.gender_healthcare_system.entities.todo.PriceList;
 import com.gender_healthcare_system.entities.todo.TestingService;
 import com.gender_healthcare_system.exceptions.AppException;
-import com.gender_healthcare_system.payloads.PriceListPayload;
+import com.gender_healthcare_system.payloads.todo.PriceListPayload;
 import com.gender_healthcare_system.repositories.PriceListRepo;
 import com.gender_healthcare_system.repositories.TestingServiceRepo;
 import lombok.AllArgsConstructor;

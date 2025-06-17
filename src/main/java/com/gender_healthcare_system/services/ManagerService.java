@@ -1,9 +1,9 @@
 package com.gender_healthcare_system.services;
 
-import com.gender_healthcare_system.dtos.LoginResponse;
-import com.gender_healthcare_system.dtos.ManagerDTO;
+import com.gender_healthcare_system.dtos.login.LoginResponse;
+import com.gender_healthcare_system.dtos.user.ManagerDTO;
 import com.gender_healthcare_system.exceptions.AppException;
-import com.gender_healthcare_system.payloads.ManagerUpdatePayload;
+import com.gender_healthcare_system.payloads.user.ManagerUpdatePayload;
 import com.gender_healthcare_system.repositories.AccountRepo;
 import com.gender_healthcare_system.repositories.ManagerRepo;
 import lombok.AllArgsConstructor;

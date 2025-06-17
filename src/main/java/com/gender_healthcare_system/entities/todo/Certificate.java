@@ -18,8 +18,9 @@ import java.util.Date;
 public class Certificate {
 
     @Id
-    @SequenceGenerator(name = "certificate_sequence", sequenceName = "certificate_sequence", allocationSize = 1)
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "certificate_sequence")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    //@SequenceGenerator(name = "certificate_sequence", sequenceName = "certificate_sequence", allocationSize = 1)
+    //@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "certificate_sequence")
     @Column(name = "certificate_id")
     private int certificateId;
 

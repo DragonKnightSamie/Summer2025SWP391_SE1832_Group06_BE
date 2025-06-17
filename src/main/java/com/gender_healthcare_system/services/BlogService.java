@@ -1,13 +1,12 @@
 package com.gender_healthcare_system.services;
 
-import com.gender_healthcare_system.dtos.BlogDTO;
-import com.gender_healthcare_system.dtos.ManagerDTO;
+import com.gender_healthcare_system.dtos.todo.BlogDTO;
 import com.gender_healthcare_system.entities.enu.BlogStatus;
 import com.gender_healthcare_system.entities.todo.Blog;
 import com.gender_healthcare_system.entities.user.Manager;
 import com.gender_healthcare_system.exceptions.AppException;
-import com.gender_healthcare_system.payloads.BlogRegisterPayload;
-import com.gender_healthcare_system.payloads.BlogUpdatePayload;
+import com.gender_healthcare_system.payloads.todo.BlogRegisterPayload;
+import com.gender_healthcare_system.payloads.todo.BlogUpdatePayload;
 import com.gender_healthcare_system.repositories.BlogRepo;
 import com.gender_healthcare_system.repositories.ManagerRepo;
 import lombok.AllArgsConstructor;

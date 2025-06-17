@@ -1,9 +1,9 @@
 package com.gender_healthcare_system.services;
 
-import com.gender_healthcare_system.dtos.LoginResponse;
-import com.gender_healthcare_system.dtos.StaffDTO;
+import com.gender_healthcare_system.dtos.login.LoginResponse;
+import com.gender_healthcare_system.dtos.user.StaffDTO;
 import com.gender_healthcare_system.exceptions.AppException;
-import com.gender_healthcare_system.payloads.StaffUpdatePayload;
+import com.gender_healthcare_system.payloads.user.StaffUpdatePayload;
 import com.gender_healthcare_system.repositories.AccountRepo;
 import com.gender_healthcare_system.repositories.StaffRepo;
 import jakarta.transaction.Transactional;

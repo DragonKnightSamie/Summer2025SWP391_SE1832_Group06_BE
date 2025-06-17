@@ -15,8 +15,9 @@ import lombok.NoArgsConstructor;
 public class Account {
 
     @Id
-    @SequenceGenerator(name = "account_sequence", sequenceName = "account_sequence", allocationSize = 1)
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "account_sequence")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    //@SequenceGenerator(name = "account_sequence", sequenceName = "account_sequence", allocationSize = 1)
+    //@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "account_sequence")
     @Column(name = "account_id")
     private int accountId;
 

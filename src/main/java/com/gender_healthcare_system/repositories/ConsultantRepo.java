@@ -1,10 +1,11 @@
 package com.gender_healthcare_system.repositories;
 
-import com.gender_healthcare_system.dtos.ConsultantDetailsDTO;
-import com.gender_healthcare_system.dtos.ConsultantsDTO;
-import com.gender_healthcare_system.dtos.LoginResponse;
+import com.gender_healthcare_system.dtos.todo.ConsultantDetailsDTO;
+import com.gender_healthcare_system.dtos.user.ConsultantsDTO;
+import com.gender_healthcare_system.dtos.user.ListConsultantDTO;
+import com.gender_healthcare_system.dtos.login.LoginResponse;
 import com.gender_healthcare_system.entities.user.Consultant;
-import com.gender_healthcare_system.payloads.ConsultantUpdatePayload;
+import com.gender_healthcare_system.payloads.user.ConsultantUpdatePayload;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -23,6 +24,14 @@ public interface ConsultantRepo extends JpaRepository<Consultant, Integer> {
             "c.consultantId, c.fullName, c.email) FROM Consultant c " +
             "WHERE c.consultantId = :id")
     LoginResponse getConsultantLoginDetails(int id);
+
+    // Get all consultants for customer view
+    @Query("SELECT new com.gender_healthcare_system.dtos.ListConsultantDTO" +
+            "(c.consultantId,c.fullName, c.phone, " +
+            "c.email, c.address) " +
+            "FROM Consultant c")
+    List<ListConsultantDTO> getAllConsultantsForCustomer();
+
 
     @Query("SELECT new com.gender_healthcare_system.dtos.ConsultantsDTO" +
             "(c.consultantId, a.username, a.password, c.fullName, c.phone, " +

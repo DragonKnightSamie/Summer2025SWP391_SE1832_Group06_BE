@@ -1,12 +1,12 @@
 package com.gender_healthcare_system.controllers;
 
-import com.gender_healthcare_system.dtos.AdminLoginResponse;
+import com.gender_healthcare_system.dtos.login.AdminLoginResponse;
 
-import com.gender_healthcare_system.dtos.ManagerDTO;
+import com.gender_healthcare_system.dtos.user.ManagerDTO;
 import com.gender_healthcare_system.entities.user.AccountInfoDetails;
-import com.gender_healthcare_system.payloads.LoginRequest;
-import com.gender_healthcare_system.payloads.ManagerRegisterPayload;
-import com.gender_healthcare_system.payloads.ManagerUpdatePayload;
+import com.gender_healthcare_system.payloads.login.LoginRequest;
+import com.gender_healthcare_system.payloads.user.ManagerRegisterPayload;
+import com.gender_healthcare_system.payloads.user.ManagerUpdatePayload;
 import com.gender_healthcare_system.services.AccountService;
 import com.gender_healthcare_system.services.JwtService;
 import com.gender_healthcare_system.services.ManagerService;

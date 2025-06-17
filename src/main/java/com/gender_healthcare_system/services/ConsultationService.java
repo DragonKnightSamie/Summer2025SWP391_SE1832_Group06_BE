@@ -1,8 +1,8 @@
 package com.gender_healthcare_system.services;
 
-import com.gender_healthcare_system.dtos.ConsultantConsultationDTO;
-import com.gender_healthcare_system.dtos.ConsultantScheduleDTO;
-import com.gender_healthcare_system.dtos.ConsultationsDTO;
+import com.gender_healthcare_system.dtos.todo.ConsultantConsultationDTO;
+import com.gender_healthcare_system.dtos.todo.ConsultantScheduleDTO;
+import com.gender_healthcare_system.dtos.todo.ConsultationsDTO;
 import com.gender_healthcare_system.entities.enu.ConsultationStatus;
 import com.gender_healthcare_system.entities.enu.PaymentStatus;
 import com.gender_healthcare_system.entities.todo.Consultation;
@@ -10,10 +10,10 @@ import com.gender_healthcare_system.entities.todo.ConsultationPayment;
 import com.gender_healthcare_system.entities.user.Consultant;
 import com.gender_healthcare_system.entities.user.Customer;
 import com.gender_healthcare_system.exceptions.AppException;
-import com.gender_healthcare_system.payloads.ConsultationCompletePayload;
-import com.gender_healthcare_system.payloads.ConsultationConfirmPayload;
-import com.gender_healthcare_system.payloads.ConsultationEvaluatePayload;
-import com.gender_healthcare_system.payloads.ConsultationRegisterPayload;
+import com.gender_healthcare_system.payloads.todo.ConsultationCompletePayload;
+import com.gender_healthcare_system.payloads.todo.ConsultationConfirmPayload;
+import com.gender_healthcare_system.payloads.todo.ConsultationEvaluatePayload;
+import com.gender_healthcare_system.payloads.todo.ConsultationRegisterPayload;
 import com.gender_healthcare_system.repositories.ConsultantRepo;
 import com.gender_healthcare_system.repositories.ConsultationPaymentRepo;
 import com.gender_healthcare_system.repositories.ConsultationRepo;
@@ -318,5 +318,6 @@ public class ConsultationService {
         consultationRepo.save(consultation);*/
         consultationRepo.completeConsultation(payload, ConsultationStatus.COMPLETED);
     }
+
 
 }

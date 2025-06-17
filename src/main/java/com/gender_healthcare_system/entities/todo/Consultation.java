@@ -22,8 +22,9 @@ import java.time.LocalDateTime;
 public class Consultation {
 
     @Id
-    @SequenceGenerator(name = "consultation_sequence", sequenceName = "consultation_sequence", allocationSize = 1)
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "consultation_sequence")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    //@SequenceGenerator(name = "consultation_sequence", sequenceName = "consultation_sequence", allocationSize = 1)
+    //@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "consultation_sequence")
     @Column(name = "consultation_id")
     private int consultationId;
 

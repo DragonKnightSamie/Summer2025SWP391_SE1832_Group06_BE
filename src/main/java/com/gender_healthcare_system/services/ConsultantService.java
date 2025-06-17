@@ -1,8 +1,12 @@
 package com.gender_healthcare_system.services;
 
-import com.gender_healthcare_system.dtos.*;
+import com.gender_healthcare_system.dtos.login.LoginResponse;
+import com.gender_healthcare_system.dtos.todo.CertificateDTO;
+import com.gender_healthcare_system.dtos.todo.ConsultantDetailsDTO;
+import com.gender_healthcare_system.dtos.user.ConsultantsDTO;
+import com.gender_healthcare_system.dtos.user.ListConsultantDTO;
 import com.gender_healthcare_system.exceptions.AppException;
-import com.gender_healthcare_system.payloads.ConsultantUpdatePayload;
+import com.gender_healthcare_system.payloads.user.ConsultantUpdatePayload;
 import com.gender_healthcare_system.repositories.CertificateRepo;
 import com.gender_healthcare_system.repositories.ConsultantRepo;
 import jakarta.transaction.Transactional;
@@ -26,8 +30,17 @@ public class ConsultantService {
 
     private final CertificateRepo certificateRepo;
 
-    public LoginResponse getConsultantLoginDetails(int id){
+    public LoginResponse getConsultantLoginDetails(int id) {
         return consultantRepo.getConsultantLoginDetails(id);
+    }
+
+    //get all consultant
+    public List<ListConsultantDTO> getAllConsultantsForCustomer() {
+        List<ListConsultantDTO> consultants = consultantRepo.getAllConsultantsForCustomer();
+        if (consultants.isEmpty()) {
+            throw new AppException(404, "No Consultants found");
+        }
+        return consultants;
     }
 
     public Map<String, Object> getAllConsultants(int page, String sortField, String sortOrder) {
@@ -36,7 +49,7 @@ public class ConsultantService {
 
         Sort sort = Sort.by(Sort.Direction.ASC, sortField);
 
-        if(sortOrder.equals("desc")){
+        if (sortOrder.equals("desc")) {
             sort = Sort.by(Sort.Direction.DESC, sortField);
         }
 
@@ -46,7 +59,7 @@ public class ConsultantService {
 
         Page<ConsultantsDTO> pageResult = consultantRepo.getAllConsultants(pageRequest);
 
-        if(!pageResult.hasContent()){
+        if (!pageResult.hasContent()) {
 
             throw new AppException(404, "No Consultants found");
         }
@@ -80,7 +93,7 @@ public class ConsultantService {
         boolean consultantExist =
                 consultantRepo.existsById(consultantId);
 
-        if(!consultantExist){
+        if (!consultantExist) {
 
             throw new AppException(404, "Consultant not found");
         }

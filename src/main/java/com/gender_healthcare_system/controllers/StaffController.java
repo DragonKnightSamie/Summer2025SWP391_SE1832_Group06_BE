@@ -1,12 +1,12 @@
 package com.gender_healthcare_system.controllers;
 
-import com.gender_healthcare_system.dtos.LoginResponse;
-import com.gender_healthcare_system.dtos.TestingServiceBookingDTO;
+import com.gender_healthcare_system.dtos.login.LoginResponse;
+import com.gender_healthcare_system.dtos.todo.TestingServiceBookingDTO;
 import com.gender_healthcare_system.entities.enu.PaymentStatus;
 import com.gender_healthcare_system.entities.todo.TestingServicePayment;
 import com.gender_healthcare_system.entities.user.AccountInfoDetails;
-import com.gender_healthcare_system.payloads.LoginRequest;
-import com.gender_healthcare_system.payloads.TestingServiceBookingPayload;
+import com.gender_healthcare_system.payloads.login.LoginRequest;
+import com.gender_healthcare_system.payloads.todo.TestingServiceBookingPayload;
 import com.gender_healthcare_system.services.JwtService;
 import com.gender_healthcare_system.services.TestingServicePaymentService;
 import com.gender_healthcare_system.services.StaffService;

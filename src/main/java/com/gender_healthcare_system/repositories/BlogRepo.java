@@ -1,8 +1,8 @@
 package com.gender_healthcare_system.repositories;
 
-import com.gender_healthcare_system.dtos.BlogDTO;
+import com.gender_healthcare_system.dtos.todo.BlogDTO;
 import com.gender_healthcare_system.entities.todo.Blog;
-import com.gender_healthcare_system.payloads.BlogUpdatePayload;
+import com.gender_healthcare_system.payloads.todo.BlogUpdatePayload;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -34,7 +34,7 @@ public interface BlogRepo extends JpaRepository<Blog, Integer> {
             "FROM Blog b")
     Page<BlogDTO> getAllBlogs(Pageable pageable);
 
-/*    @Query("SELECT new com.gender_healthcare_system.dtos.BlogDTO" +
+/*    @Query("SELECT new com.gender_healthcare_system.dtos.todo.BlogDTO" +
             "(b.blogId, b.title, b.content, b.createdAt, b.status) " +
             "FROM Blog b " +
             "WHERE b.title LIKE :keyword")*/

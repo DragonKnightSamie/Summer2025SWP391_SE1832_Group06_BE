@@ -18,8 +18,9 @@ import java.util.List;
 public class TestingService {
 
     @Id
-    @SequenceGenerator(name = "testing_service_seq", sequenceName = "testing_service_sequence", allocationSize = 1)
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "testing_service_seq")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    //@SequenceGenerator(name = "testing_service_seq", sequenceName = "testing_service_sequence", allocationSize = 1)
+    //@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "testing_service_seq")
     @Column(name = "service_id")
     private int serviceId;
 

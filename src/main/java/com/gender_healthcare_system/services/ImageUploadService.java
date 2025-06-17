@@ -2,7 +2,7 @@ package com.gender_healthcare_system.services;
 
 import com.cloudinary.Cloudinary;
 import com.cloudinary.utils.ObjectUtils;
-import com.gender_healthcare_system.dtos.ImageUploadDTO;
+import com.gender_healthcare_system.dtos.todo.ImageUploadDTO;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;

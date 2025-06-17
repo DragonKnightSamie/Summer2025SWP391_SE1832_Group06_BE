@@ -16,8 +16,9 @@ import org.hibernate.annotations.Nationalized;
 public class PriceList {
 
     @Id
-    @SequenceGenerator(name = "price_list_seq", sequenceName = "price_list_sequence", allocationSize = 1)
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "price_list_seq")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    //@SequenceGenerator(name = "price_list_seq", sequenceName = "price_list_sequence", allocationSize = 1)
+    //@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "price_list_seq")
     @Column(name = "price_id")
     private int priceId;
 
@@ -27,7 +28,7 @@ public class PriceList {
     private TestingService testingService;
 
     @Column(name = "price", nullable = false)
-    private double price;
+    private long price;
 
     @Nationalized
     @Column(name = "description", length = 255)

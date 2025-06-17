@@ -22,9 +22,10 @@ import java.time.LocalDateTime;
 public class TestingServiceBooking {
 
     @Id
-    @SequenceGenerator(name = "testing_service_booking_seq",
-            sequenceName = "testing_service_booking_seq", allocationSize = 1)
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "testing_service_booking_seq")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    //@SequenceGenerator(name = "testing_service_booking_seq",
+    //        sequenceName = "testing_service_booking_seq", allocationSize = 1)
+    //@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "testing_service_booking_seq")
     @Column(name = "service_booking_id")
     private int serviceBookingId;
 

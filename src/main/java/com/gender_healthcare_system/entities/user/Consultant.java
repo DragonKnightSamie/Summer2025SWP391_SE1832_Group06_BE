@@ -18,6 +18,7 @@ import java.util.List;
 public class Consultant {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     //@SequenceGenerator(name = "consultant_sequence", sequenceName = "consultant_sequence", allocationSize = 1)
     //@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "consultant_sequence")
     @Column(name = "consultant_id")

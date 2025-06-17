@@ -1,7 +1,7 @@
 package com.gender_healthcare_system.services;
 
 import com.gender_healthcare_system.exceptions.AppException;
-import com.gender_healthcare_system.payloads.TestingServiceResultPayload;
+import com.gender_healthcare_system.payloads.todo.TestingServiceResultPayload;
 import com.gender_healthcare_system.repositories.TestingServiceResultRepo;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;

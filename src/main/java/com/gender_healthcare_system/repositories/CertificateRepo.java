@@ -1,8 +1,8 @@
 package com.gender_healthcare_system.repositories;
 
-import com.gender_healthcare_system.dtos.CertificateDTO;
+import com.gender_healthcare_system.dtos.todo.CertificateDTO;
 import com.gender_healthcare_system.entities.todo.Certificate;
-import com.gender_healthcare_system.payloads.CertificateUpdatePayload;
+import com.gender_healthcare_system.payloads.todo.CertificateUpdatePayload;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;

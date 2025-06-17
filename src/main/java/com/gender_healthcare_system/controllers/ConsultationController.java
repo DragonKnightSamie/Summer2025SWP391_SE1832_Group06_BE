@@ -1,12 +1,6 @@
 package com.gender_healthcare_system.controllers;
 
-import com.gender_healthcare_system.entities.todo.Consultation;
-import com.gender_healthcare_system.payloads.ConsultationConfirmPayload;
-import com.gender_healthcare_system.services.ConsultationService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("/api/consultation")
