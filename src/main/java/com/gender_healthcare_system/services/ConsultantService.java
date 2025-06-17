@@ -2,7 +2,7 @@ package com.gender_healthcare_system.services;
 
 import com.gender_healthcare_system.dtos.login.LoginResponse;
 import com.gender_healthcare_system.dtos.todo.CertificateDTO;
-import com.gender_healthcare_system.dtos.todo.ConsultantDetailsDTO;
+import com.gender_healthcare_system.dtos.user.ConsultantDetailsDTO;
 import com.gender_healthcare_system.dtos.user.ConsultantsDTO;
 import com.gender_healthcare_system.dtos.user.ListConsultantDTO;
 import com.gender_healthcare_system.exceptions.AppException;

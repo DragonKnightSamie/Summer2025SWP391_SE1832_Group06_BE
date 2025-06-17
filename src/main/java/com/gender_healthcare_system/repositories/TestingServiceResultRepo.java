@@ -12,7 +12,7 @@ import java.util.List;
 
 public interface TestingServiceResultRepo extends JpaRepository<TestingServiceResult, Integer> {
 
-    @Query("SELECT new com.gender_healthcare_system.dtos.TestingServiceResultDTO" +
+    @Query("SELECT new com.gender_healthcare_system.dtos.todo.TestingServiceResultDTO" +
             "(tst.serviceResultId, tst.title, tst.description) " +
             "FROM TestingServiceResult tst " +
             "WHERE tst.testingServiceType.serviceTypeId = :id")

@@ -15,7 +15,7 @@ import java.util.Optional;
 
 public interface ManagerRepo extends JpaRepository<Manager, Integer> {
 
-    @Query("SELECT new com.gender_healthcare_system.dtos.LoginResponse(" +
+    @Query("SELECT new com.gender_healthcare_system.dtos.login.LoginResponse(" +
             "m.managerId, m.fullName, m.email) FROM Manager m " +
             "WHERE m.managerId = :id")
     LoginResponse getManagerLoginDetails(int id);
@@ -26,7 +26,7 @@ public interface ManagerRepo extends JpaRepository<Manager, Integer> {
             "WHERE m.managerId = :id")
     Optional<Manager> getManagerById(int id);
 
-    @Query("SELECT new com.gender_healthcare_system.dtos.ManagerDTO" +
+    @Query("SELECT new com.gender_healthcare_system.dtos.user.ManagerDTO" +
             "(m.managerId, a.username, a.password, " +
             "m.fullName, m.phone, m.email, m.address, a.status) " +
             "FROM Manager m " +
@@ -34,7 +34,7 @@ public interface ManagerRepo extends JpaRepository<Manager, Integer> {
             "WHERE m.managerId = :id")
     Optional<ManagerDTO> getManagerDetailsById(int id);
 
-    @Query("SELECT new com.gender_healthcare_system.dtos.ManagerDTO" +
+    @Query("SELECT new com.gender_healthcare_system.dtos.user.ManagerDTO" +
             "(m.managerId, a.username, a.password, " +
             "m.fullName, m.phone, m.email, m.address, a.status) " +
             "FROM Manager m " +

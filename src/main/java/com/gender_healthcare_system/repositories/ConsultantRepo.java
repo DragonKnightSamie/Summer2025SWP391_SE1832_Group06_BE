@@ -1,6 +1,6 @@
 package com.gender_healthcare_system.repositories;
 
-import com.gender_healthcare_system.dtos.todo.ConsultantDetailsDTO;
+import com.gender_healthcare_system.dtos.user.ConsultantDetailsDTO;
 import com.gender_healthcare_system.dtos.user.ConsultantsDTO;
 import com.gender_healthcare_system.dtos.user.ListConsultantDTO;
 import com.gender_healthcare_system.dtos.login.LoginResponse;
@@ -20,27 +20,27 @@ import java.util.Optional;
 @Repository
 public interface ConsultantRepo extends JpaRepository<Consultant, Integer> {
 
-    @Query("SELECT new com.gender_healthcare_system.dtos.LoginResponse(" +
+    @Query("SELECT new com.gender_healthcare_system.dtos.login.LoginResponse(" +
             "c.consultantId, c.fullName, c.email) FROM Consultant c " +
             "WHERE c.consultantId = :id")
     LoginResponse getConsultantLoginDetails(int id);
 
     // Get all consultants for customer view
-    @Query("SELECT new com.gender_healthcare_system.dtos.ListConsultantDTO" +
+    @Query("SELECT new com.gender_healthcare_system.dtos.user.ListConsultantDTO" +
             "(c.consultantId,c.fullName, c.phone, " +
             "c.email, c.address) " +
             "FROM Consultant c")
     List<ListConsultantDTO> getAllConsultantsForCustomer();
 
 
-    @Query("SELECT new com.gender_healthcare_system.dtos.ConsultantsDTO" +
+    @Query("SELECT new com.gender_healthcare_system.dtos.user.ConsultantsDTO" +
             "(c.consultantId, a.username, a.password, c.fullName, c.phone, " +
             "c.email, c.address, a.status) " +
             "FROM Consultant c " +
             "JOIN c.account a")
     Page<ConsultantsDTO> getAllConsultants(Pageable pageable);
 
-    @Query("SELECT new com.gender_healthcare_system.dtos.ConsultantDetailsDTO" +
+    @Query("SELECT new com.gender_healthcare_system.dtos.user.ConsultantDetailsDTO" +
             "(c.consultantId, a.username, a.password, c.fullName, c.phone, " +
             "c.email, c.address, a.status) " +
             "FROM Consultant c " +

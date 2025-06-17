@@ -12,7 +12,7 @@ import java.util.List;
 
 public interface CertificateRepo extends JpaRepository<Certificate, Integer> {
 
-    @Query("SELECT new com.gender_healthcare_system.dtos.CertificateDTO" +
+    @Query("SELECT new com.gender_healthcare_system.dtos.todo.CertificateDTO" +
             "(c.certificateId, c.certificateName, c.issuedBy, c.issueDate, " +
             "c.expiryDate, c.description)" +
             "FROM Certificate c " +

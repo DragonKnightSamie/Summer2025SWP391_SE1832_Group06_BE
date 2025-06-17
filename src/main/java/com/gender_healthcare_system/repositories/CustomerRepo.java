@@ -13,7 +13,7 @@ import java.util.Optional;
 
 public interface CustomerRepo extends JpaRepository<Customer, Integer> {
 
-    @Query("SELECT new com.gender_healthcare_system.dtos.LoginResponse(" +
+    @Query("SELECT new com.gender_healthcare_system.dtos.login.LoginResponse(" +
             "c.customerId, c.fullName, c.email) FROM Customer c " +
             "WHERE c.customerId = :id")
     LoginResponse getCustomerLoginDetails(int id);
@@ -25,7 +25,7 @@ public interface CustomerRepo extends JpaRepository<Customer, Integer> {
             "WHERE c.customerId = :id")
     Optional<Customer> getCustomerById(int id);
 
-    @Query("SELECT new com.gender_healthcare_system.dtos.ManagerCustomerDTO" +
+    @Query("SELECT new com.gender_healthcare_system.dtos.todo.ManagerCustomerDTO" +
             "(c.customerId, a.username, a.password, c.fullName, c.dateOfBirth, c.gender," +
             "c.genderSpecificDetails, c.phone, c.email, c.address, a.status) " +
             "FROM Customer c " +
@@ -33,7 +33,7 @@ public interface CustomerRepo extends JpaRepository<Customer, Integer> {
             "WHERE c.customerId = :id")
     Optional<ManagerCustomerDTO> getCustomerDetailsById(int id);
 
-    @Query("SELECT new com.gender_healthcare_system.dtos.ManagerCustomerDTO" +
+    @Query("SELECT new com.gender_healthcare_system.dtos.todo.ManagerCustomerDTO" +
             "(c.customerId, a.username, a.password, c.fullName, c.dateOfBirth, c.gender," +
             "c.genderSpecificDetails, c.phone, c.email, c.address, a.status) " +
             "FROM Customer c " +

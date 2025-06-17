@@ -21,14 +21,14 @@ public interface TestingServiceTypeRepo extends JpaRepository<TestingServiceType
             "WHERE tst.serviceTypeId = :id")
     Optional<TestingServiceType> findById(int id);
 
-    @Query("SELECT new com.gender_healthcare_system.dtos.TestingServiceTypeDetailsDTO" +
-            "(new com.gender_healthcare_system.dtos.TestingServiceTypeDTO" +
+    @Query("SELECT new com.gender_healthcare_system.dtos.todo.TestingServiceTypeDetailsDTO" +
+            "(new com.gender_healthcare_system.dtos.todo.TestingServiceTypeDTO" +
             "(tst.serviceTypeId, tst.serviceTypeName, tst.title, tst.content, tst.createdAt)) " +
             "FROM TestingServiceType tst " +
             "WHERE tst.serviceTypeId = :id")
     Optional<TestingServiceTypeDetailsDTO> getTestingServiceDetailsById(int id);
 
-    @Query("SELECT new com.gender_healthcare_system.dtos.TestingServiceTypeDTO" +
+    @Query("SELECT new com.gender_healthcare_system.dtos.todo.TestingServiceTypeDTO" +
             "(tst.serviceTypeId, tst.serviceTypeName, tst.title, tst.content, tst.createdAt) " +
             "FROM TestingServiceType tst")
     Page<TestingServiceTypeDTO> getAllTestingServiceTypes(Pageable pageable);

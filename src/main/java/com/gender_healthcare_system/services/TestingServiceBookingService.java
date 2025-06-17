@@ -139,7 +139,7 @@ public class TestingServiceBookingService {
         TestingServicePayment servicePayment = new TestingServicePayment();
 
         servicePayment.setTestingServiceBooking(serviceBooking);
-        servicePayment.setAmount(payload.getPaymentAmount());
+        servicePayment.setAmount((long) payload.getPaymentAmount());
         servicePayment.setMethod(payload.getPaymentMethod());
         servicePayment.setCreatedAt(LocalDateTime.now());
         servicePayment.setStatus(PaymentStatus.PAID);

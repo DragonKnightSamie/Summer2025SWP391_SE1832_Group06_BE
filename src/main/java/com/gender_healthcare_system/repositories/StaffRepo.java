@@ -15,12 +15,12 @@ import java.util.Optional;
 
 public interface StaffRepo extends JpaRepository<Staff, Integer> {
 
-    @Query("SELECT new com.gender_healthcare_system.dtos.LoginResponse(" +
+    @Query("SELECT new com.gender_healthcare_system.dtos.login.LoginResponse(" +
             "s.staffId, s.fullName, s.email) FROM Staff s " +
             "WHERE s.staffId = :id")
     LoginResponse getStaffLoginDetails(@Param("id") int id);
 
-    @Query("SELECT new com.gender_healthcare_system.dtos" +
+    @Query("SELECT new com.gender_healthcare_system.dtos.user" +
             ".StaffDTO(s.staffId, a.username, a.password, s.fullName, " +
             "s.phone, s.email, s.address, a.status) " +
             "FROM Staff s " +
@@ -28,7 +28,7 @@ public interface StaffRepo extends JpaRepository<Staff, Integer> {
             "WHERE s.staffId = :id")
     Optional<StaffDTO> getStaffDetailsById(int id);
 
-    @Query("SELECT new com.gender_healthcare_system.dtos" +
+    @Query("SELECT new com.gender_healthcare_system.dtos.user" +
             ".StaffDTO(s.staffId, a.username, a.password, s.fullName, " +
             "s.phone, s.email, s.address, a.status) " +
             "FROM Staff s " +

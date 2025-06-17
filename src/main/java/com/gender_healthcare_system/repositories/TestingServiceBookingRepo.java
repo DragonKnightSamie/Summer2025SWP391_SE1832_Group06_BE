@@ -20,11 +20,11 @@ import java.util.Optional;
 public interface TestingServiceBookingRepo extends JpaRepository<TestingServiceBooking, Integer> {
 
     //get testingServiceHistoryDTO by id
-    @Query("SELECT new com.gender_healthcare_system.dtos.TestingServiceBookingDTO(" +
+    @Query("SELECT new com.gender_healthcare_system.dtos.todo.TestingServiceBookingDTO(" +
             "tsb.serviceBookingId, ts.serviceName, s.fullName, c.fullName, " +
             "tsb.result, tsb.rating, tsb.comment,tsb.createdAt, tsb.expectedStartTime, " +
             "tsb.realStartTime, tsb.expectedEndTime, tsb.realEndTime, tsb.status, " +
-            "new com.gender_healthcare_system.dtos.TestingServiceBookingPaymentDTO" +
+            "new com.gender_healthcare_system.dtos.todo.TestingServiceBookingPaymentDTO" +
             "(tsp.amount, tsp.method, tsp.status)) " +
             "FROM TestingServiceBooking tsb " +
             "JOIN tsb.testingService ts " +
@@ -44,7 +44,7 @@ public interface TestingServiceBookingRepo extends JpaRepository<TestingServiceB
 
 
     //get all TestingServiceBooking (only entity)
-    @Query("SELECT new com.gender_healthcare_system.dtos.CustomerServiceBookingListDTO" +
+    @Query("SELECT new com.gender_healthcare_system.dtos.todo.CustomerServiceBookingListDTO" +
             "(tsb.serviceBookingId, ts.serviceName, s.fullName, tsb.createdAt, tsb.status) " +
             "FROM TestingServiceBooking tsb " +
             "JOIN tsb.testingService ts " +
@@ -55,7 +55,7 @@ public interface TestingServiceBookingRepo extends JpaRepository<TestingServiceB
     (int id, Pageable pageable);
 
     //get all TestingServiceBooking (only entity)
-    @Query("SELECT new com.gender_healthcare_system.dtos.CustomerServiceBookingListDTO" +
+    @Query("SELECT new com.gender_healthcare_system.dtos.todo.CustomerServiceBookingListDTO" +
             "(tsb.serviceBookingId, ts.serviceName, c.fullName, tsb.createdAt, tsb.status) " +
             "FROM TestingServiceBooking tsb " +
             "JOIN tsb.testingService ts " +

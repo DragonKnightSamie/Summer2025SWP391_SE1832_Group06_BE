@@ -18,10 +18,10 @@ import java.util.Optional;
 public interface TestingServiceRepo extends JpaRepository<TestingService, Integer> {
 
     // Get a single TestingServiceDTO by ID
-    @Query("SELECT new com.gender_healthcare_system.dtos.TestingServiceDTO(" +
+    @Query("SELECT new com.gender_healthcare_system.dtos.todo.TestingServiceDTO(" +
             "ts.serviceId, ts.serviceName, ts.description, ts.status, " +
-            "new com.gender_healthcare_system.dtos.TestingServiceTypeDTO(tst.serviceTypeId, tst.serviceTypeName, tst.title, tst.content, tst.createdAt), " +
-            "new com.gender_healthcare_system.dtos.PriceListDTO(p.priceId, p.price, p.description)) " +
+            "new com.gender_healthcare_system.dtos.todo.TestingServiceTypeDTO(tst.serviceTypeId, tst.serviceTypeName, tst.title, tst.content, tst.createdAt), " +
+            "new com.gender_healthcare_system.dtos.todo.PriceListDTO(p.priceId, p.price, p.description)) " +
             "FROM TestingService ts " +
             "LEFT JOIN ts.testingServiceType tst " +
             "LEFT JOIN ts.priceLists p " +
@@ -36,7 +36,7 @@ public interface TestingServiceRepo extends JpaRepository<TestingService, Intege
     Optional<TestingService> getTestingService(int id);
 
     // Get all TestingServices (only entity)
-    @Query("SELECT new com.gender_healthcare_system.dtos.TestingServiceListDTO" +
+    @Query("SELECT new com.gender_healthcare_system.dtos.todo.TestingServiceListDTO" +
             "(ts.serviceId, ts.serviceName, tst.serviceTypeName, ts.description, ts.status) " +
             "FROM TestingService ts " +
             "JOIN ts.testingServiceType tst")

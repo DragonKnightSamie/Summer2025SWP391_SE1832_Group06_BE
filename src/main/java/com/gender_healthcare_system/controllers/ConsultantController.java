@@ -1,7 +1,7 @@
 package com.gender_healthcare_system.controllers;
 
 import com.gender_healthcare_system.dtos.todo.ConsultantConsultationDTO;
-import com.gender_healthcare_system.dtos.todo.ConsultantDetailsDTO;
+import com.gender_healthcare_system.dtos.user.ConsultantDetailsDTO;
 import com.gender_healthcare_system.dtos.login.LoginResponse;
 import com.gender_healthcare_system.entities.user.AccountInfoDetails;
 import com.gender_healthcare_system.payloads.login.LoginRequest;

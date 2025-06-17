@@ -23,7 +23,7 @@ import java.util.Optional;
 @Repository
 public interface ConsultationRepo extends JpaRepository<Consultation, Integer> {
 
-    @Query("SELECT new com.gender_healthcare_system.dtos" +
+    @Query("SELECT new com.gender_healthcare_system.dtos.todo" +
             ".ConsultationsDTO(c.consultationId, c.createdAt, " +
             "c.expectedStartTime, c.realStartTime, c.expectedEndTime, c.realEndTime, " +
             "c.status) " +
@@ -32,7 +32,7 @@ public interface ConsultationRepo extends JpaRepository<Consultation, Integer> {
             "WHERE c.customer.customerId = :customerId")
     Page<ConsultationsDTO> findByCustomerId(int customerId, Pageable pageable);
 
-    @Query("SELECT new com.gender_healthcare_system.dtos" +
+    @Query("SELECT new com.gender_healthcare_system.dtos.todo" +
             ".ConsultationsDTO(c.consultationId, c.createdAt, " +
             "c.expectedStartTime, c.realStartTime, c.expectedEndTime, c.realEndTime, " +
             "c.status) " +
@@ -50,10 +50,10 @@ public interface ConsultationRepo extends JpaRepository<Consultation, Integer> {
             "WHERE c.consultationId = :id")
     Optional<Consultation> findConsultationById(int id);
 
-    @Query("SELECT new com.gender_healthcare_system.dtos" +
+    @Query("SELECT new com.gender_healthcare_system.dtos.todo" +
             ".ConsultantConsultationDTO(c.consultationId, c.createdAt, " +
             "c.expectedStartTime, c.realStartTime, c.expectedEndTime, c.realEndTime, " +
-            "c.status, new com.gender_healthcare_system.dtos.CustomerDTO" +
+            "c.status, new com.gender_healthcare_system.dtos.user.CustomerDTO" +
             "(cu.customerId, cu.fullName, cu.dateOfBirth, cu.gender, " +
             "cu.genderSpecificDetails, cu.phone, cu.email, cu.address)" +
             ") " +

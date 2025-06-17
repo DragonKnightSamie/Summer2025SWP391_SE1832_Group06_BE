@@ -1,5 +1,6 @@
-package com.gender_healthcare_system.dtos.todo;
+package com.gender_healthcare_system.dtos.user;
 
+import com.gender_healthcare_system.dtos.todo.CertificateDTO;
 import com.gender_healthcare_system.entities.enu.AccountStatus;
 import lombok.AllArgsConstructor;
 import lombok.Data;
