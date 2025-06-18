@@ -50,7 +50,6 @@ public class ManagerController {
 
     private final ConsultantService consultantService;
 
-
     private final TestingServiceTypeService testingServiceTypeService;
 
     private final TestingServiceResultService testingServiceResultService;

@@ -1,5 +1,6 @@
 package com.gender_healthcare_system.controllers;
 
+import com.gender_healthcare_system.dtos.login.ConsultantLoginResponse;
 import com.gender_healthcare_system.dtos.todo.ConsultantConsultationDTO;
 import com.gender_healthcare_system.dtos.user.ConsultantDetailsDTO;
 import com.gender_healthcare_system.dtos.login.LoginResponse;
@@ -37,7 +38,7 @@ public class ConsultantController {
     private final AuthenticationManager authenticationManager;
 
     @PostMapping("/login")
-    public LoginResponse login(@RequestBody LoginRequest loginRequest) {
+    public ConsultantLoginResponse login(@RequestBody LoginRequest loginRequest) {
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
                         loginRequest.getUsername(),
@@ -62,7 +63,7 @@ public class ConsultantController {
                 (AccountInfoDetails) authentication.getPrincipal();
         int id = account.getId();
 
-        LoginResponse loginDetails = consultantService
+        ConsultantLoginResponse loginDetails = consultantService
                 .getConsultantLoginDetails(id);
         loginDetails.setUsername(loginRequest.getUsername());
 

@@ -1,5 +1,6 @@
 package com.gender_healthcare_system.repositories;
 
+import com.gender_healthcare_system.dtos.todo.CustomerTestingServiceListDTO;
 import com.gender_healthcare_system.dtos.todo.TestingServiceDTO;
 import com.gender_healthcare_system.dtos.todo.TestingServiceListDTO;
 import com.gender_healthcare_system.entities.todo.TestingService;
@@ -41,6 +42,13 @@ public interface TestingServiceRepo extends JpaRepository<TestingService, Intege
             "FROM TestingService ts " +
             "JOIN ts.testingServiceType tst")
     Page<TestingServiceListDTO> getAllTestingServices(Pageable pageable);
+
+    // Get all TestingServices (only entity)
+    @Query("SELECT new com.gender_healthcare_system.dtos.todo.CustomerTestingServiceListDTO" +
+            "(ts.serviceId, ts.serviceName, tst.serviceTypeName, ts.description) " +
+            "FROM TestingService ts " +
+            "JOIN ts.testingServiceType tst")
+    Page<CustomerTestingServiceListDTO> getAllTestingServicesForCustomer(Pageable pageable);
 
     // Update TestingService
     @Modifying

@@ -6,7 +6,7 @@ import com.gender_healthcare_system.entities.enu.ConsultationStatus;
 import com.gender_healthcare_system.entities.todo.Consultation;
 import com.gender_healthcare_system.payloads.todo.ConsultationCompletePayload;
 import com.gender_healthcare_system.payloads.todo.ConsultationConfirmPayload;
-import com.gender_healthcare_system.payloads.todo.ConsultationEvaluatePayload;
+import com.gender_healthcare_system.payloads.todo.EvaluatePayload;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -85,7 +85,7 @@ public interface ConsultationRepo extends JpaRepository<Consultation, Integer> {
             "c.rating = :#{#payload.rating} " +
             "WHERE c.consultationId = :consultationId")
     void updateConsultationCommentAndRatingById(int consultationId,
-                            @Param("payload") ConsultationEvaluatePayload payload);
+                            @Param("payload") EvaluatePayload payload);
 
     @Modifying
     @Query("UPDATE Consultation c SET " +

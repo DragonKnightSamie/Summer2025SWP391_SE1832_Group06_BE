@@ -17,7 +17,6 @@ import java.util.List;
 public class Staff {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     //@SequenceGenerator(name = "staff_sequence", sequenceName = "staff_sequence", allocationSize = 1)
     //@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "staff_sequence")
     @Column(name = "staff_id")
@@ -46,4 +45,12 @@ public class Staff {
     @MapsId
     @JoinColumn(name = "staff_id", nullable = false)
     private Account account;
+
+    public Staff(int staffId, String fullName, String phone, String email, String address) {
+        this.staffId = staffId;
+        this.fullName = fullName;
+        this.phone = phone;
+        this.email = email;
+        this.address = address;
+    }
 }

@@ -18,13 +18,18 @@ public class BlogRegisterPayload {
 
     @Nationalized
     @NotBlank
-    @Length(min = 5, max = 100, message = "Blog title by must be between 3 and 100 characters")
+    @Length(min = 5, max = 50, message = "Blog author must be between 5 and 50 characters")
+    private String author;
+
+    @Nationalized
+    @NotBlank
+    @Length(min = 5, max = 100, message = "Blog title must be between 3 and 100 characters")
     private String title;
 
     @Nationalized
     @NotBlank
     @Length(min = 10, max = 1000,
-            message = "Blog content by must be between 10 and 1000 characters")
+            message = "Blog content must be between 10 and 1000 characters")
     private String content;
 
 }

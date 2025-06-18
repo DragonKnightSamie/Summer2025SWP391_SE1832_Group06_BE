@@ -1,12 +1,14 @@
 package com.gender_healthcare_system.controllers;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.gender_healthcare_system.dtos.login.LoginResponse;
 import com.gender_healthcare_system.dtos.todo.TestingServiceBookingDTO;
 import com.gender_healthcare_system.entities.enu.PaymentStatus;
 import com.gender_healthcare_system.entities.todo.TestingServicePayment;
 import com.gender_healthcare_system.entities.user.AccountInfoDetails;
 import com.gender_healthcare_system.payloads.login.LoginRequest;
-import com.gender_healthcare_system.payloads.todo.TestingServiceBookingPayload;
+import com.gender_healthcare_system.payloads.todo.TestingServiceBookingCompletePayload;
+import com.gender_healthcare_system.payloads.todo.TestingServiceBookingConfirmPayload;
 import com.gender_healthcare_system.services.JwtService;
 import com.gender_healthcare_system.services.TestingServicePaymentService;
 import com.gender_healthcare_system.services.StaffService;
@@ -151,7 +153,8 @@ public class StaffController {
     //get by id
     @GetMapping("/testing-service-bookings/{id}")
     @PreAuthorize("hasAuthority('ROLE_STAFF')")
-    public TestingServiceBookingDTO getTestingServiceBookingById(@PathVariable int id) {
+    public TestingServiceBookingDTO getTestingServiceBookingById
+    (@PathVariable int id) throws JsonProcessingException {
         return testingServiceBookingService.getTestingServiceBookingDetailsById(id);
     }
 
@@ -162,23 +165,44 @@ public class StaffController {
     public Map<String, Object> getAllTestingServiceBookings
     (@PathVariable int staffId,
      @RequestParam(defaultValue = "0") int page,
-     @RequestParam(defaultValue = "serviceHistoryId") String sortField,
+     @RequestParam(defaultValue = "serviceBookingId") String sortField,
      @RequestParam(defaultValue = "asc") String sortOrder) {
 
         return testingServiceBookingService
                 .getAllTestingServiceBookingsByStaffId(staffId, page, sortField, sortOrder);
     }
 
-    // Update
-    @PutMapping("/testing-service-bookings/{id}")
+    //Lấy danh sách booking có status pending (có phân trang + sắp xếp)
+    @GetMapping("/testing-service-bookings/pending-list")
     @PreAuthorize("hasAuthority('ROLE_STAFF')")
-    public void updateTestingServiceBooking
-    (@PathVariable int id,
-     @RequestBody TestingServiceBookingPayload payload) {
+    public Map<String, Object> getAllPendingTestingServiceBookings
+    (@RequestParam(defaultValue = "0") int page,
+     @RequestParam(defaultValue = "serviceBookingId") String sortField,
+     @RequestParam(defaultValue = "asc") String sortOrder) {
 
-        testingServiceBookingService.updateTestingServiceBooking(id, payload);
+        return testingServiceBookingService
+                .getAllPendingTestingServiceBookings(page, sortField, sortOrder);
     }
 
+    // Update
+    @PutMapping("/testing-service-bookings/{id}/confirm")
+    @PreAuthorize("hasAuthority('ROLE_STAFF')")
+    public void confirmTestingServiceBooking
+    (@PathVariable int id,
+     @RequestBody TestingServiceBookingConfirmPayload payload) {
+
+        testingServiceBookingService.confirmTestingServiceBooking(id, payload);
+    }
+
+    // Update
+    @PutMapping("/testing-service-bookings/{id}/complete")
+    @PreAuthorize("hasAuthority('ROLE_STAFF')")
+    public void completeTestingServiceBooking
+    (@PathVariable int id,
+     @RequestBody TestingServiceBookingCompletePayload payload) throws JsonProcessingException {
+
+        testingServiceBookingService.completeTestingServiceBooking(id, payload);
+    }
 
     @DeleteMapping("/testing-service-bookings/{id}")
     @PreAuthorize("hasAuthority('ROLE_STAFF')")

@@ -9,5 +9,4 @@ public class GenderHealthcareSystemApplication {
     public static void main(String[] args) {
         SpringApplication.run(GenderHealthcareSystemApplication.class, args);
     }
-
 }

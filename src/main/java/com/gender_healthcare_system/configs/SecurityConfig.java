@@ -35,7 +35,7 @@ public class SecurityConfig {
             "/consultant/login",
             "/v3/api-docs/**",
             "/swagger-ui/**",
-            "/swagger-ui.html"
+            "/swagger-ui.html",
     };
 
     // Các API blog công khai (xem, tìm kiếm)
@@ -47,7 +47,9 @@ public class SecurityConfig {
     private static final String[] CUSTOMER_AUTHLIST = {
             "/customer/consultations/**",
             "/customer/testing-service-bookings/**",
-            "/consultant-list/**",
+            "customer/consultant-list/**",
+            "/customer/payment-request/**",
+            "/customer/testing-services/**"
 
     };
 

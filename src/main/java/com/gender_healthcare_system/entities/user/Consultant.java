@@ -18,7 +18,6 @@ import java.util.List;
 public class Consultant {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     //@SequenceGenerator(name = "consultant_sequence", sequenceName = "consultant_sequence", allocationSize = 1)
     //@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "consultant_sequence")
     @Column(name = "consultant_id")
@@ -27,6 +26,9 @@ public class Consultant {
     @Nationalized
     @Column(name = "full_name", nullable = false, length = 70)
     private String fullName;
+
+    @Column(name = "avatar_url", nullable = false)
+    private String avatarUrl;
 
     @Column(name = "phone", nullable = false, length = 15)
     private String phone;

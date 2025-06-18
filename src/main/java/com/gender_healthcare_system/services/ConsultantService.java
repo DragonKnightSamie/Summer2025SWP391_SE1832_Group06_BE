@@ -1,5 +1,6 @@
 package com.gender_healthcare_system.services;
 
+import com.gender_healthcare_system.dtos.login.ConsultantLoginResponse;
 import com.gender_healthcare_system.dtos.login.LoginResponse;
 import com.gender_healthcare_system.dtos.todo.CertificateDTO;
 import com.gender_healthcare_system.dtos.user.ConsultantDetailsDTO;
@@ -30,7 +31,7 @@ public class ConsultantService {
 
     private final CertificateRepo certificateRepo;
 
-    public LoginResponse getConsultantLoginDetails(int id) {
+    public ConsultantLoginResponse getConsultantLoginDetails(int id) {
         return consultantRepo.getConsultantLoginDetails(id);
     }
 

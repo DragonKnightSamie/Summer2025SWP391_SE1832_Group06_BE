@@ -28,6 +28,13 @@ public interface StaffRepo extends JpaRepository<Staff, Integer> {
             "WHERE s.staffId = :id")
     Optional<StaffDTO> getStaffDetailsById(int id);
 
+    @Query("SELECT new com.gender_healthcare_system.entities.user.Staff" +
+            "(s.staffId, s.fullName, " +
+            "s.phone, s.email, s.address) " +
+            "FROM Staff s " +
+            "WHERE s.staffId = :id")
+    Optional<Staff> getStaffDumpById(int id);
+
     @Query("SELECT new com.gender_healthcare_system.dtos.user" +
             ".StaffDTO(s.staffId, a.username, a.password, s.fullName, " +
             "s.phone, s.email, s.address, a.status) " +

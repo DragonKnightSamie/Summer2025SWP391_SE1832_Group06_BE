@@ -18,7 +18,6 @@ import java.util.List;
 public class Manager {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     //@SequenceGenerator(name = "manager_sequence", sequenceName = "manager_sequence", allocationSize = 1)
     //@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "manager_sequence")
     @Column(name = "manager_id")

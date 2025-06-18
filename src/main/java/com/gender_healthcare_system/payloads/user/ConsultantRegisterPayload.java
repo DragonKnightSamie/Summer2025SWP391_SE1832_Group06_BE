@@ -29,6 +29,10 @@ public class ConsultantRegisterPayload {
     @Length(max = 70)
     private String fullName;
 
+    @NotBlank(message = "Avatar URL is required")
+    @Length(min =20, max = 255, message = "Avatar URL must be between 20 and 255 characters")
+    private String avatarUrl;
+
     @NotBlank(message = "Phone is required")
     @Length(max = 15)
     private String phone;

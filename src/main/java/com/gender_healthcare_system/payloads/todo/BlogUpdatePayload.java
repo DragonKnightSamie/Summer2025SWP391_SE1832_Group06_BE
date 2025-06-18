@@ -16,7 +16,7 @@ public class BlogUpdatePayload {
 
     @Nationalized
     @NotBlank
-    @Length(min = 5, max = 100, message = "Blog title by must be between 3 and 100 characters")
+    @Length(min = 5, max = 100, message = "Blog title by must be between 5 and 100 characters")
     private String title;
 
     @Nationalized

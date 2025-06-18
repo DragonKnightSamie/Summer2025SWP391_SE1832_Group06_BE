@@ -9,6 +9,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Data
 @AllArgsConstructor
@@ -52,6 +53,33 @@ public class TestingServiceBookingDTO {
 
     private TestingServiceBookingStatus status;
 
+    private List<TestingServiceBookingResultDTO> results;
+
     private TestingServiceBookingPaymentDTO payment;
 
+    public TestingServiceBookingDTO(int serviceBookingId, String serviceName, String staffName,
+                                    String customerName, String result, Rating rating,
+                                    String comment, LocalDateTime createdAt,
+                                    LocalDateTime expectedStartTime,
+                                    LocalDateTime realStartTime,
+                                    LocalDateTime expectedEndTime,
+                                    LocalDateTime realEndTime,
+                                    TestingServiceBookingStatus status,
+                                    TestingServiceBookingPaymentDTO payment) {
+
+        this.serviceBookingId = serviceBookingId;
+        this.serviceName = serviceName;
+        this.staffName = staffName;
+        this.customerName = customerName;
+        this.result = result;
+        this.rating = rating;
+        this.comment = comment;
+        this.createdAt = createdAt;
+        this.expectedStartTime = expectedStartTime;
+        this.realStartTime = realStartTime;
+        this.expectedEndTime = expectedEndTime;
+        this.realEndTime = realEndTime;
+        this.status = status;
+        this.payment = payment;
+    }
 }

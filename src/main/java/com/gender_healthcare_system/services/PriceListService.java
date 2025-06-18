@@ -1,5 +1,6 @@
 package com.gender_healthcare_system.services;
 
+import com.gender_healthcare_system.dtos.todo.PriceListDTO;
 import com.gender_healthcare_system.entities.todo.PriceList;
 import com.gender_healthcare_system.entities.todo.TestingService;
 import com.gender_healthcare_system.exceptions.AppException;
@@ -10,6 +11,8 @@ import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 @Service
 @AllArgsConstructor
 public class PriceListService {
@@ -17,6 +20,29 @@ public class PriceListService {
     private final PriceListRepo priceListRepo;
 
     private final TestingServiceRepo testingServiceRepo;
+
+    public List<PriceListDTO> getPriceListForTestingService(int serviceId){
+
+        boolean testingService = testingServiceRepo
+                .existsById(serviceId);
+
+        if(!testingService){
+
+            throw new AppException(404,
+                            "No Testing Service found with ID " + serviceId);
+        }
+
+        List<PriceListDTO> priceList =
+                priceListRepo.getPriceListForTestingService(serviceId);
+
+        if(priceList.isEmpty()){
+
+            throw new AppException(404,
+                    "No Price List found for Testing Service with ID " + serviceId);
+        }
+
+        return priceList;
+    }
 
     public void createNewPriceListForExistingService(int id, PriceListPayload payload) {
 

@@ -134,6 +134,7 @@ public class AccountService implements IAccountService {
         consultant.setAccount(account);
 
         consultant.setFullName(payload.getFullName());
+        consultant.setAvatarUrl(payload.getAvatarUrl());
         consultant.setPhone(payload.getPhone());
         consultant.setEmail(payload.getEmail());
         consultant.setAddress(payload.getAddress());

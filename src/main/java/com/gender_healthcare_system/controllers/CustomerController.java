@@ -3,19 +3,18 @@ package com.gender_healthcare_system.controllers;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.gender_healthcare_system.dtos.login.LoginResponse;
-import com.gender_healthcare_system.dtos.todo.CertificateDTO;
-import com.gender_healthcare_system.dtos.todo.ConsultantConsultationDTO;
-import com.gender_healthcare_system.dtos.todo.ConsultantScheduleDTO;
-import com.gender_healthcare_system.dtos.todo.TestingServiceBookingDTO;
+import com.gender_healthcare_system.dtos.todo.*;
 import com.gender_healthcare_system.dtos.user.ListConsultantDTO;
 import com.gender_healthcare_system.entities.user.AccountInfoDetails;
 import com.gender_healthcare_system.payloads.login.LoginRequest;
-import com.gender_healthcare_system.payloads.todo.ConsultationEvaluatePayload;
+import com.gender_healthcare_system.payloads.todo.EvaluatePayload;
 import com.gender_healthcare_system.payloads.todo.ConsultationRegisterPayload;
+import com.gender_healthcare_system.payloads.todo.MomoPaymentPayload;
 import com.gender_healthcare_system.payloads.todo.TestingServiceBookingRegisterPayload;
 import com.gender_healthcare_system.payloads.user.CustomerPayload;
 import com.gender_healthcare_system.services.*;
 import io.swagger.v3.oas.annotations.Parameter;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.AllArgsConstructor;
 
 import org.springframework.http.ResponseEntity;
@@ -47,8 +46,16 @@ public class CustomerController {
     private final AuthenticationManager authenticationManager;
 
     private final TestingServiceBookingService testingServiceBookingService;
+
+    private final TestingService_Service testingService_service;
+
+    private final PriceListService priceListService;
+
     private final ConsultantService consultantService;
+
     private final CertificateService certificateService;
+
+    private final MomoPaymentService momoPaymentService;
 
     @PostMapping("/register")
     public String register(@RequestBody CustomerPayload customerPayload) throws JsonProcessingException {
@@ -91,8 +98,50 @@ public class CustomerController {
     }
 
 
+    /// /////////////////////////////// Manage Momo Payment /////////////////////////////////
+
+    //create payment for consultation registering
+    @PostMapping("/payment-request/create")
+    @PreAuthorize("hasAuthority('ROLE_CUSTOMER')")
+    public ResponseEntity<String> createPaymentRequest
+    (@RequestBody MomoPaymentPayload payload) throws Exception {
+
+        return ResponseEntity.ok(momoPaymentService.createMomoPaymentRequest(payload));
+    }
+
+    //Get customer payment info
+    @GetMapping("/payment-request/call-back")
+    @PreAuthorize("hasAuthority('ROLE_CUSTOMER')")
+    public ResponseEntity<String> checkPaymentTransactionInfo
+    (HttpServletRequest request) {
+
+        momoPaymentService.getMomoPaymentTransactionInfo(request);
+        return ResponseEntity.ok("Success");
+    }
+
+
     /// /////////////////////////////// Manage Testing Service Bookings /////////////////////////
 
+    //get all testing services
+    @GetMapping("/testing-services/list")
+    @PreAuthorize("hasAuthority('ROLE_CUSTOMER')")
+    public ResponseEntity<Map<String, Object>> getAllTestingServicesForCustomer
+    (@RequestParam(defaultValue = "0") int page,
+     @RequestParam(defaultValue = "serviceId") String sort,
+     @RequestParam(defaultValue = "asc") String order) {
+
+        return ResponseEntity.ok(testingService_service
+                .getAllTestingServicesForCustomer(page, sort, order));
+    }
+
+    //get price list for a testing service
+    @GetMapping("/testing-services/price-list/{serviceId}")
+    @PreAuthorize("hasAuthority('ROLE_CUSTOMER')")
+    public List<PriceListDTO> getPriceListForTestingService
+    (@PathVariable int serviceId) {
+
+        return priceListService.getPriceListForTestingService(serviceId);
+    }
 
     //Get Service bookings by customer ID
     @GetMapping("/testing-service-bookings/customer/{customerId}")
@@ -111,7 +160,7 @@ public class CustomerController {
     @GetMapping("/testing-service-bookings/{id}")
     @PreAuthorize("hasAuthority('ROLE_CUSTOMER')")
     public TestingServiceBookingDTO
-    getTestingServiceBookingDetailsById(@PathVariable int id) {
+    getTestingServiceBookingDetailsById(@PathVariable int id) throws JsonProcessingException {
 
         return testingServiceBookingService.getTestingServiceBookingDetailsById(id);
     }
@@ -126,8 +175,21 @@ public class CustomerController {
         return ResponseEntity.ok("Testing Service Booking registered successfully");
     }
 
-    //Cancel consultation
-    @PostMapping("/testing-service-bookings/cancel/{id}")
+    //Review and comment Testing Service Booking
+    @PutMapping("/testing-service-bookings/{id}/evaluate")
+    @PreAuthorize("hasAuthority('ROLE_CUSTOMER')")
+    public ResponseEntity<String> updateTestingServiceBookingCommentAndRating
+    (@PathVariable int id,
+     @RequestBody EvaluatePayload payload) {
+
+        testingServiceBookingService
+                .updateTestingServiceBookingCommentAndRating(id, payload);
+        return ResponseEntity.ok(
+                "Testing Service Booking rating and comment updated successfully");
+    }
+
+    //Cancel testing service booking
+    @PutMapping("/testing-service-bookings/cancel/{id}")
     @PreAuthorize("hasAuthority('ROLE_CUSTOMER ')")
     public ResponseEntity<String> cancelTestingServiceBooking
     (@PathVariable int id) {
@@ -146,7 +208,7 @@ public class CustomerController {
         return consultantService.getAllConsultantsForCustomer();
     }
 
-    //get consultant certificate by ID
+    //get consultant certificates by ID
     @GetMapping("/consultant-list/certificates/{consultantId}")
     @PreAuthorize("hasAuthority('ROLE_CUSTOMER')")
     public List<CertificateDTO> getConsultantCertificates(@PathVariable int consultantId) {
@@ -189,26 +251,27 @@ public class CustomerController {
     //register consultation
     @PostMapping("/consultations/register")
     @PreAuthorize("hasAuthority('ROLE_CUSTOMER')")
-    public ResponseEntity<String> registerConsulation
+    public ResponseEntity<String> registerConsultation
     (@RequestBody ConsultationRegisterPayload payload) {
 
         consultationService.registerConsultation(payload);
         return ResponseEntity.ok("Consultation registered successfully");
     }
 
-    //register consultation
-    @PostMapping("/consultations/{id}/evaluate")
+    //Review and comment consultation
+    @PutMapping("/consultations/{id}/evaluate")
     @PreAuthorize("hasAuthority('ROLE_CUSTOMER')")
     public ResponseEntity<String> updateConsultationCommentAndRating
     (@PathVariable int id,
-     @RequestBody ConsultationEvaluatePayload payload) {
+     @RequestBody EvaluatePayload payload) {
 
         consultationService.updateConsultationCommentAndRating(id, payload);
-        return ResponseEntity.ok("Consultation registered successfully");
+        return ResponseEntity.ok(
+                "Consultation rating and comment updated successfully");
     }
 
     //Cancel consultation
-    @PostMapping("/consultations/cancel/{id}")
+    @PutMapping("/consultations/cancel/{id}")
     @PreAuthorize("hasAuthority('ROLE_CUSTOMER ')")
     public ResponseEntity<String> cancelConsultation
     (@PathVariable int id) {

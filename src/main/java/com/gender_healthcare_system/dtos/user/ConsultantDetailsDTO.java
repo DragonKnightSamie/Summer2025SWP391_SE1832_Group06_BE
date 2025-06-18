@@ -17,6 +17,7 @@ public class ConsultantDetailsDTO {
     private String userName;
     private String password;
     private String fullName;
+    private String avatarUrl;
     private String phone;
     private String email;
     private String address;
@@ -24,12 +25,13 @@ public class ConsultantDetailsDTO {
     private List<CertificateDTO> certificateList;
 
     public ConsultantDetailsDTO(int consultantId, String userName, String password,
-                                String fullName, String phone, String email,
-                                String address, AccountStatus status) {
+                                String fullName, String avatarUrl, String phone,
+                                String email, String address, AccountStatus status) {
         this.consultantId = consultantId;
         this.userName = userName;
         this.password = password;
         this.fullName = fullName;
+        this.avatarUrl = avatarUrl;
         this.phone = phone;
         this.email = email;
         this.address = address;

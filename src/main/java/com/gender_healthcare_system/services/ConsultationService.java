@@ -5,6 +5,7 @@ import com.gender_healthcare_system.dtos.todo.ConsultantScheduleDTO;
 import com.gender_healthcare_system.dtos.todo.ConsultationsDTO;
 import com.gender_healthcare_system.entities.enu.ConsultationStatus;
 import com.gender_healthcare_system.entities.enu.PaymentStatus;
+import com.gender_healthcare_system.entities.enu.TestingServiceBookingStatus;
 import com.gender_healthcare_system.entities.todo.Consultation;
 import com.gender_healthcare_system.entities.todo.ConsultationPayment;
 import com.gender_healthcare_system.entities.user.Consultant;
@@ -12,7 +13,7 @@ import com.gender_healthcare_system.entities.user.Customer;
 import com.gender_healthcare_system.exceptions.AppException;
 import com.gender_healthcare_system.payloads.todo.ConsultationCompletePayload;
 import com.gender_healthcare_system.payloads.todo.ConsultationConfirmPayload;
-import com.gender_healthcare_system.payloads.todo.ConsultationEvaluatePayload;
+import com.gender_healthcare_system.payloads.todo.EvaluatePayload;
 import com.gender_healthcare_system.payloads.todo.ConsultationRegisterPayload;
 import com.gender_healthcare_system.repositories.ConsultantRepo;
 import com.gender_healthcare_system.repositories.ConsultationPaymentRepo;
@@ -172,9 +173,11 @@ public class ConsultationService {
         ConsultationPayment payment = new ConsultationPayment();
 
         payment.setConsultation(consultation);
+        payment.setOrderId(payment.getOrderId());
         payment.setAmount(payload.getPayment().getAmount());
         payment.setCreatedAt(LocalDateTime.now());
         payment.setMethod(payload.getPayment().getMethod());
+        payment.setDescription(payment.getDescription());
         payment.setStatus(PaymentStatus.PAID);
 
         consultationPaymentRepo.saveAndFlush(payment);
@@ -252,7 +255,7 @@ public class ConsultationService {
 
     @Transactional
     public void updateConsultationCommentAndRating
-            (int id, ConsultationEvaluatePayload payload) {
+            (int id, EvaluatePayload payload) {
 
         boolean consultationExist = consultationRepo.existsById(id);
 
@@ -273,8 +276,10 @@ public class ConsultationService {
                 .findConsultationById(payload.getConsultationId())
                 .orElseThrow(() -> new AppException(404, "Consultation not found"));
 
-        if (consultation.getStatus() == ConsultationStatus.COMPLETED
-                || consultation.getStatus() == ConsultationStatus.CANCELLED) {
+        ConsultationStatus consultationStatus = consultation.getStatus();
+
+        if (consultationStatus == ConsultationStatus.COMPLETED
+                || consultationStatus == ConsultationStatus.CANCELLED) {
 
             throw new AppException
                     (400, "Cannot mark an already completed " +

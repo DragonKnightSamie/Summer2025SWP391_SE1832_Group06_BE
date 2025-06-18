@@ -1,5 +1,6 @@
 package com.gender_healthcare_system.services;
 
+import com.gender_healthcare_system.dtos.todo.CustomerTestingServiceListDTO;
 import com.gender_healthcare_system.dtos.todo.TestingServiceDTO;
 import com.gender_healthcare_system.dtos.todo.TestingServiceListDTO;
 import com.gender_healthcare_system.entities.enu.TestingServiceStatus;
@@ -36,6 +37,41 @@ public class TestingService_Service {
         return testingServiceRepo.getTestingServiceById(id)
                 .orElseThrow(() -> new AppException
                         (404,"Testing Service not found with ID: " + id));
+    }
+
+    public Map<String, Object> getAllTestingServicesForCustomer
+            (int page, String sortField, String sortOrder) {
+
+        final int itemSize = 10;
+
+        Sort sort = Sort.by(Sort.Direction.ASC, sortField);
+
+        if(sortOrder.equals("desc")){
+            sort = Sort.by(Sort.Direction.DESC, sortField);
+        }
+
+        Pageable pageRequest = PageRequest
+                .of(page, itemSize, sort);
+
+
+        Page<CustomerTestingServiceListDTO> pageResult =
+                testingServiceRepo.getAllTestingServicesForCustomer(pageRequest);
+
+        if(!pageResult.hasContent()){
+
+            throw new AppException(404, "No Testing Services found");
+        }
+
+        List<CustomerTestingServiceListDTO> serviceList = pageResult.getContent();
+
+        Map<String, Object> map = new HashMap<>();
+
+        map.put("totalItems", pageResult.getTotalElements());
+        map.put("testingServices", serviceList);
+        map.put("totalPages", pageResult.getTotalPages());
+        map.put("currentPage", pageResult.getNumber());
+
+        return map;
     }
 
     public Map<String, Object> getAllTestingServices

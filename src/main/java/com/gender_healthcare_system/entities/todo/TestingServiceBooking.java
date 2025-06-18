@@ -43,7 +43,7 @@ public class TestingServiceBooking {
     @JoinColumn(name = "customer_id", nullable = false)
     private Customer customer;
 
-    // Relationship with Customer
+    // Relationship with Staff
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "staff_id")
     private Staff staff;

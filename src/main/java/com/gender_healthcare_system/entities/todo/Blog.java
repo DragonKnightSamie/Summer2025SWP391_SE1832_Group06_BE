@@ -33,6 +33,10 @@ public class Blog {
     private Manager manager;
 
     @Nationalized
+    @Column(name = "author", nullable = false, length = 50)
+    private String author;
+
+    @Nationalized
     @Column(name = "title", nullable = false, length = 100)
     private String title;
 

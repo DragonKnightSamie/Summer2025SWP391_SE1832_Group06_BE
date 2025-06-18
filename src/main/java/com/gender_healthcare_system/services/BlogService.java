@@ -126,6 +126,7 @@ public class BlogService {
         Blog blog = new Blog();
 
         blog.setManager(manager);
+        blog.setAuthor(payload.getAuthor());
         blog.setTitle(payload.getTitle());
         blog.setContent(payload.getContent());
         blog.setCreatedAt(LocalDateTime.now());
