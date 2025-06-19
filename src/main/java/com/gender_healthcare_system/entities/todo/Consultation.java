@@ -49,16 +49,16 @@ public class Consultation {
     @Column(name = "comment", length = 255)
     private String comment;
 
-    @Column(name = "created_at", nullable = false)
+    @Column(name = "created_at", nullable = false, unique = true)
     private LocalDateTime createdAt;
 
-    @Column(name = "expected_start_time", nullable = false)
+    @Column(name = "expected_start_time", nullable = false, unique = true)
     private LocalDateTime expectedStartTime;
 
     @Column(name = "real_start_time")
     private LocalDateTime realStartTime;
 
-    @Column(name = "expected_end_time", nullable = false)
+    @Column(name = "expected_end_time", nullable = false, unique = true)
     private LocalDateTime expectedEndTime;
 
     @Column(name = "real_end_time")

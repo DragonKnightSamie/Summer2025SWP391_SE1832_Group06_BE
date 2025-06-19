@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import com.gender_healthcare_system.entities.enu.Gender;
 import com.gender_healthcare_system.entities.todo.GenderSpecificDetails;
 import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.annotation.Nullable;
 import jakarta.persistence.Embedded;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
@@ -42,7 +43,7 @@ public class CustomerPayload {
     @NotBlank(message = "Gender is required")
     private Gender gender; //Enum
 
-    @NotBlank(message = "Gender specific details is required")
+    @Nullable
     @Embedded
     private GenderSpecificDetails genderSpecificDetails;
 

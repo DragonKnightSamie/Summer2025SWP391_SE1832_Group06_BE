@@ -36,7 +36,7 @@ public class Customer {
     @Enumerated(EnumType.STRING)
     private Gender gender;
 
-    @Column(name = "gender_specific_details", nullable = false, length = 255)
+    @Column(name = "gender_specific_details", length = 255)
     private String genderSpecificDetails;
 
     @Column(name = "email", nullable = false, unique = true, length = 100)
