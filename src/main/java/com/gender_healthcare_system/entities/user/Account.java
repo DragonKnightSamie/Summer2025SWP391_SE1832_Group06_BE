@@ -23,7 +23,7 @@ public class Account {
 
     //ManyToOne relationship with Role
     @ManyToOne
-    @JoinColumn(name = "role_id")
+    @JoinColumn(name = "role_id", nullable = false)
     private Role role;
 
     @Column(name = "username", nullable = false, unique = true, length = 50)
