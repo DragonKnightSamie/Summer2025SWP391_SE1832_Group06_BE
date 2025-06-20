@@ -38,7 +38,7 @@ public class ConsultantController {
     private final AuthenticationManager authenticationManager;
 
     @PostMapping("/login")
-    public ConsultantLoginResponse login(@RequestBody LoginRequest loginRequest) {
+    public ResponseEntity<ConsultantLoginResponse> login(@RequestBody LoginRequest loginRequest) {
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
                         loginRequest.getUsername(),
@@ -70,7 +70,7 @@ public class ConsultantController {
         String jwtToken = jwtService.generateToken(loginRequest.getUsername());
         loginDetails.setToken(jwtToken);
 
-        return loginDetails;
+        return ResponseEntity.ok(loginDetails);
         //return jwtService.generateToken(loginRequest.getUsername());
     }
 
@@ -137,9 +137,11 @@ public class ConsultantController {
     //Get consultation by ID
     @GetMapping("/consultations/{id}")
     @PreAuthorize("hasAuthority('ROLE_CONSULTANT')")
-    public ConsultantConsultationDTO getConsultationById(@PathVariable int id) {
-        return consultationService.getConsultationById(id);
+    public ResponseEntity<ConsultantConsultationDTO> getConsultationById(@PathVariable int id) {
+        ConsultantConsultationDTO dto = consultationService.getConsultationById(id);
+        return ResponseEntity.ok(dto);
     }
+
 
     //Confirm consultation
     /*@PostMapping("/consultations/confirm")
@@ -176,6 +178,7 @@ public class ConsultantController {
     (@RequestBody ConsultationCompletePayload payload) {
 
         consultationService.completeConsultation(payload);
-        return ResponseEntity.ok("Consultation rescheduled successfully");
+        return ResponseEntity.ok("Consultation completed successfully");
     }
+
 }

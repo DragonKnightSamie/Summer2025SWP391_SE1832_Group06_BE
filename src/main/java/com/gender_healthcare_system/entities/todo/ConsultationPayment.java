@@ -10,6 +10,7 @@ import lombok.ToString;
 import org.hibernate.annotations.Nationalized;
 import org.hibernate.validator.constraints.Length;
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
 
 @Entity
@@ -18,7 +19,7 @@ import java.time.LocalDateTime;
 @ToString(exclude = "consultation")
 @NoArgsConstructor
 @AllArgsConstructor
-public class ConsultationPayment {
+public class ConsultationPayment implements Serializable {
 
     @Id
     /*@SequenceGenerator(name = "consultation_payment_seq",

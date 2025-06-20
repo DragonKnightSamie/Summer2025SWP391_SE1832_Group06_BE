@@ -7,6 +7,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.Nationalized;
 
+import java.io.Serializable;
 import java.util.List;
 
 @Entity
@@ -14,7 +15,7 @@ import java.util.List;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class Staff {
+public class Staff implements Serializable {
 
     @Id
     //@SequenceGenerator(name = "staff_sequence", sequenceName = "staff_sequence", allocationSize = 1)

@@ -7,12 +7,13 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.Nationalized;
 
+import java.io.Serializable;
 import java.time.LocalDate;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class CertificateDTO {
+public class CertificateDTO implements Serializable {
 
     private int certificateId;
 

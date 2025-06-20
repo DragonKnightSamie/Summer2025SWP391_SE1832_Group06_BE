@@ -12,10 +12,12 @@ import lombok.NoArgsConstructor;
 import org.hibernate.annotations.Nationalized;
 import org.hibernate.validator.constraints.Length;
 
+import java.io.Serializable;
+
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class ConsultationPaymentPayload {
+public class ConsultationPaymentPayload implements Serializable {
 
     @NotBlank
     @Length(min = 13, max = 20, message = "Order ID must be between 13 and 20 characters")

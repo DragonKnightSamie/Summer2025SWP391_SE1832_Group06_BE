@@ -9,6 +9,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.Nationalized;
 
+import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -17,7 +18,7 @@ import java.util.List;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class Customer {
+public class Customer implements Serializable {
 
     @Id
     //@SequenceGenerator(name = "customer_sequence", sequenceName = "customer_sequence", allocationSize = 1)

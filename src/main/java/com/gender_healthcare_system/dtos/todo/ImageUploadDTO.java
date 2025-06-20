@@ -4,10 +4,12 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.io.Serializable;
+
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class ImageUploadDTO {
+public class ImageUploadDTO implements Serializable {
 
     private String publicId; // img/avatar_01
     private String url; // https://res.cloudinary.com/dzj3q1v2f/image/upload/v1699999999/img/avatar_01.jpg

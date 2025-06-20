@@ -101,8 +101,6 @@ public class MomoPaymentService {
 
                 System.out.println("Response from MoMo: " + result.toString());
                 return result.toString();
-
-
             }
         } catch (Exception e) {
             e.printStackTrace();

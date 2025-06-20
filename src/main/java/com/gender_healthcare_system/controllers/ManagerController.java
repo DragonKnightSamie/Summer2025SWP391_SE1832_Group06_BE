@@ -61,14 +61,15 @@ public class ManagerController {
     //test
     //Manager registration
     @PostMapping("/register")
-    public String register(@RequestBody ManagerRegisterPayload payload) {
+    public ResponseEntity<String> register(@RequestBody ManagerRegisterPayload payload) {
         accountService.createManagerAccount(payload);
-        return "Manager registered successfully";
+        return ResponseEntity.ok("Manager registered successfully");
     }
+
 
     //Manager login
     @PostMapping("/login")
-    public LoginResponse login(@RequestBody LoginRequest loginRequest) {
+    public ResponseEntity<LoginResponse> login(@RequestBody LoginRequest loginRequest) {
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(loginRequest.getUsername(),
                         loginRequest.getPassword())
@@ -85,25 +86,21 @@ public class ManagerController {
                         .getAuthority().equals("ROLE_MANAGER"));
 
         if (!hasRole) {
-            throw new UsernameNotFoundException
-                    ("Access denied for non-manager user");
+            throw new UsernameNotFoundException("Access denied for non-manager user");
         }
 
-        AccountInfoDetails account =
-                (AccountInfoDetails) authentication.getPrincipal();
+        AccountInfoDetails account = (AccountInfoDetails) authentication.getPrincipal();
         int id = account.getId();
 
-        LoginResponse loginDetails = managerService
-                .getManagerLoginDetails(id);
+        LoginResponse loginDetails = managerService.getManagerLoginDetails(id);
         loginDetails.setUsername(loginRequest.getUsername());
 
         String jwtToken = jwtService.generateToken(loginRequest.getUsername());
         loginDetails.setToken(jwtToken);
 
-        return loginDetails;
-        //return jwtService.generateToken(loginRequest.getUsername());
-
+        return ResponseEntity.ok(loginDetails);
     }
+
 
 
     /// //////////////////////// Manage Blogs /////////////////////////////////////
@@ -329,47 +326,50 @@ public class ManagerController {
     //get testing service type by ID
     @GetMapping("/testing-service-types/{id}")
     @PreAuthorize("hasAuthority('ROLE_MANAGER')")
-    public TestingServiceDTO getTestingServiceTypeById(@PathVariable int id) {
-        return testingService_Service.getTestingServiceById(id);
+    public ResponseEntity<TestingServiceDTO> getTestingServiceTypeById(@PathVariable int id) {
+        return ResponseEntity.ok(testingService_Service.getTestingServiceById(id));
     }
+
 
     //get all testing service types
     @GetMapping("/testing-services-types/")
     @PreAuthorize("hasAuthority('ROLE_MANAGER')")
-    public Map<String, Object> getAllTestingServiceTypes
-    (@RequestParam(defaultValue = "0") int page,
-     @RequestParam(defaultValue = "serviceTypeId") String sort,
-     @RequestParam(defaultValue = "asc") String order) {
-        return testingServiceTypeService.getAllTestingServiceTypes(page, sort, order);
+    public ResponseEntity<Map<String, Object>> getAllTestingServiceTypes(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "serviceTypeId") String sort,
+            @RequestParam(defaultValue = "asc") String order) {
+        return ResponseEntity.ok(testingServiceTypeService.getAllTestingServiceTypes(page, sort, order));
     }
+
 
     //create new testing service type
     @PostMapping("/testing-services-types/create")
     @PreAuthorize("hasAuthority('ROLE_MANAGER')")
-    public String createTestingServiceType
-    (@RequestBody TestingServiceTypeRegisterPayload payload) {
+    public ResponseEntity<String> createTestingServiceType(
+            @RequestBody TestingServiceTypeRegisterPayload payload) {
         testingServiceTypeService.createTestingServiceType(payload);
-        return "Testing Service type created successfully";
+        return ResponseEntity.ok("Testing Service type created successfully");
     }
+
 
     //update testing service type
     @PutMapping("/testing-services-types/update/{id}")
     @PreAuthorize("hasAuthority('ROLE_MANAGER')")
-    public String updateTestingServiceType
-    (@PathVariable int id, @RequestBody TestingServiceTypeUpdatePayload payload) {
-
+    public ResponseEntity<String> updateTestingServiceType(
+            @PathVariable int id, @RequestBody TestingServiceTypeUpdatePayload payload) {
         testingServiceTypeService.updateTestingServiceType(id, payload);
-        return "Testing Service type updated successfully";
+        return ResponseEntity.ok("Testing Service type updated successfully");
     }
+
 
     //delete testing service type
     @DeleteMapping("/testing-services-types/{id}")
     @PreAuthorize("hasAuthority('ROLE_MANAGER')")
-    public String deleteTestingServiceType(@PathVariable int id) {
-
+    public ResponseEntity<String> deleteTestingServiceType(@PathVariable int id) {
         testingService_Service.deleteTestingService(id);
-        return "Testing Service type deleted successfully";
+        return ResponseEntity.ok("Testing Service type deleted successfully");
     }
+
 
 
     /// //////////////////////// Manage Testing Service Results /////////////////////////////////////
@@ -378,21 +378,21 @@ public class ManagerController {
     //update testing service result
     @PutMapping("/testing-services-results/update/{id}")
     @PreAuthorize("hasAuthority('ROLE_MANAGER')")
-    public String updateTestingServiceResult
-    (@PathVariable int id, @RequestBody TestingServiceResultPayload payload) {
-
+    public ResponseEntity<String> updateTestingServiceResult(
+            @PathVariable int id, @RequestBody TestingServiceResultPayload payload) {
         testingServiceResultService.updateTestingServiceResult(id, payload);
-        return "Testing Service result updated successfully";
+        return ResponseEntity.ok("Testing Service result updated successfully");
     }
+
 
     //delete testing service result
     @DeleteMapping("/testing-services-results/{id}")
     @PreAuthorize("hasAuthority('ROLE_MANAGER')")
-    public String deleteTestingServiceResult(@PathVariable int id) {
-
+    public ResponseEntity<String> deleteTestingServiceResult(@PathVariable int id) {
         testingService_Service.deleteTestingService(id);
-        return "Testing Service result deleted successfully";
+        return ResponseEntity.ok("Testing Service result deleted successfully");
     }
+
 
 
     /// //////////////////////// Manage Testing Services /////////////////////////////////////
@@ -401,29 +401,31 @@ public class ManagerController {
     //get testing service by ID
     @GetMapping("/testing-services/{id}")
     @PreAuthorize("hasAuthority('ROLE_MANAGER')")
-    public TestingServiceDTO getTestingServiceById(@PathVariable int id) {
-        return testingService_Service.getTestingServiceById(id);
+    public ResponseEntity<TestingServiceDTO> getTestingServiceById(@PathVariable int id) {
+        return ResponseEntity.ok(testingService_Service.getTestingServiceById(id));
     }
+
 
     //get all testing services
     @GetMapping("/testing-services/")
     @PreAuthorize("hasAuthority('ROLE_MANAGER')")
-    public Map<String, Object> getAllTestingServices
-    (@RequestParam(defaultValue = "0") int page,
-     @RequestParam(defaultValue = "serviceId") String sort,
-     @RequestParam(defaultValue = "asc") String order) {
-
-        return testingService_Service.getAllTestingServices(page, sort, order);
+    public ResponseEntity<Map<String, Object>> getAllTestingServices(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "serviceId") String sort,
+            @RequestParam(defaultValue = "asc") String order) {
+        return ResponseEntity.ok(testingService_Service.getAllTestingServices(page, sort, order));
     }
+
 
     //create new testing service
     @PostMapping("/testing-services/create")
     @PreAuthorize("hasAuthority('ROLE_MANAGER')")
-    public String createTestingService
-    (@RequestBody TestingServiceRegisterPayload payload) {
+    public ResponseEntity<String> createTestingService(
+            @RequestBody TestingServiceRegisterPayload payload) {
         testingService_Service.createTestingService(payload);
-        return "Testing Service created successfully";
+        return ResponseEntity.ok("Testing Service created successfully");
     }
+
 
     //Create new price list for existing testing service
     @PostMapping("/testing-services/price-lists/create/{id}")
@@ -436,21 +438,21 @@ public class ManagerController {
     //update testing service
     @PutMapping("/testing-services/update/{id}")
     @PreAuthorize("hasAuthority('ROLE_MANAGER')")
-    public String updateTestingService
-    (@PathVariable int id, @RequestBody TestingServiceUpdatePayload payload) {
-
+    public ResponseEntity<String> updateTestingService(
+            @PathVariable int id, @RequestBody TestingServiceUpdatePayload payload) {
         testingService_Service.updateTestingService(id, payload);
-        return "Testing Service updated successfully";
+        return ResponseEntity.ok("Testing Service updated successfully");
     }
+
 
     //delete testing service
-    @PreAuthorize("hasAuthority('ROLE_MANAGER')")
     @DeleteMapping("/testing-services/{id}")
-    public String deleteTestingService(@PathVariable int id) {
-
+    @PreAuthorize("hasAuthority('ROLE_MANAGER')")
+    public ResponseEntity<String> deleteTestingService(@PathVariable int id) {
         testingService_Service.deleteTestingService(id);
-        return "Testing Service deleted successfully";
+        return ResponseEntity.ok("Testing Service deleted successfully");
     }
+
 
 
     /// //////////////////////////// Price List Operations ///////////////////////////////
@@ -478,17 +480,19 @@ public class ManagerController {
 
     @PostMapping(value = "/image/upload", consumes = "multipart/form-data")
     @PreAuthorize("hasAuthority('ROLE_MANAGER')")
-    public ImageUploadDTO uploadImage(@RequestParam("file") MultipartFile file, @RequestParam("folder") String folder) throws IOException {
-        // Upload image to Cloudinary
-        return imageUploadService.uploadImage(file, folder);
+    public ResponseEntity<ImageUploadDTO> uploadImage(@RequestParam("file") MultipartFile file,
+                                                      @RequestParam("folder") String folder) throws IOException {
+        return ResponseEntity.ok(imageUploadService.uploadImage(file, folder));
     }
 
+
     @PutMapping(value = "/image/replace", consumes = "multipart/form-data")
-    public ImageUploadDTO replaceImage(@RequestParam("file") MultipartFile file,
-                                       @RequestParam("folder") String folder,
-                                       @RequestParam("id") String publicId) throws IOException {
-        return imageUploadService.replaceImage(file, folder, publicId);
+    public ResponseEntity<ImageUploadDTO> replaceImage(@RequestParam("file") MultipartFile file,
+                                                       @RequestParam("folder") String folder,
+                                                       @RequestParam("id") String publicId) throws IOException {
+        return ResponseEntity.ok(imageUploadService.replaceImage(file, folder, publicId));
     }
+
 
     @DeleteMapping("/image/delete")
     @PreAuthorize("hasAuthority('ROLE_MANAGER')")

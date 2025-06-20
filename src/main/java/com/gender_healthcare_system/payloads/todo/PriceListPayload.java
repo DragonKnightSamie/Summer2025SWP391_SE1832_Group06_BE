@@ -9,10 +9,12 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.Nationalized;
 
+import java.io.Serializable;
+
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class PriceListPayload {
+public class PriceListPayload implements Serializable {
 
     @NotNull
     private long price;

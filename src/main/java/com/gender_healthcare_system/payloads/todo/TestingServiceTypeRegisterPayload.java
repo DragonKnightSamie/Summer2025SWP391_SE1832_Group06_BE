@@ -10,12 +10,13 @@ import lombok.NoArgsConstructor;
 import org.hibernate.annotations.Nationalized;
 import org.hibernate.validator.constraints.Length;
 
+import java.io.Serializable;
 import java.util.List;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class TestingServiceTypeRegisterPayload {
+public class TestingServiceTypeRegisterPayload implements Serializable {
 
     @Nationalized
     @NotBlank

@@ -57,14 +57,8 @@ public class CustomerController {
 
     private final MomoPaymentService momoPaymentService;
 
-    @PostMapping("/register")
-    public String register(@RequestBody CustomerPayload customerPayload) throws JsonProcessingException {
-        accountService.createCustomerAccount(customerPayload);
-        return "Customer registered successfully";
-    }
-
     @PostMapping("/login")
-    public LoginResponse login(@RequestBody LoginRequest loginRequest) {
+    public ResponseEntity<LoginResponse> login(@RequestBody LoginRequest loginRequest) {
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(loginRequest.getUsername(),
                         loginRequest.getPassword())
@@ -94,14 +88,15 @@ public class CustomerController {
         String jwtToken = jwtService.generateToken(loginRequest.getUsername());
         loginDetails.setToken(jwtToken);
 
-        return loginDetails;
+        return ResponseEntity.ok(loginDetails);
     }
+
 
 
     /// /////////////////////////////// Manage Momo Payment /////////////////////////////////
 
     //create payment for consultation registering
-    @PostMapping("/payment-request/create")
+    @PostMapping("/payment-transaction/create")
     @PreAuthorize("hasAuthority('ROLE_CUSTOMER')")
     public ResponseEntity<String> createPaymentRequest
     (@RequestBody MomoPaymentPayload payload) throws Exception {
@@ -109,15 +104,23 @@ public class CustomerController {
         return ResponseEntity.ok(momoPaymentService.createMomoPaymentRequest(payload));
     }
 
-    //Get customer payment info
-    @GetMapping("/payment-request/call-back")
-    @PreAuthorize("hasAuthority('ROLE_CUSTOMER')")
-    public ResponseEntity<String> checkPaymentTransactionInfo
-    (HttpServletRequest request) {
 
-        momoPaymentService.getMomoPaymentTransactionInfo(request);
-        return ResponseEntity.ok("Success");
+    //Get customer payment info
+    @GetMapping("/payment-transaction/check-error")
+    public ResponseEntity<String> handleCallback(
+            @RequestParam String orderId,
+            @RequestParam String requestId,
+            @RequestParam String resultCode
+    ) {
+        if ("0".equals(resultCode)) {
+            // payment success
+            return ResponseEntity.ok("Payment successful for orderId " + orderId);
+        } else {
+            // payment failed
+            return ResponseEntity.status(400).body("Payment failed with code: " + resultCode);
+        }
     }
+
 
 
     /// /////////////////////////////// Manage Testing Service Bookings /////////////////////////
@@ -137,33 +140,36 @@ public class CustomerController {
     //get price list for a testing service
     @GetMapping("/testing-services/price-list/{serviceId}")
     @PreAuthorize("hasAuthority('ROLE_CUSTOMER')")
-    public List<PriceListDTO> getPriceListForTestingService
+    public ResponseEntity<List<PriceListDTO>> getPriceListForTestingService
     (@PathVariable int serviceId) {
 
-        return priceListService.getPriceListForTestingService(serviceId);
+        return ResponseEntity.ok(priceListService.getPriceListForTestingService(serviceId));
     }
+
 
     //Get Service bookings by customer ID
     @GetMapping("/testing-service-bookings/customer/{customerId}")
     @PreAuthorize("hasAuthority('ROLE_CUSTOMER')")
-    public Map<String, Object> getTestingServiceBookingsByCustomerId
+    public ResponseEntity<Map<String, Object>> getTestingServiceBookingsByCustomerId
     (@PathVariable int customerId,
      @RequestParam(defaultValue = "0") int page,
      @RequestParam(defaultValue = "serviceBookingId") String sort,
      @RequestParam(defaultValue = "asc") String order) {
 
-        return testingServiceBookingService
-                .getAllTestingServiceBookingsByCustomerId(customerId, page, sort, order);
+        return ResponseEntity.ok(testingServiceBookingService
+                .getAllTestingServiceBookingsByCustomerId(customerId, page, sort, order));
     }
+
 
     //Get Testing Service Booking details by ID
     @GetMapping("/testing-service-bookings/{id}")
     @PreAuthorize("hasAuthority('ROLE_CUSTOMER')")
-    public TestingServiceBookingDTO
+    public ResponseEntity<TestingServiceBookingDTO>
     getTestingServiceBookingDetailsById(@PathVariable int id) throws JsonProcessingException {
 
-        return testingServiceBookingService.getTestingServiceBookingDetailsById(id);
+        return ResponseEntity.ok(testingServiceBookingService.getTestingServiceBookingDetailsById(id));
     }
+
 
     //register testing service booking
     @PostMapping("/testing-service-bookings/register")
@@ -190,7 +196,7 @@ public class CustomerController {
 
     //Cancel testing service booking
     @PutMapping("/testing-service-bookings/cancel/{id}")
-    @PreAuthorize("hasAuthority('ROLE_CUSTOMER ')")
+    @PreAuthorize("hasAuthority('ROLE_CUSTOMER')")
     public ResponseEntity<String> cancelTestingServiceBooking
     (@PathVariable int id) {
         testingServiceBookingService.cancelTestingServiceBooking(id);
@@ -204,35 +210,39 @@ public class CustomerController {
     //lấy danh sách consltant cho customer chon và xem thông tin
     @GetMapping("/consultant-list/")
     @PreAuthorize("hasAuthority('ROLE_CUSTOMER')")
-    public List<ListConsultantDTO> getAllConsultantForCustomer() {
-        return consultantService.getAllConsultantsForCustomer();
+    public ResponseEntity<List<ListConsultantDTO>> getAllConsultantForCustomer() {
+        return ResponseEntity.ok(consultantService.getAllConsultantsForCustomer());
     }
+
 
     //get consultant certificates by ID
     @GetMapping("/consultant-list/certificates/{consultantId}")
     @PreAuthorize("hasAuthority('ROLE_CUSTOMER')")
-    public List<CertificateDTO> getConsultantCertificates(@PathVariable int consultantId) {
-        return certificateService.getConsultantCertificates(consultantId);
+    public ResponseEntity<List<CertificateDTO>> getConsultantCertificates(@PathVariable int consultantId) {
+        return ResponseEntity.ok(certificateService.getConsultantCertificates(consultantId));
     }
+
 
     //Get consultations by customer ID
     @GetMapping("/consultations/customer/{customerId}")
     @PreAuthorize("hasAuthority('ROLE_CUSTOMER')")
-    public Map<String, Object> getConsultationsByCustomerId
+    public ResponseEntity<Map<String, Object>> getConsultationsByCustomerId
     (@PathVariable int customerId,
      @RequestParam(defaultValue = "0") int page,
      @RequestParam(defaultValue = "consultationId") String sort,
      @RequestParam(defaultValue = "asc") String order) {
 
-        return consultationService.getConsultationsByCustomerId(customerId, page, sort, order);
+        return ResponseEntity.ok(consultationService.getConsultationsByCustomerId(customerId, page, sort, order));
     }
+
 
     //Get consultation by ID
     @GetMapping("/consultations/{id}")
     @PreAuthorize("hasAuthority('ROLE_CUSTOMER')")
-    public ConsultantConsultationDTO getConsultationById(@PathVariable int id) {
-        return consultationService.getConsultationById(id);
+    public ResponseEntity<ConsultantConsultationDTO> getConsultationById(@PathVariable int id) {
+        return ResponseEntity.ok(consultationService.getConsultationById(id));
     }
+
 
     //Get consultant schedule in a specific date for check
     @GetMapping("/consultations/consultant/{consultantId}/check-schedule")

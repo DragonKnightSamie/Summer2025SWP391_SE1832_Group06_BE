@@ -11,6 +11,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.Nationalized;
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
 
 
@@ -19,7 +20,7 @@ import java.time.LocalDateTime;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class Consultation {
+public class Consultation implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

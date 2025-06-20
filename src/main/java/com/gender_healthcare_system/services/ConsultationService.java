@@ -30,6 +30,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -39,7 +40,7 @@ import java.util.Map;
 public class ConsultationService {
 
     private final CustomerRepo customerRepo;
-    
+
     private final ConsultantRepo consultantRepo;
 
     private final ConsultationRepo consultationRepo;
@@ -159,8 +160,10 @@ public class ConsultationService {
                 .orElseThrow(() -> new AppException(404,
                         "Consultant not found with ID "+ payload.getConsultantId()));
 
+        // Set the time zone to Asia/Ho_Chi_Minh
+        ZoneId zone = ZoneId.of("Asia/Ho_Chi_Minh");
         Consultation consultation = new Consultation();
-        consultation.setCreatedAt(LocalDateTime.now());
+        consultation.setCreatedAt(LocalDateTime.now(zone));
         consultation.setExpectedStartTime(payload.getExpectedStartTime());
         LocalDateTime expectedEndTime = payload.getExpectedStartTime().plusHours(1);
         consultation.setExpectedEndTime(expectedEndTime);

@@ -10,14 +10,16 @@ import org.hibernate.annotations.Nationalized;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 
 @Entity
 @Table(name = "Blog")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class Blog {
+public class Blog implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

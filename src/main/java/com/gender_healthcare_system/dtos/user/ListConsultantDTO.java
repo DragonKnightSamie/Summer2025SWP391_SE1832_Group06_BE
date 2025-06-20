@@ -4,10 +4,12 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.io.Serializable;
+
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class ListConsultantDTO {
+public class ListConsultantDTO implements Serializable {
 
     private int consultantId;
     private String fullName;

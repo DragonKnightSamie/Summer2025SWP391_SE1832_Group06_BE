@@ -7,20 +7,18 @@ import lombok.NoArgsConstructor;
 import lombok.AllArgsConstructor;
 import org.hibernate.annotations.Nationalized;
 
+import java.io.Serializable;
 import java.time.LocalDate;
-import java.util.Date;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
 @Table(name = "Certificate")
-public class Certificate {
+public class Certificate implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    //@SequenceGenerator(name = "certificate_sequence", sequenceName = "certificate_sequence", allocationSize = 1)
-    //@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "certificate_sequence")
     @Column(name = "certificate_id")
     private int certificateId;
 
@@ -31,6 +29,9 @@ public class Certificate {
     @Nationalized
     @Column(name = "certificate_name", nullable = false, length = 100)
     private String certificateName;
+
+    @Column(name = "image_url", nullable = false, length = 255)
+    private String imageUrl;
 
     @Nationalized
     @Column(name = "issued_by", nullable = false, length = 100)
@@ -45,5 +46,6 @@ public class Certificate {
     @Nationalized
     @Column(name = "description", length = 255)
     private String description;
+
 
 }

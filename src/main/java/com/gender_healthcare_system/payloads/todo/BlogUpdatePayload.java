@@ -9,10 +9,12 @@ import lombok.NoArgsConstructor;
 import org.hibernate.annotations.Nationalized;
 import org.hibernate.validator.constraints.Length;
 
+import java.io.Serializable;
+
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class BlogUpdatePayload {
+public class BlogUpdatePayload implements Serializable {
 
     @Nationalized
     @NotBlank

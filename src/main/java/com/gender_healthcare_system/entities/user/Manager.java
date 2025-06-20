@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 import org.hibernate.annotations.Nationalized;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 
+import java.io.Serializable;
 import java.util.List;
 
 @Entity
@@ -15,7 +16,7 @@ import java.util.List;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class Manager {
+public class Manager implements Serializable {
 
     @Id
     //@SequenceGenerator(name = "manager_sequence", sequenceName = "manager_sequence", allocationSize = 1)

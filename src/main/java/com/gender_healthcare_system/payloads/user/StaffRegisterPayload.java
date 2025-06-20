@@ -8,10 +8,12 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.validator.constraints.Length;
 
+import java.io.Serializable;
+
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class StaffRegisterPayload {
+public class StaffRegisterPayload implements Serializable {
 
     @NotBlank(message = "Username is required")
     @Length(min = 5, max = 50, message = "Username must be between 3 and 20 characters")

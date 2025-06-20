@@ -8,10 +8,12 @@ import lombok.NoArgsConstructor;
 import org.hibernate.annotations.Nationalized;
 import org.hibernate.validator.constraints.Length;
 
+import java.io.Serializable;
+
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class BlogRegisterPayload {
+public class BlogRegisterPayload implements Serializable {
 
     @NotNull(message = "Manager ID is required")
     private int managerId;

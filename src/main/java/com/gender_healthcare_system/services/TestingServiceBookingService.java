@@ -29,6 +29,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -182,11 +183,12 @@ public class TestingServiceBookingService {
                 .orElseThrow(() -> new AppException(400,
                         "Customer not found with ID " + payload.getCustomerId()));
 
+        ZoneId zone = ZoneId.of("Asia/Ho_Chi_Minh");
         TestingServiceBooking serviceBooking = new TestingServiceBooking();
 
         serviceBooking.setTestingService(testingService);
         serviceBooking.setCustomer(customer);
-        serviceBooking.setCreatedAt(LocalDateTime.now());
+        serviceBooking.setCreatedAt(LocalDateTime.now(ZoneId.from(LocalDateTime.now(zone))));
         serviceBooking.setStatus(TestingServiceBookingStatus.PENDING);
 
         testingServiceBookingRepo.saveAndFlush(serviceBooking);

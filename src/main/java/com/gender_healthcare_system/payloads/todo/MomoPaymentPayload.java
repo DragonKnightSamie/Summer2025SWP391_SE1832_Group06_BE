@@ -8,10 +8,12 @@ import lombok.NoArgsConstructor;
 import org.hibernate.annotations.Nationalized;
 import org.hibernate.validator.constraints.Length;
 
+import java.io.Serializable;
+
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class MomoPaymentPayload {
+public class MomoPaymentPayload implements Serializable {
 
     @Nationalized
     @NotBlank

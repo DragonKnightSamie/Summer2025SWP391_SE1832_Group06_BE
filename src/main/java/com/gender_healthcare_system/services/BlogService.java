@@ -19,6 +19,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -31,25 +32,22 @@ public class BlogService {
 
     private final ManagerRepo managerRepo;
 
-    //Get all blogs
+    ////////////////////////////// Get all blogs //////////////////////////////
     public Map<String, Object> getAllBlogs(int page, String sortField, String sortOrder) {
 
         final int itemSize = 10;
 
         Sort sort = Sort.by(Sort.Direction.ASC, sortField);
 
-        if(sortOrder.equals("desc")){
+        if (sortOrder.equals("desc")) {
             sort = Sort.by(Sort.Direction.DESC, sortField);
         }
 
-        Pageable pageRequest = PageRequest
-                .of(page, itemSize, sort);
-
+        Pageable pageRequest = PageRequest.of(page, itemSize, sort);
 
         Page<BlogDTO> pageResult = blogRepo.getAllBlogs(pageRequest);
 
-        if(!pageResult.hasContent()){
-
+        if (!pageResult.hasContent()) {
             throw new AppException(404, "No Blogs found");
         }
 
@@ -61,47 +59,42 @@ public class BlogService {
         map.put("totalPages", pageResult.getTotalPages());
         map.put("currentPage", pageResult.getNumber());
 
-
         return map;
     }
 
-    //Get blog by id
+    ////////////////////////////// Get blog by id //////////////////////////////
     public BlogDTO getBlogById(int id) {
         return blogRepo.getBlogDetailsById(id)
-                .orElseThrow(() -> new AppException(404, "Blog not found with ID "+ id));
+                .orElseThrow(() -> new AppException(404, "Blog not found with ID " + id));
     }
 
     public BlogDTO getBlogForCustomerById(int id) {
         return blogRepo.getBlogDetailsActiveById(id)
-                .orElseThrow(() -> new AppException(404, "Blog not found with ID "+ id));
+                .orElseThrow(() -> new AppException(404, "Blog not found with ID " + id));
     }
 
-    //search blogs
-    public Map<String, Object> searchBlogs(String keyword, int page,
-                                           String sortField, String sortOrder) {
+    ////////////////////////////// Search blogs //////////////////////////////
+    public Map<String, Object> searchBlogs(String keyword, int page, String sortField, String sortOrder) {
 
         final int itemSize = 10;
 
         Sort sort = Sort.by(Sort.Direction.ASC, sortField);
 
-        if(sortOrder.equals("desc")){
+        if (sortOrder.equals("desc")) {
             sort = Sort.by(Sort.Direction.DESC, sortField);
         }
 
-        Pageable pageRequest = PageRequest
-                .of(page, itemSize, sort);
+        Pageable pageRequest = PageRequest.of(page, itemSize, sort);
 
         Page<BlogDTO> pageResult;
 
         if (keyword == null || keyword.isEmpty()) {
             pageResult = blogRepo.getAllBlogs(pageRequest);
-        }
-        else {
+        } else {
             pageResult = blogRepo.findByTitleContainingIgnoreCase(keyword, pageRequest);
         }
 
-        if(!pageResult.hasContent()){
-
+        if (!pageResult.hasContent()) {
             throw new AppException(404, "No Blogs found");
         }
 
@@ -116,12 +109,10 @@ public class BlogService {
         return map;
     }
 
-    //create blog
+    ////////////////////////////// Create blog //////////////////////////////
     public void createBlog(BlogRegisterPayload payload) {
-        Manager manager = managerRepo.
-                getManagerById(payload.getManagerId())
-                .orElseThrow(() -> new AppException
-                        (404, "Manager not found with ID "+ payload.getManagerId()));
+        Manager manager = managerRepo.getManagerById(payload.getManagerId())
+                .orElseThrow(() -> new AppException(404, "Manager not found with ID " + payload.getManagerId()));
 
         Blog blog = new Blog();
 
@@ -129,34 +120,37 @@ public class BlogService {
         blog.setAuthor(payload.getAuthor());
         blog.setTitle(payload.getTitle());
         blog.setContent(payload.getContent());
-        blog.setCreatedAt(LocalDateTime.now());
+
+        // ⭐ Gán thời gian theo múi giờ Việt Nam (cách 1: khai báo ZoneId cục bộ)
+        ZoneId vnZone = ZoneId.of("Asia/Ho_Chi_Minh");
+        blog.setCreatedAt(LocalDateTime.now(ZoneId.from(LocalDateTime.now(vnZone))));
+
         blog.setStatus(BlogStatus.ACTIVE);
 
         blogRepo.saveAndFlush(blog);
     }
 
-    //update blog
+    ////////////////////////////// Update blog //////////////////////////////
     @Transactional
     public void updateBlog(int id, BlogUpdatePayload payload) {
         boolean blogExist = blogRepo.existsById(id);
 
         if (!blogExist) {
-            throw new AppException(404, "Blog not found with ID "+ id);
+            throw new AppException(404, "Blog not found with ID " + id);
         }
 
         blogRepo.updateBlogById(id, payload);
     }
 
-    //delete blog
+    ////////////////////////////// Delete blog //////////////////////////////
     @Transactional
     public void deleteBlog(int id) {
         boolean blogExist = blogRepo.existsById(id);
 
         if (!blogExist) {
-            throw new AppException(404, "Blog not found with ID "+ id);
+            throw new AppException(404, "Blog not found with ID " + id);
         }
 
         blogRepo.deleteBlogById(id);
     }
-
 }

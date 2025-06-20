@@ -7,13 +7,15 @@ import lombok.NoArgsConstructor;
 import lombok.ToString;
 import org.hibernate.annotations.Nationalized;
 
+import java.io.Serializable;
+
 @Entity
 @Data
 @ToString(exclude = "testingService")
 @AllArgsConstructor
 @NoArgsConstructor
 @Table(name = "PriceList")
-public class PriceList {
+public class PriceList implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

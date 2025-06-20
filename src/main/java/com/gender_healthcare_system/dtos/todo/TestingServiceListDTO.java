@@ -5,10 +5,12 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.io.Serializable;
+
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class TestingServiceListDTO {
+public class TestingServiceListDTO implements Serializable {
 
     private int serviceId;
     private String serviceName;

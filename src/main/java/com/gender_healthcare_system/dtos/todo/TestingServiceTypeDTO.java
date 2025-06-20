@@ -6,12 +6,12 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
 
 @Data
 @NoArgsConstructor
-@AllArgsConstructor
-public class TestingServiceTypeDTO {
+public class TestingServiceTypeDTO implements Serializable {
 
     private int serviceTypeId;
 
@@ -25,5 +25,11 @@ public class TestingServiceTypeDTO {
     @Schema(type = "string", example = "05/06/2025 07:00")
     private LocalDateTime createdAt;
 
-
+    public TestingServiceTypeDTO(int serviceTypeId, String serviceTypeName, String title, String content, LocalDateTime createdAt) {
+        this.serviceTypeId = serviceTypeId;
+        this.serviceTypeName = serviceTypeName;
+        this.title = title;
+        this.content = content;
+        this.createdAt = createdAt;
+    }
 }

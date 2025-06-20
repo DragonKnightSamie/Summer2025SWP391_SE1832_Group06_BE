@@ -9,10 +9,12 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.validator.constraints.Length;
 
+import java.io.Serializable;
+
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class StaffUpdatePayload {
+public class StaffUpdatePayload implements Serializable {
 
     @NotBlank(message = "Full name is required")
     @Length(max = 70)

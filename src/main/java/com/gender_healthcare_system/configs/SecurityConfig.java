@@ -48,7 +48,7 @@ public class SecurityConfig {
             "/customer/consultations/**",
             "/customer/testing-service-bookings/**",
             "customer/consultant-list/**",
-            "/customer/payment-request/**",
+            "/customer/payment-transaction/**",
             "/customer/testing-services/**"
 
     };

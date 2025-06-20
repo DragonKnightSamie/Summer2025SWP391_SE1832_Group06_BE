@@ -12,12 +12,13 @@ import lombok.NoArgsConstructor;
 import org.hibernate.annotations.Nationalized;
 import org.hibernate.validator.constraints.Length;
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class TestingServiceTypeUpdatePayload {
+public class TestingServiceTypeUpdatePayload implements Serializable {
 
     @Nationalized
     @NotBlank

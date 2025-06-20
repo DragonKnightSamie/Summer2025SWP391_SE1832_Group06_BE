@@ -9,10 +9,12 @@ import lombok.NoArgsConstructor;
 import org.hibernate.annotations.Nationalized;
 import org.hibernate.validator.constraints.Length;
 
+import java.io.Serializable;
+
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class TestingServiceUpdatePayload {
+public class TestingServiceUpdatePayload implements Serializable {
 
 /*    @NotNull
     private int serviceId; // ID của dịch vụ xét nghiệm, dùng để cập nhật*/

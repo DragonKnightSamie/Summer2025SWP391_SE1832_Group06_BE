@@ -11,10 +11,12 @@ import lombok.NoArgsConstructor;
 import org.hibernate.annotations.Nationalized;
 import org.hibernate.validator.constraints.Length;
 
+import java.io.Serializable;
+
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class TestingServiceBookingRegisterPayload {
+public class TestingServiceBookingRegisterPayload implements Serializable {
 
     @NotNull
     private int serviceId;
@@ -27,7 +29,7 @@ public class TestingServiceBookingRegisterPayload {
     private String paymentOrderId;
 
     @NotNull
-    private double paymentAmount;
+    private long paymentAmount;
 
     @NotNull
     private PaymentMethod paymentMethod;

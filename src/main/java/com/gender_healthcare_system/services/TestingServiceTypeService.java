@@ -19,6 +19,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -88,8 +89,9 @@ public class TestingServiceTypeService {
         newServiceType.setServiceTypeName(payload.getServiceTypeName());
         newServiceType.setTitle(payload.getTitle());
         newServiceType.setContent(payload.getContent());
-        newServiceType.setCreatedAt(LocalDateTime.now());
 
+        ZoneId vnZone = ZoneId.of("Asia/Ho_Chi_Minh");
+        newServiceType.setCreatedAt(LocalDateTime.now(ZoneId.from(LocalDateTime.now(vnZone))));
 
         for(TestingServiceResultPayload item: payload.getServiceResultList()) {
 

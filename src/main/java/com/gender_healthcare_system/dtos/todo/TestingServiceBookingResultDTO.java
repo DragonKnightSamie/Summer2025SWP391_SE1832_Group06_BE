@@ -1,6 +1,8 @@
 package com.gender_healthcare_system.dtos.todo;
 
-public class TestingServiceBookingResultDTO {
+import java.io.Serializable;
+
+public class TestingServiceBookingResultDTO implements Serializable {
 
     private String title;
 

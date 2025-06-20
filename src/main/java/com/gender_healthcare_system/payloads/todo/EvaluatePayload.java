@@ -9,10 +9,12 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.Nationalized;
 
+import java.io.Serializable;
+
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class EvaluatePayload {
+public class EvaluatePayload implements Serializable {
 
     @NotNull
     private Rating rating = Rating.EXCELLENT;

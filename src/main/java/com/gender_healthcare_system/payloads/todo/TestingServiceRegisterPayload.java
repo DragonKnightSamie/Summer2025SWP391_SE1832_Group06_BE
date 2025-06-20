@@ -10,12 +10,13 @@ import lombok.NoArgsConstructor;
 import org.hibernate.annotations.Nationalized;
 import org.hibernate.validator.constraints.Length;
 
+import java.io.Serializable;
 import java.util.List;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class TestingServiceRegisterPayload {
+public class TestingServiceRegisterPayload implements Serializable {
 
     @Nationalized
     @NotBlank(message = "Service name is required")

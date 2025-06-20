@@ -8,6 +8,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.Nationalized;
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
 
 @Entity
@@ -15,7 +16,7 @@ import java.time.LocalDateTime;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class TestingServicePayment {
+public class TestingServicePayment implements Serializable {
 
     @Id
     //@SequenceGenerator(name = "payment_seq", sequenceName = "payment_sequence", allocationSize = 1)

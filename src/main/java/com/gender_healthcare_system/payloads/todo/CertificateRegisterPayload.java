@@ -10,12 +10,13 @@ import lombok.NoArgsConstructor;
 import org.hibernate.annotations.Nationalized;
 import org.hibernate.validator.constraints.Length;
 
+import java.io.Serializable;
 import java.time.LocalDate;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class CertificateRegisterPayload {
+public class CertificateRegisterPayload implements Serializable {
 
     @Nationalized
     @NotBlank(message = "CertificateName is required")

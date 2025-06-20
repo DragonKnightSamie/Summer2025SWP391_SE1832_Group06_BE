@@ -8,12 +8,13 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class ConsultationPaymentDTO {
+public class ConsultationPaymentDTO implements Serializable {
 
     private int consultationPaymentId;
 
