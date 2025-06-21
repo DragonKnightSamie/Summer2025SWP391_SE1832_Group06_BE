@@ -1,5 +1,6 @@
 package com.gender_healthcare_system.controllers;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.gender_healthcare_system.dtos.login.LoginResponse;
 import com.gender_healthcare_system.dtos.todo.TestingServiceBookingDTO;
@@ -7,12 +8,12 @@ import com.gender_healthcare_system.entities.enu.PaymentStatus;
 import com.gender_healthcare_system.entities.todo.TestingServicePayment;
 import com.gender_healthcare_system.entities.user.AccountInfoDetails;
 import com.gender_healthcare_system.payloads.login.LoginRequest;
+import com.gender_healthcare_system.payloads.todo.MomoPaymentPayload;
+import com.gender_healthcare_system.payloads.todo.MomoPaymentRefundPayload;
 import com.gender_healthcare_system.payloads.todo.TestingServiceBookingCompletePayload;
 import com.gender_healthcare_system.payloads.todo.TestingServiceBookingConfirmPayload;
-import com.gender_healthcare_system.services.JwtService;
-import com.gender_healthcare_system.services.TestingServicePaymentService;
-import com.gender_healthcare_system.services.StaffService;
-import com.gender_healthcare_system.services.TestingServiceBookingService;
+import com.gender_healthcare_system.services.*;
+import io.swagger.v3.oas.annotations.Parameter;
 import lombok.AllArgsConstructor;
 
 import org.springframework.http.ResponseEntity;
@@ -23,6 +24,8 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 
@@ -38,6 +41,8 @@ public class StaffController {
     private final AuthenticationManager authenticationManager;
 
     private final JwtService jwtService;
+
+    private final MomoPaymentService momoPaymentService;
 
     private final TestingServiceBookingService testingServiceBookingService;
 
@@ -136,13 +141,42 @@ public class StaffController {
         }
     }
 
+    /// /////////////////////////////// Manage Momo Payment Refund /////////////////////////////////
+
+    /*//create refund payment for testing service booking
+    @PostMapping("/payment-transaction/create-refund")
+    //@PreAuthorize("hasAuthority('ROLE_STAFF')")
+    public ResponseEntity<String> createPaymentRefundRequest
+    (@RequestBody MomoPaymentRefundPayload payload) throws Exception {
+
+        return ResponseEntity.ok(momoPaymentService.createMomoRefundPaymentRequest(payload));
+    }
+
+
+    //Get customer payment info
+    @GetMapping("/payment-transaction/check-error")
+    @PreAuthorize("hasAuthority('ROLE_STAFF')")
+    public ResponseEntity<String> handleCallback(
+            @RequestParam String orderId,
+            @RequestParam String resultCode
+    ) {
+        if ("0".equals(resultCode)) {
+            // payment success
+            return ResponseEntity.ok("Payment successful for orderId " + orderId);
+        } else {
+            // payment failed
+            return ResponseEntity.status(400).body("Payment failed with code: " + resultCode);
+        }
+    }*/
+
     /// ////////////////////////////////////// Manage Testing Service Bookings //////////////////////////////////////
 
     //get by id
     @GetMapping("/testing-service-bookings/{id}")
     @PreAuthorize("hasAuthority('ROLE_STAFF')")
     public ResponseEntity<TestingServiceBookingDTO> getTestingServiceBookingById(@PathVariable int id) throws JsonProcessingException {
-        return ResponseEntity.ok(testingServiceBookingService.getTestingServiceBookingDetailsById(id));
+        return ResponseEntity.ok(
+                testingServiceBookingService.getTestingServiceBookingDetailsById(id));
     }
 
     //Lấy danh sách (có phân trang + sắp xếp)
@@ -167,6 +201,20 @@ public class StaffController {
             @RequestParam(defaultValue = "asc") String sortOrder) {
         return ResponseEntity.ok(testingServiceBookingService
                 .getAllPendingTestingServiceBookings(page, sortField, sortOrder));
+    }
+
+    //Lấy lịch xét nghiệm của staff với các expected start time đã full lịch đặt (5 người)
+    @GetMapping("/testing-service-bookings/staff/{staffId}/check-schedule")
+    @PreAuthorize("hasAuthority('ROLE_STAFF')")
+    public ResponseEntity<List<LocalDateTime>> getStaffTestingScheduleForADay
+    (@PathVariable int staffId,
+     @Parameter(example = "05/06/2025")
+     @RequestParam("date")
+     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy")
+     LocalDate date) {
+
+        return ResponseEntity.ok(testingServiceBookingService
+                .getStaffScheduleForADay(staffId, date));
     }
 
     // Update

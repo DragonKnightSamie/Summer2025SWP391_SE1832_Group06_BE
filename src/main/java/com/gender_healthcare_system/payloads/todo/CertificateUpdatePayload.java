@@ -41,4 +41,8 @@ public class CertificateUpdatePayload implements Serializable {
     @NotBlank(message = "Description is required")
     @Length(min = 5, max = 255, message = "Description must be between 5 and 255 characters")
     private String description;
+
+    @NotBlank
+    @Length(min = 5, max = 255, message = "Image Url must be between 5 and 255 characters")
+    private String imageUrl;
 }

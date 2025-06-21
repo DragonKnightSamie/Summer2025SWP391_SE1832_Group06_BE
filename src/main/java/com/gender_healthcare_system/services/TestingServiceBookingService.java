@@ -20,6 +20,7 @@ import com.gender_healthcare_system.payloads.todo.TestingServiceBookingCompleteP
 import com.gender_healthcare_system.payloads.todo.TestingServiceBookingConfirmPayload;
 import com.gender_healthcare_system.payloads.todo.TestingServiceBookingRegisterPayload;
 import com.gender_healthcare_system.repositories.*;
+import com.gender_healthcare_system.utils.TimeFunctions;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -28,8 +29,8 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.ZoneId;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -170,6 +171,32 @@ public class TestingServiceBookingService {
         return response;
     }
 
+    public List<LocalDateTime> getStaffScheduleForADay
+            (int staffId, LocalDate date){
+
+        boolean staffExist = staffRepo
+                .existsById(staffId);
+
+        if(!staffExist){
+            throw new AppException(400,
+                    "No Staff found with ID " + staffId);
+        }
+
+        List<LocalDateTime> staffSchedule =
+                testingServiceBookingRepo
+                        .getStaffScheduleInADate
+                                (staffId, date ,
+                                        TestingServiceBookingStatus.PENDING,
+                                        TestingServiceBookingStatus.CANCELLED);
+
+        if (staffSchedule.isEmpty()) {
+            throw new AppException(404, "No Staff Schedule found ");
+        }
+
+        return staffSchedule;
+    }
+
+
     public void createTestingServiceBooking
             (TestingServiceBookingRegisterPayload payload) {
 
@@ -183,12 +210,11 @@ public class TestingServiceBookingService {
                 .orElseThrow(() -> new AppException(400,
                         "Customer not found with ID " + payload.getCustomerId()));
 
-        ZoneId zone = ZoneId.of("Asia/Ho_Chi_Minh");
         TestingServiceBooking serviceBooking = new TestingServiceBooking();
 
         serviceBooking.setTestingService(testingService);
         serviceBooking.setCustomer(customer);
-        serviceBooking.setCreatedAt(LocalDateTime.now(ZoneId.from(LocalDateTime.now(zone))));
+        serviceBooking.setCreatedAt(TimeFunctions.getCurrentDateTimeWithTimeZone());
         serviceBooking.setStatus(TestingServiceBookingStatus.PENDING);
 
         testingServiceBookingRepo.saveAndFlush(serviceBooking);
@@ -197,9 +223,9 @@ public class TestingServiceBookingService {
 
         servicePayment.setTestingServiceBooking(serviceBooking);
         servicePayment.setOrderId(payload.getPaymentOrderId());
-        servicePayment.setAmount((long) payload.getPaymentAmount());
+        servicePayment.setAmount(payload.getPaymentAmount());
         servicePayment.setMethod(payload.getPaymentMethod());
-        servicePayment.setCreatedAt(LocalDateTime.now());
+        servicePayment.setCreatedAt(TimeFunctions.getCurrentDateTimeWithTimeZone());
         servicePayment.setDescription(payload.getDescription());
         servicePayment.setStatus(PaymentStatus.PAID);
 
@@ -222,16 +248,18 @@ public class TestingServiceBookingService {
                 .orElseThrow(() -> new AppException(404,
                         "No Staff found with ID "+ payload.getStaffId()));
 
-        boolean duplicateBookingWithStartTime =
+        int numberOfBookingsAStaffHaveInATime =
                 testingServiceBookingRepo
-                        .existsByStaffStaffIdAndExpectedStartTime
-                                (payload.getStaffId(), payload.getExpectedStartTime());
+                        .getNumberOfBookingsAStaffHaveInATime
+                                (payload.getStaffId(), payload.getExpectedStartTime(),
+                                        TestingServiceBookingStatus.PENDING,
+                                        TestingServiceBookingStatus.CANCELLED);
 
-        if(!duplicateBookingWithStartTime) {
+        if(numberOfBookingsAStaffHaveInATime == 5) {
 
             throw new AppException(400,
                     "A Service Booking with provided expected Start time " +
-                            " has already been booked");
+                            " has been fully booked");
         }
 
         LocalDateTime endTime = payload.getExpectedStartTime().plusHours(1);
@@ -267,36 +295,9 @@ public class TestingServiceBookingService {
                     "that has not started yet");
         }
 
-        boolean validateRealStartTime =
-                payload.getRealStartTime().isBefore(serviceBooking.getExpectedStartTime())
-                        || payload.getRealStartTime().isAfter(serviceBooking.getExpectedEndTime())
-                        || payload.getRealStartTime().isEqual(serviceBooking.getExpectedEndTime()) ;
-
-        if(validateRealStartTime){
-
-            throw new AppException(400, "Real Start Time cannot be " +
-                    "before Expected Start Time or equal to or after Expected End Time");
-        }
-
-        boolean validateRealEndTime =
-                payload.getRealEndTime().isBefore(serviceBooking.getExpectedStartTime())
-                        || payload.getRealEndTime().isAfter(serviceBooking.getExpectedEndTime())
-                        || payload.getRealEndTime().isEqual(serviceBooking.getExpectedStartTime()) ;
-
-        if(validateRealEndTime){
-
-            throw new AppException(400, "Real End Time cannot be " +
-                    "before or equal to Expected Start Time or after Expected End Time");
-        }
-
-        boolean validateStartAndEndTime =
-                payload.getRealStartTime().isAfter(payload.getRealEndTime());
-
-        if(validateStartAndEndTime){
-
-            throw new AppException(400, "Real End Time cannot be " +
-                    "after real Start Time");
-        }
+        TimeFunctions.validateRealStartAndEndTime
+                (serviceBooking.getExpectedStartTime(), serviceBooking.getExpectedEndTime(),
+                        payload.getRealStartTime(), payload.getRealEndTime());
 
         ObjectMapper mapper = new ObjectMapper();
         String result = mapper.writeValueAsString(payload.getResultList());

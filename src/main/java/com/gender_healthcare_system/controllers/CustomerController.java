@@ -107,9 +107,9 @@ public class CustomerController {
 
     //Get customer payment info
     @GetMapping("/payment-transaction/check-error")
+    @PreAuthorize("hasAuthority('ROLE_CUSTOMER')")
     public ResponseEntity<String> handleCallback(
             @RequestParam String orderId,
-            @RequestParam String requestId,
             @RequestParam String resultCode
     ) {
         if ("0".equals(resultCode)) {
@@ -120,7 +120,6 @@ public class CustomerController {
             return ResponseEntity.status(400).body("Payment failed with code: " + resultCode);
         }
     }
-
 
 
     /// /////////////////////////////// Manage Testing Service Bookings /////////////////////////

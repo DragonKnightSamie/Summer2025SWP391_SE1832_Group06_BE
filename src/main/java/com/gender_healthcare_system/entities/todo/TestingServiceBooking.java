@@ -64,7 +64,7 @@ public class TestingServiceBooking implements Serializable {
     @Column(name = "created_at", nullable = false, unique = true)
     private LocalDateTime createdAt;
 
-    @Column(name = "expected_start_time", unique = true)
+    @Column(name = "expected_start_time")
     private LocalDateTime expectedStartTime;
 
     @Column(name = "real_start_time")

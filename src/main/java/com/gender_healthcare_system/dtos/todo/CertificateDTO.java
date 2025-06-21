@@ -33,4 +33,6 @@ public class CertificateDTO implements Serializable {
 
     @Nationalized
     private String description;
+
+    private String imageUrl;
 }

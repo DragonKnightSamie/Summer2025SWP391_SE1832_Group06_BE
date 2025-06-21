@@ -9,6 +9,7 @@ import com.gender_healthcare_system.payloads.todo.BlogRegisterPayload;
 import com.gender_healthcare_system.payloads.todo.BlogUpdatePayload;
 import com.gender_healthcare_system.repositories.BlogRepo;
 import com.gender_healthcare_system.repositories.ManagerRepo;
+import com.gender_healthcare_system.utils.TimeFunctions;
 import lombok.AllArgsConstructor;
 
 import org.springframework.data.domain.Page;
@@ -18,8 +19,6 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDateTime;
-import java.time.ZoneId;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -120,10 +119,7 @@ public class BlogService {
         blog.setAuthor(payload.getAuthor());
         blog.setTitle(payload.getTitle());
         blog.setContent(payload.getContent());
-
-        // ⭐ Gán thời gian theo múi giờ Việt Nam (cách 1: khai báo ZoneId cục bộ)
-        ZoneId vnZone = ZoneId.of("Asia/Ho_Chi_Minh");
-        blog.setCreatedAt(LocalDateTime.now(ZoneId.from(LocalDateTime.now(vnZone))));
+        blog.setCreatedAt(TimeFunctions.getCurrentDateTimeWithTimeZone());
 
         blog.setStatus(BlogStatus.ACTIVE);
 

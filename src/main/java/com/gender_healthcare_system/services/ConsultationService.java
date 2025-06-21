@@ -5,7 +5,6 @@ import com.gender_healthcare_system.dtos.todo.ConsultantScheduleDTO;
 import com.gender_healthcare_system.dtos.todo.ConsultationsDTO;
 import com.gender_healthcare_system.entities.enu.ConsultationStatus;
 import com.gender_healthcare_system.entities.enu.PaymentStatus;
-import com.gender_healthcare_system.entities.enu.TestingServiceBookingStatus;
 import com.gender_healthcare_system.entities.todo.Consultation;
 import com.gender_healthcare_system.entities.todo.ConsultationPayment;
 import com.gender_healthcare_system.entities.user.Consultant;
@@ -19,6 +18,7 @@ import com.gender_healthcare_system.repositories.ConsultantRepo;
 import com.gender_healthcare_system.repositories.ConsultationPaymentRepo;
 import com.gender_healthcare_system.repositories.ConsultationRepo;
 import com.gender_healthcare_system.repositories.CustomerRepo;
+import com.gender_healthcare_system.utils.TimeFunctions;
 import lombok.AllArgsConstructor;
 
 import org.springframework.data.domain.Page;
@@ -30,7 +30,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.ZoneId;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -160,10 +159,9 @@ public class ConsultationService {
                 .orElseThrow(() -> new AppException(404,
                         "Consultant not found with ID "+ payload.getConsultantId()));
 
-        // Set the time zone to Asia/Ho_Chi_Minh
-        ZoneId zone = ZoneId.of("Asia/Ho_Chi_Minh");
         Consultation consultation = new Consultation();
-        consultation.setCreatedAt(LocalDateTime.now(zone));
+
+        consultation.setCreatedAt(TimeFunctions.getCurrentDateTimeWithTimeZone());
         consultation.setExpectedStartTime(payload.getExpectedStartTime());
         LocalDateTime expectedEndTime = payload.getExpectedStartTime().plusHours(1);
         consultation.setExpectedEndTime(expectedEndTime);
@@ -178,7 +176,7 @@ public class ConsultationService {
         payment.setConsultation(consultation);
         payment.setOrderId(payment.getOrderId());
         payment.setAmount(payload.getPayment().getAmount());
-        payment.setCreatedAt(LocalDateTime.now());
+        payment.setCreatedAt(TimeFunctions.getCurrentDateTimeWithTimeZone());
         payment.setMethod(payload.getPayment().getMethod());
         payment.setDescription(payment.getDescription());
         payment.setStatus(PaymentStatus.PAID);

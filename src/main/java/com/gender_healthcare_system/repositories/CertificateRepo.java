@@ -14,7 +14,7 @@ public interface CertificateRepo extends JpaRepository<Certificate, Integer> {
 
     @Query("SELECT new com.gender_healthcare_system.dtos.todo.CertificateDTO" +
             "(c.certificateId, c.certificateName, c.issuedBy, c.issueDate, " +
-            "c.expiryDate, c.description)" +
+            "c.expiryDate, c.description, c.imageUrl)" +
             "FROM Certificate c " +
             "JOIN c.consultant " +
             "WHERE c.consultant.consultantId = :id")
@@ -23,6 +23,7 @@ public interface CertificateRepo extends JpaRepository<Certificate, Integer> {
     @Modifying
     @Query("UPDATE Certificate c SET " +
             "c.certificateName = :#{#payload.certificateName}, " +
+            "c.imageUrl = :#{#payload.imageUrl}, " +
             "c.issuedBy = :#{#payload.issuedBy}, " +
             "c.issueDate = :#{#payload.issueDate}, " +
             "c.expiryDate = :#{#payload.expiryDate}, " +

@@ -8,12 +8,10 @@ import lombok.NoArgsConstructor;
 import org.hibernate.annotations.Nationalized;
 import org.hibernate.validator.constraints.Length;
 
-import java.io.Serializable;
-
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class MomoPaymentPayload implements Serializable {
+public class MomoPaymentRefundPayload {
 
     @Nationalized
     @NotBlank
@@ -30,8 +28,6 @@ public class MomoPaymentPayload implements Serializable {
             "must be between 5 and 100 characters")
     private String description;
 
-    @NotBlank
-    @Length(min = 5, max = 255, message = "Redirect URL " +
-            "must be between 5 and 255 characters")
-    private String redirectUrl = "http://localhost:8080/customer/payment-transaction/check-error";
+    @NotNull
+    private long transactionId;
 }

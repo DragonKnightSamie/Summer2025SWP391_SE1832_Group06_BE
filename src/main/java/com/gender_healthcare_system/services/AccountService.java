@@ -14,6 +14,7 @@ import com.gender_healthcare_system.payloads.user.CustomerPayload;
 import com.gender_healthcare_system.payloads.user.ManagerRegisterPayload;
 import com.gender_healthcare_system.payloads.user.StaffRegisterPayload;
 import com.gender_healthcare_system.repositories.*;
+import com.gender_healthcare_system.utils.TimeFunctions;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 
@@ -116,7 +117,7 @@ public class AccountService implements IAccountService {
         accountRepo.deleteAccountById(customerId);
     }
 
-    @Transactional
+
     public void createConsultantAccount(ConsultantRegisterPayload payload){
         Account account = new Account();
         Consultant consultant = new Consultant();
@@ -139,15 +140,20 @@ public class AccountService implements IAccountService {
         consultant.setEmail(payload.getEmail());
         consultant.setAddress(payload.getAddress());
 
-        consultantRepo.saveAndFlush(consultant);
+        consultantRepo.save(consultant);
 
         for(CertificateRegisterPayload item: payload.getCertificates()) {
+
+            TimeFunctions.validateIssueDateAndExpiryDate
+                    (item.getIssueDate(), item.getExpiryDate());
+
             certificate = new Certificate();
             certificate.setConsultant(consultant);
 
             certificate.setCertificateName(item.getCertificateName());
             certificate.setIssuedBy(item.getIssuedBy());
             certificate.setIssueDate(item.getIssueDate());
+            certificate.setImageUrl(item.getImageUrl());
             certificate.setExpiryDate(item.getExpiryDate());
             certificate.setDescription(item.getDescription());
 

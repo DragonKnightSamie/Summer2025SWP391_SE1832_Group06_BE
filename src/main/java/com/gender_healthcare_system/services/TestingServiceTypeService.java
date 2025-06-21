@@ -10,6 +10,7 @@ import com.gender_healthcare_system.payloads.todo.TestingServiceTypeRegisterPayl
 import com.gender_healthcare_system.payloads.todo.TestingServiceTypeUpdatePayload;
 import com.gender_healthcare_system.repositories.TestingServiceResultRepo;
 import com.gender_healthcare_system.repositories.TestingServiceTypeRepo;
+import com.gender_healthcare_system.utils.TimeFunctions;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -18,8 +19,6 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDateTime;
-import java.time.ZoneId;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -90,8 +89,7 @@ public class TestingServiceTypeService {
         newServiceType.setTitle(payload.getTitle());
         newServiceType.setContent(payload.getContent());
 
-        ZoneId vnZone = ZoneId.of("Asia/Ho_Chi_Minh");
-        newServiceType.setCreatedAt(LocalDateTime.now(ZoneId.from(LocalDateTime.now(vnZone))));
+        newServiceType.setCreatedAt(TimeFunctions.getCurrentDateTimeWithTimeZone());
 
         for(TestingServiceResultPayload item: payload.getServiceResultList()) {
 

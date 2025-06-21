@@ -17,7 +17,9 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 
 @Repository
@@ -78,6 +80,33 @@ public interface TestingServiceBookingRepo extends JpaRepository<TestingServiceB
             "WHERE NOT tsb.status = :status")
     Page<StaffServiceBookingListDTO> getAllPendingTestingServiceBookings
             (Pageable pageable, TestingServiceBookingStatus status);
+
+    @Query("SELECT tsb.expectedStartTime " +
+            "FROM TestingServiceBooking tsb " +
+            "JOIN tsb.staff st " +
+            "WHERE st.staffId = :staffId " +
+            "AND CAST(tsb.expectedStartTime AS DATE) = :date " +
+            "AND NOT tsb.status = :status1 " +
+            "AND NOT tsb.status = :status2 " +
+            "GROUP BY tsb.expectedStartTime " +
+            "HAVING COUNT(tsb) = 5 " +
+            "ORDER BY tsb.expectedStartTime")
+    List<LocalDateTime> getStaffScheduleInADate
+            (int staffId, LocalDate date,
+             TestingServiceBookingStatus status1,
+             TestingServiceBookingStatus status2);
+
+    @Query("SELECT COUNT(tsb) AS numberOfBookings " +
+            "FROM TestingServiceBooking tsb " +
+            "JOIN tsb.staff st " +
+            "WHERE st.staffId = :staffId " +
+            "AND tsb.expectedStartTime = :startTime " +
+            "AND NOT tsb.status = :status1 " +
+            "AND NOT tsb.status = :status2")
+    int getNumberOfBookingsAStaffHaveInATime
+            (int staffId, LocalDateTime startTime,
+             TestingServiceBookingStatus status1,
+             TestingServiceBookingStatus status2);
 
     @Modifying
     @Query("UPDATE TestingServiceBooking tsb SET " +
