@@ -10,7 +10,7 @@ import com.gender_healthcare_system.payloads.todo.TestingServiceTypeRegisterPayl
 import com.gender_healthcare_system.payloads.todo.TestingServiceTypeUpdatePayload;
 import com.gender_healthcare_system.repositories.TestingServiceResultRepo;
 import com.gender_healthcare_system.repositories.TestingServiceTypeRepo;
-import com.gender_healthcare_system.utils.TimeFunctions;
+import com.gender_healthcare_system.utils.UtilFunctions;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -32,7 +32,7 @@ public class TestingServiceTypeService {
     private final TestingServiceResultRepo testingServiceResultRepo;
 
 
-    public TestingServiceTypeDetailsDTO getTestingServiceById(int id) {
+    public TestingServiceTypeDetailsDTO getTestingServiceTypeById(int id) {
         TestingServiceTypeDetailsDTO serviceTypeDetails =
                 testingServiceTypeRepo.getTestingServiceDetailsById(id)
                 .orElseThrow(() -> new AppException
@@ -89,7 +89,9 @@ public class TestingServiceTypeService {
         newServiceType.setTitle(payload.getTitle());
         newServiceType.setContent(payload.getContent());
 
-        newServiceType.setCreatedAt(TimeFunctions.getCurrentDateTimeWithTimeZone());
+        newServiceType.setCreatedAt(UtilFunctions.getCurrentDateTimeWithTimeZone());
+
+        UtilFunctions.validateBulkTestTemplates(payload.getServiceResultList());
 
         for(TestingServiceResultPayload item: payload.getServiceResultList()) {
 
@@ -97,6 +99,11 @@ public class TestingServiceTypeService {
 
             resultItem.setTitle(item.getTitle());
             resultItem.setDescription(item.getDescription());
+            resultItem.setType(item.getType());
+            resultItem.setGenderType(item.getGenderType());
+            resultItem.setMeasureUnit(item.getMeasureUnit());
+            resultItem.setMinValue(item.getMinValue());
+            resultItem.setMaxValue(item.getMaxValue());
 
             newServiceType.addResult(resultItem);
 

@@ -13,7 +13,8 @@ import java.util.List;
 public interface TestingServiceResultRepo extends JpaRepository<TestingServiceResult, Integer> {
 
     @Query("SELECT new com.gender_healthcare_system.dtos.todo.TestingServiceResultDTO" +
-            "(tst.serviceResultId, tst.title, tst.description) " +
+            "(tst.serviceResultId, tst.title, tst.description, tst.type, tst.genderType, " +
+            "tst.measureUnit, tst.minValue, tst.maxValue) " +
             "FROM TestingServiceResult tst " +
             "WHERE tst.testingServiceType.serviceTypeId = :id")
     List<TestingServiceResultDTO> getAllServiceResultsByTypeId(int id);
@@ -21,7 +22,12 @@ public interface TestingServiceResultRepo extends JpaRepository<TestingServiceRe
     @Modifying
     @Query("UPDATE TestingServiceResult tsr " +
             "SET tsr.title = :#{#payload.title}, " +
-            "tsr.description = :#{#payload.description} " +
+            "tsr.description = :#{#payload.description}, " +
+            "tsr.type = :#{#payload.type}, " +
+            "tsr.genderType = :#{#payload.genderType}, " +
+            "tsr.measureUnit = :#{#payload.measureUnit}, " +
+            "tsr.minValue = :#{#payload.minValue}, " +
+            "tsr.maxValue = :#{#payload.maxValue} " +
             "WHERE tsr.serviceResultId = :id")
     void updateTestingServiceResult(int id,
                                   @Param("payload") TestingServiceResultPayload payload);

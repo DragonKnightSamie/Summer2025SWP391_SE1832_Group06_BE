@@ -21,8 +21,10 @@ public interface TestingServiceRepo extends JpaRepository<TestingService, Intege
     // Get a single TestingServiceDTO by ID
     @Query("SELECT new com.gender_healthcare_system.dtos.todo.TestingServiceDTO(" +
             "ts.serviceId, ts.serviceName, ts.description, ts.status, " +
-            "new com.gender_healthcare_system.dtos.todo.TestingServiceTypeDTO(tst.serviceTypeId, tst.serviceTypeName, tst.title, tst.content, tst.createdAt), " +
-            "new com.gender_healthcare_system.dtos.todo.PriceListDTO(p.priceId, p.price, p.description)) " +
+            "new com.gender_healthcare_system.dtos.todo.TestingServiceTypeDTO" +
+            "(tst.serviceTypeId, tst.serviceTypeName, tst.title, tst.content, tst.createdAt), " +
+            "new com.gender_healthcare_system.dtos.todo.PriceListDTO" +
+            "(p.priceId, p.price, p.description, p.status)) " +
             "FROM TestingService ts " +
             "LEFT JOIN ts.testingServiceType tst " +
             "LEFT JOIN ts.priceLists p " +

@@ -1,10 +1,12 @@
 package com.gender_healthcare_system.services;
 
 import com.gender_healthcare_system.dtos.todo.PriceListDTO;
+import com.gender_healthcare_system.entities.enu.PriceListStatus;
 import com.gender_healthcare_system.entities.todo.PriceList;
 import com.gender_healthcare_system.entities.todo.TestingService;
 import com.gender_healthcare_system.exceptions.AppException;
-import com.gender_healthcare_system.payloads.todo.PriceListPayload;
+import com.gender_healthcare_system.payloads.todo.PriceListRegisterPayload;
+import com.gender_healthcare_system.payloads.todo.PriceListUpdatePayload;
 import com.gender_healthcare_system.repositories.PriceListRepo;
 import com.gender_healthcare_system.repositories.TestingServiceRepo;
 import lombok.AllArgsConstructor;
@@ -33,7 +35,8 @@ public class PriceListService {
         }
 
         List<PriceListDTO> priceList =
-                priceListRepo.getPriceListForTestingService(serviceId);
+                priceListRepo.getPriceListForTestingService(serviceId,
+                        PriceListStatus.ACTIVE);
 
         if(priceList.isEmpty()){
 
@@ -44,7 +47,7 @@ public class PriceListService {
         return priceList;
     }
 
-    public void createNewPriceListForExistingService(int id, PriceListPayload payload) {
+    public void createNewPriceListForExistingService(int id, PriceListRegisterPayload payload) {
 
         TestingService testingService = testingServiceRepo
                 .getTestingService(id)
@@ -56,13 +59,14 @@ public class PriceListService {
         priceList.setTestingService(testingService);
         priceList.setPrice(payload.getPrice());
         priceList.setDescription(payload.getDescription());
+        priceList.setStatus(PriceListStatus.ACTIVE);
 
         priceListRepo.saveAndFlush(priceList);
     }
 
     //updatePriceList
     @Transactional
-    public void updatePriceList(int id, PriceListPayload payload) {
+    public void updatePriceList(int id, PriceListUpdatePayload payload) {
         boolean priceListExists = priceListRepo.existsById(id);
         if (!priceListExists) {
             throw new AppException(404, "Price List not found with ID: " + id);

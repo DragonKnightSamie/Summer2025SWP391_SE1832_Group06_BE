@@ -1,0 +1,184 @@
+package com.gender_healthcare_system.utils;
+
+import com.gender_healthcare_system.entities.enu.GenderType;
+import com.gender_healthcare_system.entities.enu.ResultType;
+import com.gender_healthcare_system.exceptions.AppException;
+import com.gender_healthcare_system.payloads.todo.TestingServiceResultCompletePayload;
+import com.gender_healthcare_system.payloads.todo.TestingServiceResultPayload;
+
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.temporal.ChronoUnit;
+import java.util.*;
+
+public class UtilFunctions {
+
+    public static LocalDateTime getCurrentDateTimeWithTimeZone(){
+        ZoneId zone = ZoneId.of("Asia/Bangkok");
+        return LocalDateTime.now(zone);
+    }
+
+    public static void validateIssueDateAndExpiryDate(LocalDate issueDate,
+                                                      LocalDate expiryDate){
+        ZoneId zone = ZoneId.of("Asia/Bangkok");
+        long daysCheckPoint = 365 + 182;
+        long yearsCheckPoint = 2;
+
+        boolean validateIssueDate = issueDate.isEqual(LocalDate.now(zone))
+                || issueDate.isAfter(LocalDate.now(zone));
+
+        if(validateIssueDate){
+
+            throw new AppException(400, "Issue Date cannot be equal to or after current Date");
+        }
+
+        if(expiryDate != null) {
+            
+            boolean validateExpiryDate = expiryDate.isEqual(LocalDate.now(zone))
+                    || expiryDate.isBefore(LocalDate.now(zone));
+
+            if (validateExpiryDate) {
+
+                throw new AppException(400, "Expiry Date cannot be equal to or before current Date");
+            }
+
+            long differenceInDays = ChronoUnit.YEARS.between(LocalDate.now(zone), expiryDate);
+
+            if (differenceInDays < daysCheckPoint) {
+
+                throw new AppException(400, "Expiry Date has to be after current Date " +
+                        "by 1 and a half years or more");
+            }
+
+            long differenceInYears = ChronoUnit.YEARS.between(issueDate, expiryDate);
+
+            if (differenceInYears < yearsCheckPoint) {
+
+                throw new AppException(400, "Expiry Date has to be after Issue Date " +
+                        "by 2 years or more");
+            }
+        }
+    }
+
+    public static void validateRealStartAndEndTime
+            (LocalDateTime expectedStartTime, LocalDateTime expectedEndTime,
+             LocalDateTime realStartTime, LocalDateTime realEndTime){
+
+        long minutesCheckPoint1 = 90 ;
+        long minutesCheckPoint2 = 60 ;
+
+        long startTimeDifference = ChronoUnit.MINUTES.between(expectedEndTime, realStartTime);
+
+        if(startTimeDifference < 0 || startTimeDifference > minutesCheckPoint1){
+
+            throw new AppException(400,
+                    "Real Start time cannot be before Expected Start time" +
+                            "and can only be 90 minutes later at most " +
+                            "compared to Expected Start time");
+        }
+
+        if(realEndTime.isEqual(expectedStartTime)
+                || realEndTime.isBefore(expectedStartTime)){
+
+            throw new AppException(400,
+                    "Real End time cannot be equal to or before Expected Start time");
+        }
+
+        long startAndEndTimeDifference =
+                ChronoUnit.MINUTES.between(realStartTime, realEndTime);
+
+        if(startAndEndTimeDifference < 20
+                || startAndEndTimeDifference > minutesCheckPoint2){
+
+            throw new AppException(400,
+                    "Real End time must be at least 20 minute or at most 60 minute later " +
+                            "compared to Real Start time");
+        }
+
+    }
+
+    public static void validateBulkTestTemplates
+            (List<TestingServiceResultPayload> resultTemplates) {
+
+        Map<String, Set<GenderType>> nameToGenders = new HashMap<>();
+        Set<String> duplicateKeys = new HashSet<>();
+
+        for (TestingServiceResultPayload template : resultTemplates) {
+            String title = template.getTitle();
+            ResultType testType = template.getType();
+            GenderType gender = template.getGenderType();
+
+            if(testType != ResultType.NUMERIC &&
+                    (template.getMeasureUnit() != null
+                    || template.getMinValue() != null
+                    || template.getMaxValue() != null)){
+
+                throw new AppException(400,
+                        "Test with title "+ title +" and test type " +testType.name() +
+                                "cannot have a measure unit, min or max value");
+            }
+
+            if(testType == ResultType.NUMERIC &&
+                    (template.getMeasureUnit() == null
+                            || template.getMinValue() == null
+                            || template.getMaxValue() == null)){
+
+                throw new AppException(400,
+                        "Test with title "+ title +" and test type " +testType.name() +
+                                "is missing a measure unit, min or max value");
+            }
+
+            String compositeKey = title + "|" + gender;
+
+            //check if there are duplicates, for example template with
+            //gender type ANY can only have at most one title + gender combination
+            //and gender type MALE or FEMALE can only have at most
+            //2 title + gender combinations (MALE or FEMALE)
+            if (!duplicateKeys.add(compositeKey)) {
+                throw new AppException(400,
+                        "Duplicate test with title " + title + " and gender type " + gender
+                                + "' in the input list."
+                );
+            }
+
+            nameToGenders
+                    .computeIfAbsent(title, k -> new HashSet<>())
+                    .add(gender);
+        }
+
+        for (Map.Entry<String, Set<GenderType>> entry : nameToGenders.entrySet()) {
+            Set<GenderType> genders = entry.getValue();
+            if (genders.contains(GenderType.ANY) &&
+                    (genders.contains(GenderType.MALE) || genders.contains(GenderType.FEMALE))) {
+                throw new AppException(400, "Conflict in input: Cannot mix 'ANY' " +
+                        "with gender-specific test for title: " + entry.getKey()
+                );
+            }
+
+            if ((!genders.contains(GenderType.MALE) && genders.contains(GenderType.FEMALE))
+            || (genders.contains(GenderType.MALE) && !genders.contains(GenderType.FEMALE))) {
+                throw new AppException(400, "Missing input: Missing MALE or FEMALE test for " +
+                        "gender-specific test with " +
+                        "title: " + entry.getKey()
+                );
+            }
+
+        }
+    }
+
+    public static void validateRealTestResult
+            (List<TestingServiceResultCompletePayload> resultList){
+
+        for(TestingServiceResultCompletePayload item: resultList){
+
+            if(item.getRealValue().compareTo(item.getMinValue()) < 0
+                    || item.getRealValue().compareTo(item.getMaxValue()) > 0 ){
+
+                throw new AppException(400, "Real value for test with title "
+                        + item.getTitle() + "must be within accepted range: [" +
+                        item.getMinValue() + "," + item.getMaxValue() + "]");
+            }
+        }
+    }
+}

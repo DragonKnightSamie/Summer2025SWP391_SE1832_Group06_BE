@@ -14,7 +14,7 @@ import java.io.Serializable;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class PriceListPayload implements Serializable {
+public class PriceListRegisterPayload implements Serializable {
 
     @NotNull
     private long price;

@@ -2,7 +2,6 @@ package com.gender_healthcare_system.payloads.todo;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.v3.oas.annotations.media.Schema;
-import jakarta.annotation.Nullable;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
@@ -31,7 +30,6 @@ public class TestingServiceTypeUpdatePayload implements Serializable {
     private String title;
 
     @Nationalized
-    @Nullable
     @Size(min = 5,max = 255, message = "Service type content must be empty or between 5 and 255 characters")
     private String content;
 

@@ -1,5 +1,6 @@
 package com.gender_healthcare_system.entities.todo;
 
+import com.gender_healthcare_system.entities.enu.PriceListStatus;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -35,5 +36,9 @@ public class PriceList implements Serializable {
     @Nationalized
     @Column(name = "description", length = 255)
     private String description;
+
+    @Column(name = "status", length = 15)
+    @Enumerated(EnumType.STRING)
+    private PriceListStatus status;
 
 }

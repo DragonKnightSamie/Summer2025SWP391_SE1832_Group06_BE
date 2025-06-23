@@ -1,5 +1,6 @@
 package com.gender_healthcare_system.payloads.todo;
 
+import com.gender_healthcare_system.entities.enu.PriceListStatus;
 import jakarta.annotation.Nullable;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -8,30 +9,22 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.Nationalized;
-import org.hibernate.validator.constraints.Length;
 
 import java.io.Serializable;
-import java.util.List;
 
 @Data
-@NoArgsConstructor
 @AllArgsConstructor
-public class TestingServiceRegisterPayload implements Serializable {
+@NoArgsConstructor
+public class PriceListUpdatePayload implements Serializable {
 
-    @Nationalized
-    @NotBlank(message = "Service name is required")
-    @Length(min = 5, max = 100, message = "Certificate name must be between 5 and 100 characters")
-    private String serviceName;
+    @NotNull
+    private long price;
 
     @Nullable
     @Nationalized
     @Size(min = 5,max = 255, message = "Description must be empty or between 5 and 255 characters")
     private String description;
 
-    @NotNull
-    private int serviceTypeId; // foreign key tới TestingServiceType
-
-    @NotNull(message = "Service price list is required")
-    private List<PriceListRegisterPayload> priceList;
-
+    @NotBlank(message = "Price List status is required")
+    private PriceListStatus status;
 }

@@ -3,12 +3,13 @@ package com.gender_healthcare_system.services;
 import com.gender_healthcare_system.dtos.todo.CustomerTestingServiceListDTO;
 import com.gender_healthcare_system.dtos.todo.TestingServiceDTO;
 import com.gender_healthcare_system.dtos.todo.TestingServiceListDTO;
+import com.gender_healthcare_system.entities.enu.PriceListStatus;
 import com.gender_healthcare_system.entities.enu.TestingServiceStatus;
 import com.gender_healthcare_system.entities.todo.PriceList;
 import com.gender_healthcare_system.entities.todo.TestingService;
 import com.gender_healthcare_system.entities.todo.TestingServiceType;
 import com.gender_healthcare_system.exceptions.AppException;
-import com.gender_healthcare_system.payloads.todo.PriceListPayload;
+import com.gender_healthcare_system.payloads.todo.PriceListRegisterPayload;
 import com.gender_healthcare_system.payloads.todo.TestingServiceRegisterPayload;
 import com.gender_healthcare_system.payloads.todo.TestingServiceUpdatePayload;
 import com.gender_healthcare_system.repositories.TestingServiceRepo;
@@ -125,11 +126,12 @@ public class TestingService_Service {
         newService.setDescription(payload.getDescription());
         newService.setStatus(TestingServiceStatus.AVAILABLE);
 
-        for(PriceListPayload item: payload.getPriceList()) {
+        for(PriceListRegisterPayload item: payload.getPriceList()) {
             PriceList priceItem = new PriceList();
 
             priceItem.setDescription(item.getDescription());
             priceItem.setPrice(item.getPrice());
+            priceItem.setStatus(PriceListStatus.ACTIVE);
 
             newService.addPriceItem(priceItem);
 

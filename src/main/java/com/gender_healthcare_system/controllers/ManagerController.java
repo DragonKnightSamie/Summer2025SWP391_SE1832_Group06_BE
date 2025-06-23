@@ -326,8 +326,10 @@ public class ManagerController {
     //get testing service type by ID
     @GetMapping("/testing-service-types/{id}")
     @PreAuthorize("hasAuthority('ROLE_MANAGER')")
-    public ResponseEntity<TestingServiceDTO> getTestingServiceTypeById(@PathVariable int id) {
-        return ResponseEntity.ok(testingService_Service.getTestingServiceById(id));
+    public ResponseEntity<TestingServiceTypeDetailsDTO>
+    getTestingServiceTypeById(@PathVariable int id) {
+
+        return ResponseEntity.ok(testingServiceTypeService.getTestingServiceTypeById(id));
     }
 
 
@@ -375,14 +377,14 @@ public class ManagerController {
     /// //////////////////////// Manage Testing Service Results /////////////////////////////////////
 
 
-    //update testing service result
+    /*//update testing service result
     @PutMapping("/testing-services-results/update/{id}")
     @PreAuthorize("hasAuthority('ROLE_MANAGER')")
     public ResponseEntity<String> updateTestingServiceResult(
             @PathVariable int id, @RequestBody TestingServiceResultPayload payload) {
         testingServiceResultService.updateTestingServiceResult(id, payload);
         return ResponseEntity.ok("Testing Service result updated successfully");
-    }
+    }*/
 
 
     //delete testing service result
@@ -431,7 +433,7 @@ public class ManagerController {
     @PostMapping("/testing-services/price-lists/create/{id}")
     @PreAuthorize("hasAuthority('ROLE_MANAGER')")
     public void createTestingServicePriceList(@PathVariable int id,
-                                              @RequestBody PriceListPayload payload) {
+                                              @RequestBody PriceListRegisterPayload payload) {
         priceListService.createNewPriceListForExistingService(id, payload);
     }
 
@@ -462,7 +464,7 @@ public class ManagerController {
     @PutMapping("/price-lists/{id}")
     @PreAuthorize("hasAuthority('ROLE_MANAGER')")
     public void updatePriceList(@PathVariable int id,
-                                @RequestBody PriceListPayload payload) {
+                                @RequestBody PriceListUpdatePayload payload) {
         priceListService.updatePriceList(id, payload);
     }
 

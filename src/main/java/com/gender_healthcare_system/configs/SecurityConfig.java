@@ -36,7 +36,7 @@ public class SecurityConfig {
             "/v3/api-docs/**",
             "/swagger-ui/**",
             "/swagger-ui.html",
-            //"staff/payment-transaction/create-refund"
+            "staff/payment-transaction/create-refund"
     };
 
     // Các API blog công khai (xem, tìm kiếm)

@@ -14,7 +14,7 @@ import com.gender_healthcare_system.payloads.user.CustomerPayload;
 import com.gender_healthcare_system.payloads.user.ManagerRegisterPayload;
 import com.gender_healthcare_system.payloads.user.StaffRegisterPayload;
 import com.gender_healthcare_system.repositories.*;
-import com.gender_healthcare_system.utils.TimeFunctions;
+import com.gender_healthcare_system.utils.UtilFunctions;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 
@@ -144,7 +144,7 @@ public class AccountService implements IAccountService {
 
         for(CertificateRegisterPayload item: payload.getCertificates()) {
 
-            TimeFunctions.validateIssueDateAndExpiryDate
+            UtilFunctions.validateIssueDateAndExpiryDate
                     (item.getIssueDate(), item.getExpiryDate());
 
             certificate = new Certificate();

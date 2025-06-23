@@ -111,13 +111,13 @@ public class MomoPaymentService {
         }
     }
 
-    public String createMomoRefundPaymentRequest
+   /* public String createMomoRefundPaymentRequest
             (MomoPaymentRefundPayload payload) throws Exception{
 
         try {
             // Generate requestId and orderId
-            String requestId = PARTNER_CODE + new Date().getTime();
-            String orderId = requestId;
+            String orderId = String.valueOf(System.currentTimeMillis());
+            String requestId = String.valueOf(System.currentTimeMillis()+1000);
 
             //String REQUEST_TYPE = "payWithMethod";
 
@@ -143,12 +143,12 @@ public class MomoPaymentService {
 
             JSONObject requestBody = new JSONObject();
             requestBody.put("partnerCode", PARTNER_CODE);
-            requestBody.put("accessKey", ACCESS_KEY);
+            //requestBody.put("accessKey", ACCESS_KEY);
             requestBody.put("orderId", orderId);
             requestBody.put("requestId", requestId);
             requestBody.put("amount", amount);
             requestBody.put("transId", transId);
-            requestBody.put("lang", lang);
+            requestBody.put("lang", "vi");
             requestBody.put("description", description);
             //requestBody.put("redirectUrl", redirectUrl);
             //requestBody.put("ipnUrl", IPN_URL);
@@ -183,7 +183,7 @@ public class MomoPaymentService {
             e.printStackTrace();
             return "{\"error\": \"Failed to create payment request: " + e.getMessage() + "\"}";
         }
-    }
+    }*/
 
     // HMAC SHA256 signing method
     private static String signHmacSHA256(String data) throws Exception {

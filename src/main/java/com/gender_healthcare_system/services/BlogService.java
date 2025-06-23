@@ -9,7 +9,7 @@ import com.gender_healthcare_system.payloads.todo.BlogRegisterPayload;
 import com.gender_healthcare_system.payloads.todo.BlogUpdatePayload;
 import com.gender_healthcare_system.repositories.BlogRepo;
 import com.gender_healthcare_system.repositories.ManagerRepo;
-import com.gender_healthcare_system.utils.TimeFunctions;
+import com.gender_healthcare_system.utils.UtilFunctions;
 import lombok.AllArgsConstructor;
 
 import org.springframework.data.domain.Page;
@@ -119,7 +119,7 @@ public class BlogService {
         blog.setAuthor(payload.getAuthor());
         blog.setTitle(payload.getTitle());
         blog.setContent(payload.getContent());
-        blog.setCreatedAt(TimeFunctions.getCurrentDateTimeWithTimeZone());
+        blog.setCreatedAt(UtilFunctions.getCurrentDateTimeWithTimeZone());
 
         blog.setStatus(BlogStatus.ACTIVE);
 

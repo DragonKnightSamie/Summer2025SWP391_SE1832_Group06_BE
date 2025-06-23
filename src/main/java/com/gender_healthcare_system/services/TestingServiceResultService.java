@@ -13,7 +13,7 @@ public class TestingServiceResultService {
 
     private final TestingServiceResultRepo testingServiceResultRepo;
 
-    @Transactional
+    /*@Transactional
     public void updateTestingServiceResult
             (int id, TestingServiceResultPayload payload) {
         boolean serviceResultExists = testingServiceResultRepo.existsById(id);
@@ -23,7 +23,7 @@ public class TestingServiceResultService {
 
         testingServiceResultRepo.updateTestingServiceResult(id, payload);
 
-    }
+    }*/
 
 
     public void deleteTestingServiceResult(int id) {

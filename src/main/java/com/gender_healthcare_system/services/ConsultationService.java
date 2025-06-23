@@ -18,7 +18,7 @@ import com.gender_healthcare_system.repositories.ConsultantRepo;
 import com.gender_healthcare_system.repositories.ConsultationPaymentRepo;
 import com.gender_healthcare_system.repositories.ConsultationRepo;
 import com.gender_healthcare_system.repositories.CustomerRepo;
-import com.gender_healthcare_system.utils.TimeFunctions;
+import com.gender_healthcare_system.utils.UtilFunctions;
 import lombok.AllArgsConstructor;
 
 import org.springframework.data.domain.Page;
@@ -161,7 +161,7 @@ public class ConsultationService {
 
         Consultation consultation = new Consultation();
 
-        consultation.setCreatedAt(TimeFunctions.getCurrentDateTimeWithTimeZone());
+        consultation.setCreatedAt(UtilFunctions.getCurrentDateTimeWithTimeZone());
         consultation.setExpectedStartTime(payload.getExpectedStartTime());
         LocalDateTime expectedEndTime = payload.getExpectedStartTime().plusHours(1);
         consultation.setExpectedEndTime(expectedEndTime);
@@ -176,7 +176,7 @@ public class ConsultationService {
         payment.setConsultation(consultation);
         payment.setOrderId(payment.getOrderId());
         payment.setAmount(payload.getPayment().getAmount());
-        payment.setCreatedAt(TimeFunctions.getCurrentDateTimeWithTimeZone());
+        payment.setCreatedAt(UtilFunctions.getCurrentDateTimeWithTimeZone());
         payment.setMethod(payload.getPayment().getMethod());
         payment.setDescription(payment.getDescription());
         payment.setStatus(PaymentStatus.PAID);

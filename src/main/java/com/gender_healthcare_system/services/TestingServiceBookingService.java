@@ -20,7 +20,7 @@ import com.gender_healthcare_system.payloads.todo.TestingServiceBookingCompleteP
 import com.gender_healthcare_system.payloads.todo.TestingServiceBookingConfirmPayload;
 import com.gender_healthcare_system.payloads.todo.TestingServiceBookingRegisterPayload;
 import com.gender_healthcare_system.repositories.*;
-import com.gender_healthcare_system.utils.TimeFunctions;
+import com.gender_healthcare_system.utils.UtilFunctions;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -63,7 +63,7 @@ public class TestingServiceBookingService {
             ObjectMapper mapper = new ObjectMapper();
 
             List<TestingServiceBookingResultDTO> resultList = mapper.readValue(result, new
-                    TypeReference<List<TestingServiceBookingResultDTO>>(){});
+                    TypeReference<>(){});
 
             testingService.setResults(resultList);
         }
@@ -214,7 +214,7 @@ public class TestingServiceBookingService {
 
         serviceBooking.setTestingService(testingService);
         serviceBooking.setCustomer(customer);
-        serviceBooking.setCreatedAt(TimeFunctions.getCurrentDateTimeWithTimeZone());
+        serviceBooking.setCreatedAt(UtilFunctions.getCurrentDateTimeWithTimeZone());
         serviceBooking.setStatus(TestingServiceBookingStatus.PENDING);
 
         testingServiceBookingRepo.saveAndFlush(serviceBooking);
@@ -225,7 +225,7 @@ public class TestingServiceBookingService {
         servicePayment.setOrderId(payload.getPaymentOrderId());
         servicePayment.setAmount(payload.getPaymentAmount());
         servicePayment.setMethod(payload.getPaymentMethod());
-        servicePayment.setCreatedAt(TimeFunctions.getCurrentDateTimeWithTimeZone());
+        servicePayment.setCreatedAt(UtilFunctions.getCurrentDateTimeWithTimeZone());
         servicePayment.setDescription(payload.getDescription());
         servicePayment.setStatus(PaymentStatus.PAID);
 
@@ -295,9 +295,11 @@ public class TestingServiceBookingService {
                     "that has not started yet");
         }
 
-        TimeFunctions.validateRealStartAndEndTime
+        UtilFunctions.validateRealStartAndEndTime
                 (serviceBooking.getExpectedStartTime(), serviceBooking.getExpectedEndTime(),
                         payload.getRealStartTime(), payload.getRealEndTime());
+
+        UtilFunctions.validateRealTestResult(payload.getResultList());
 
         ObjectMapper mapper = new ObjectMapper();
         String result = mapper.writeValueAsString(payload.getResultList());
