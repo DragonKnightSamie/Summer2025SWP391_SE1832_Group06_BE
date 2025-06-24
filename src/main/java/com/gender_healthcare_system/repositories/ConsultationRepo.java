@@ -107,6 +107,11 @@ public interface ConsultationRepo extends JpaRepository<Consultation, Integer> {
     boolean existsConsultationByConsultantConsultantIdAndExpectedStartTime
             (int consultantConsultantId, LocalDateTime expectedStartTime);
 
+    //report
+    @Query("SELECT COUNT(c) FROM Consultation c WHERE c.status = :status AND c.createdAt >= :from")
+    long countByStatusAndPeriod(@Param("status") ConsultationStatus status, @Param("from") LocalDateTime from);
 
+    @Query("SELECT SUM(p.amount) FROM ConsultationPayment p WHERE p.consultation.status = 'COMPLETED'")
+    Long getTotalRevenueFromConsultations();
 
 }

@@ -151,4 +151,20 @@ public interface TestingServiceBookingRepo extends JpaRepository<TestingServiceB
     @Query("DELETE FROM TestingServiceBooking tsb WHERE tsb.serviceBookingId = :id")
     void deleteTestingServiceBooking(@Param("id") int id);
 
+    //report
+    @Query("SELECT COUNT(b) FROM TestingServiceBooking b WHERE b.status = :status AND b.createdAt >= :from")
+    long countByStatusAndPeriod(@Param("status") TestingServiceStatus status, @Param("from") LocalDateTime from);
+
+    @Query("SELECT SUM(pl.price) FROM TestingServiceBooking b " +
+            "JOIN b.testingService ts " +
+            "JOIN ts.priceLists pl " +
+            "WHERE b.status = 'COMPLETED' AND pl.status = 'ACTIVE'")
+    Long getTotalRevenueFromTestingServices();
+
+    @Query("SELECT COUNT(b) FROM TestingServiceBooking b " +
+            "WHERE b.status = :status AND b.createdAt >= :fromDate")
+    long countByStatusAndCreatedAtAfter(
+            @Param("status") TestingServiceBookingStatus status,
+            @Param("fromDate") LocalDateTime fromDate);
+
 }

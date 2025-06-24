@@ -11,6 +11,7 @@ import com.gender_healthcare_system.payloads.todo.EvaluatePayload;
 import com.gender_healthcare_system.payloads.todo.ConsultationRegisterPayload;
 import com.gender_healthcare_system.payloads.todo.MomoPaymentPayload;
 import com.gender_healthcare_system.payloads.todo.TestingServiceBookingRegisterPayload;
+import com.gender_healthcare_system.payloads.user.CustomerPayload;
 import com.gender_healthcare_system.services.*;
 import io.swagger.v3.oas.annotations.Parameter;
 import lombok.AllArgsConstructor;
@@ -37,6 +38,8 @@ public class CustomerController {
     private final ConsultationService consultationService;
 
     private final JwtService jwtService;
+
+    private final AccountService accountService;
 
     private final AuthenticationManager authenticationManager;
 

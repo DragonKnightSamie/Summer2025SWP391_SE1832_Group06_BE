@@ -48,5 +48,8 @@ public interface AccountRepo extends JpaRepository<Account, Integer> {
 
     boolean existsAccountByAccountIdAndStatus(int accountId, AccountStatus status);
 
+    //report
+    @Query("SELECT COUNT(a) FROM Account a")
+    long countTotalAccounts();
 
 }

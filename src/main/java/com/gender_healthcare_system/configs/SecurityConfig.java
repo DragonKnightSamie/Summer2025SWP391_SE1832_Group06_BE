@@ -38,6 +38,7 @@ public class SecurityConfig {
             "/swagger-ui.html",
             "staff/payment-transaction/create-refund",
             "momo/payment-transaction/**", //để tạm API của MoMo ở đây để test
+            "report/**", //để tạm API báo cáo ở đây để test
     };
 
     // Các API blog công khai (xem, tìm kiếm)
