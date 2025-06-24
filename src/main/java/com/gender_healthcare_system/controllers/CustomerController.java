@@ -52,6 +52,13 @@ public class CustomerController {
 
     private final MomoPaymentService momoPaymentService;
 
+    @PostMapping("/register")
+    public String register(@RequestBody CustomerPayload customerPayload)
+            throws JsonProcessingException {
+        accountService.createCustomerAccount(customerPayload);
+        return "Customer registered successfully";
+    }
+
     @PostMapping("/login")
     public ResponseEntity<LoginResponse> login(@RequestBody LoginRequest loginRequest) {
         Authentication authentication = authenticationManager.authenticate(
