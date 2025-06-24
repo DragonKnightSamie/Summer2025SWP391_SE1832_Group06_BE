@@ -3,6 +3,7 @@ package com.gender_healthcare_system.repositories;
 import com.gender_healthcare_system.dtos.todo.CustomerTestingServiceListDTO;
 import com.gender_healthcare_system.dtos.todo.TestingServiceDTO;
 import com.gender_healthcare_system.dtos.todo.TestingServiceListDTO;
+import com.gender_healthcare_system.entities.enu.TestingServiceStatus;
 import com.gender_healthcare_system.entities.todo.TestingService;
 import com.gender_healthcare_system.payloads.todo.TestingServiceUpdatePayload;
 import org.springframework.data.domain.Page;
@@ -13,6 +14,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalDateTime;
 import java.util.Optional;
 
 @Repository
@@ -61,4 +63,6 @@ public interface TestingServiceRepo extends JpaRepository<TestingService, Intege
             "WHERE ts.serviceId = :id")
     void updateTestingService(@Param("id") int id,
                               @Param("payload") TestingServiceUpdatePayload payload);
+
+
 }

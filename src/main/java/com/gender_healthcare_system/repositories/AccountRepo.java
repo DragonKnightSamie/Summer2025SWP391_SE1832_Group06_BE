@@ -47,4 +47,6 @@ public interface AccountRepo extends JpaRepository<Account, Integer> {
 
 
     boolean existsAccountByAccountIdAndStatus(int accountId, AccountStatus status);
+
+
 }

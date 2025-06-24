@@ -3,7 +3,9 @@ package com.gender_healthcare_system.repositories;
 import com.gender_healthcare_system.dtos.todo.StaffServiceBookingListDTO;
 import com.gender_healthcare_system.dtos.todo.TestingServiceBookingDTO;
 import com.gender_healthcare_system.dtos.todo.CustomerServiceBookingListDTO;
+import com.gender_healthcare_system.entities.enu.ConsultationStatus;
 import com.gender_healthcare_system.entities.enu.TestingServiceBookingStatus;
+import com.gender_healthcare_system.entities.enu.TestingServiceStatus;
 import com.gender_healthcare_system.entities.todo.TestingServiceBooking;
 import com.gender_healthcare_system.entities.user.Staff;
 import com.gender_healthcare_system.payloads.todo.EvaluatePayload;
@@ -149,5 +151,4 @@ public interface TestingServiceBookingRepo extends JpaRepository<TestingServiceB
     @Query("DELETE FROM TestingServiceBooking tsb WHERE tsb.serviceBookingId = :id")
     void deleteTestingServiceBooking(@Param("id") int id);
 
-    boolean existsByStaffStaffIdAndExpectedStartTime(int staffStaffId, LocalDateTime expectedStartTime);
 }

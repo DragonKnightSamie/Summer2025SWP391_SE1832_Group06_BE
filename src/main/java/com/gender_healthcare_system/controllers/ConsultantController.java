@@ -1,7 +1,9 @@
 package com.gender_healthcare_system.controllers;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.gender_healthcare_system.dtos.login.ConsultantLoginResponse;
 import com.gender_healthcare_system.dtos.todo.ConsultantConsultationDTO;
+import com.gender_healthcare_system.dtos.todo.ConsultantScheduleDTO;
 import com.gender_healthcare_system.dtos.user.ConsultantDetailsDTO;
 import com.gender_healthcare_system.dtos.login.LoginResponse;
 import com.gender_healthcare_system.entities.user.AccountInfoDetails;
@@ -11,6 +13,7 @@ import com.gender_healthcare_system.payloads.todo.ConsultationCompletePayload;
 import com.gender_healthcare_system.payloads.todo.ConsultationConfirmPayload;
 import com.gender_healthcare_system.payloads.user.ConsultantUpdatePayload;
 import com.gender_healthcare_system.services.*;
+import io.swagger.v3.oas.annotations.Parameter;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -20,6 +23,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
 import java.util.Map;
 
 @RestController
@@ -160,6 +164,21 @@ public class ConsultantController {
         consultationService.cancelConsultation(id);
         return ResponseEntity.ok("Consultation cancelled successfully");
     }*/
+
+    //update consultant có thể check lịch trước khi reschedule consultation.
+    //Get consultant schedule in a specific date for check
+    @GetMapping("/consultations/consultant/{consultantId}/check-schedule")
+    @PreAuthorize("hasAuthority('ROLE_CUSTOMER')")
+    public ResponseEntity<ConsultantScheduleDTO> getConsultantScheduleByDate
+    (@PathVariable int consultantId,
+     @Parameter(example = "05/06/2025")
+     @RequestParam("date")
+     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy")
+     LocalDate date) {
+
+        return ResponseEntity.ok(consultationService
+                .getConsultantScheduleByDate(consultantId, date));
+    }
 
     //Reschedule consultation
     @PostMapping("/consultations/{id}/reschedule/")

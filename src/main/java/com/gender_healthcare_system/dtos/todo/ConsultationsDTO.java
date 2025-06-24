@@ -2,6 +2,7 @@ package com.gender_healthcare_system.dtos.todo;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.gender_healthcare_system.entities.enu.ConsultationStatus;
+import com.gender_healthcare_system.entities.user.Consultant;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -16,6 +17,9 @@ import java.time.LocalDateTime;
 public class ConsultationsDTO implements Serializable {
 
     private int consultationId;
+
+    @Schema(type = "string", example = "Phan Hoang S")
+    private String consultantName;
 
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy HH:mm")
     @Schema(type = "string", example = "05/06/2025 07:00")

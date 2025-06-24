@@ -24,7 +24,7 @@ import java.util.Optional;
 public interface ConsultationRepo extends JpaRepository<Consultation, Integer> {
 
     @Query("SELECT new com.gender_healthcare_system.dtos.todo" +
-            ".ConsultationsDTO(c.consultationId, c.createdAt, " +
+            ".ConsultationsDTO(c.consultationId,c.consultant.fullName, c.createdAt, " +
             "c.expectedStartTime, c.realStartTime, c.expectedEndTime, c.realEndTime, " +
             "c.status) " +
             "FROM Consultation c " +
@@ -33,7 +33,7 @@ public interface ConsultationRepo extends JpaRepository<Consultation, Integer> {
     Page<ConsultationsDTO> findByCustomerId(int customerId, Pageable pageable);
 
     @Query("SELECT new com.gender_healthcare_system.dtos.todo" +
-            ".ConsultationsDTO(c.consultationId, c.createdAt, " +
+            ".ConsultationsDTO(c.consultationId,c.consultant.fullName, c.createdAt, " +
             "c.expectedStartTime, c.realStartTime, c.expectedEndTime, c.realEndTime, " +
             "c.status) " +
             "FROM Consultation c " +
@@ -65,8 +65,10 @@ public interface ConsultationRepo extends JpaRepository<Consultation, Integer> {
     @Query("SELECT c.expectedStartTime " +
             "FROM Consultation c " +
             "WHERE c.consultant.consultantId = :id " +
-            "AND CAST(c.expectedStartTime as date) = :date")
+            "AND CAST(c.expectedStartTime as date) = :date " +
+            "AND c.status <> com.gender_healthcare_system.entities.enu.ConsultationStatus.CANCELLED")
     List<LocalDateTime> getConsultantScheduleByDate(int id, LocalDate date);
+
 
     @Modifying
     @Query("UPDATE Consultation c SET " +
@@ -85,7 +87,7 @@ public interface ConsultationRepo extends JpaRepository<Consultation, Integer> {
             "c.rating = :#{#payload.rating} " +
             "WHERE c.consultationId = :consultationId")
     void updateConsultationCommentAndRatingById(int consultationId,
-                            @Param("payload") EvaluatePayload payload);
+                                                @Param("payload") EvaluatePayload payload);
 
     @Modifying
     @Query("UPDATE Consultation c SET " +
@@ -104,5 +106,7 @@ public interface ConsultationRepo extends JpaRepository<Consultation, Integer> {
 
     boolean existsConsultationByConsultantConsultantIdAndExpectedStartTime
             (int consultantConsultantId, LocalDateTime expectedStartTime);
+
+
 
 }

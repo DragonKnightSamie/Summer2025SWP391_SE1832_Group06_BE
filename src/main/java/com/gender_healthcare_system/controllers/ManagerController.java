@@ -105,18 +105,19 @@ public class ManagerController {
 
     /// //////////////////////// Manage Blogs /////////////////////////////////////
 
-
+    //comment
     //getAllBlogs
-    @GetMapping("/blogs/")
-    @PreAuthorize("hasAuthority('ROLE_MANAGER')")
-    public ResponseEntity<Map<String, Object>> getAllBlogs
-    (@RequestParam(defaultValue = "0") int page,
-     @RequestParam(defaultValue = "blogId") String sort,
-     @RequestParam(defaultValue = "asc") String order) {
+//    @GetMapping("/blogs/")
+//    @PreAuthorize("hasAuthority('ROLE_MANAGER')")
+//    public ResponseEntity<Map<String, Object>> getAllBlogs
+//    (@RequestParam(defaultValue = "0") int page,
+//     @RequestParam(defaultValue = "blogId") String sort,
+//     @RequestParam(defaultValue = "asc") String order) {
+//
+//        return ResponseEntity.ok(blogService.getAllBlogs(page, sort, order));
+//    }
 
-        return ResponseEntity.ok(blogService.getAllBlogs(page, sort, order));
-    }
-
+    //move API to BlogController and rename it to getBlogByIDForManager
     //getBlogsById
     @GetMapping("/blogs/{id}")
     @PreAuthorize("hasAuthority('ROLE_MANAGER')")
@@ -125,16 +126,16 @@ public class ManagerController {
         return ResponseEntity.ok(blogService.getBlogById(id));
     }
 
-    //searchBlogs
-    @GetMapping("/blogs/search")
-    @PreAuthorize("hasAuthority('ROLE_MANAGER')")
-    public ResponseEntity<Map<String, Object>> searchBlogs
-    (@RequestParam String keyword,
-     @RequestParam(defaultValue = "0") int page,
-     @RequestParam(defaultValue = "blogId") String sort,
-     @RequestParam(defaultValue = "asc") String order) {
-        return ResponseEntity.ok(blogService.searchBlogs(keyword, page, sort, order));
-    }
+//    //searchBlogs
+//    @GetMapping("/blogs/search")
+//    @PreAuthorize("hasAuthority('ROLE_MANAGER')")
+//    public ResponseEntity<Map<String, Object>> searchBlogs
+//    (@RequestParam String keyword,
+//     @RequestParam(defaultValue = "0") int page,
+//     @RequestParam(defaultValue = "blogId") String sort,
+//     @RequestParam(defaultValue = "asc") String order) {
+//        return ResponseEntity.ok(blogService.searchBlogs(keyword, page, sort, order));
+//    }
 
     //MANAGER CREATE BLOGS
     @PostMapping("/blogs/create")
