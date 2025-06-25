@@ -28,7 +28,7 @@ public class CertificateRegisterPayload implements Serializable {
     @Length(min = 3, max = 100, message = "Issued by must be between 3 and 100 characters")
     private String issuedBy;
 
-    @NotNull
+    @NotNull(message = "Issue Date is required")
     @Schema(type = "string", example = "05/06/2025")
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy")
     private LocalDate issueDate;

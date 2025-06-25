@@ -4,13 +4,12 @@ import com.gender_healthcare_system.dtos.todo.BlogDTO;
 import com.gender_healthcare_system.services.BlogService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
 
 @RestController
-@RequestMapping("/blogs")
+@RequestMapping("/api/v1/blogs/public")
 @AllArgsConstructor
 public class BlogController {
 
@@ -18,7 +17,7 @@ public class BlogController {
 
     // getAllBlogs
     @GetMapping("")
-    public ResponseEntity<Map<String, Object>> getAllBlogs
+    public ResponseEntity<Map<String, Object>> getAllBlogsForAnyOne
     (@RequestParam(defaultValue = "0") int page,
      @RequestParam(defaultValue = "blogId") String sort,
      @RequestParam(defaultValue = "asc") String order) {
@@ -27,7 +26,7 @@ public class BlogController {
 
     // rename API from getBlogsById to getBlogByIdForAnyOne
     // getBlogsById for any one
-    @GetMapping("/public/{id}")
+    @GetMapping("/{id}")
     public ResponseEntity<BlogDTO> getBlogByIdForAnyOne(@PathVariable int id) {
         BlogDTO blog = blogService.getBlogForCustomerById(id);
         if (blog != null) {
@@ -37,19 +36,10 @@ public class BlogController {
         }
     }
 
-    // move API from ManagerController and rename it to getBlogByIDForManager
-    // getBlogsById
-    // Manager only
-    @GetMapping("/manager/{id}")
-    @PreAuthorize("hasAuthority('ROLE_MANAGER')")
-    public ResponseEntity<BlogDTO> getBlogByIdForManager(@PathVariable int id) {
-        return ResponseEntity.ok(blogService.getBlogById(id));
-    }
-
     // searchBlogs
     @GetMapping("/search")
-    public ResponseEntity<Map<String, Object>> searchBlogs
-    (@RequestParam String keyword,
+    public ResponseEntity<Map<String, Object>> searchBlogsForAnyOne
+    (@RequestParam(defaultValue = "a") String keyword,
      @RequestParam(defaultValue = "0") int page,
      @RequestParam(defaultValue = "blogId") String sort,
      @RequestParam(defaultValue = "asc") String order) {

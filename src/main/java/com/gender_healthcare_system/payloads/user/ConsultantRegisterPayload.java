@@ -1,6 +1,7 @@
 package com.gender_healthcare_system.payloads.user;
 
 import com.gender_healthcare_system.payloads.todo.CertificateRegisterPayload;
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -19,15 +20,15 @@ import java.util.List;
 public class ConsultantRegisterPayload implements Serializable {
 
     @NotBlank(message = "Username is required")
-    @Length(min = 5, max = 50, message = "Username must be between 3 and 50 characters")
+    @Length(min = 3, max = 50, message = "Username must be between 3 and 50 characters")
     private String username;
 
     @NotBlank(message = "Password is required")
-    @Length(min = 5, max = 50)
+    @Length(min = 3, max = 50, message = "Password must be between 3 and 50 characters")
     private String password;
 
     @NotBlank(message = "Full name is required")
-    @Length(max = 70)
+    @Length(min = 3,max = 70, message = "Full name must be between 3 and 70 characters")
     private String fullName;
 
     @NotBlank(message = "Avatar URL is required")
@@ -35,18 +36,20 @@ public class ConsultantRegisterPayload implements Serializable {
     private String avatarUrl;
 
     @NotBlank(message = "Phone is required")
-    @Length(max = 15)
+    @Length(min = 10, max = 15, message = "Phone number must be between 10 and 15 digits")
     private String phone;
 
     @NotBlank(message = "Email is required")
     @Email(message = "Invalid email format")
-    @Pattern(regexp = "^[a-zA-Z0-9._%+-]+@gmail\\.com$", message = "Email must be a Gmail address")
+    @Pattern(regexp = "^[a-zA-Z0-9._%+-]+@gmail\\.com$",
+            message = "Email must be a Gmail address")
     private String email;
 
     @NotBlank(message = "Address is required")
-    @Length(max = 100)
+    @Length(min = 3, max = 100, message = "Address must be between 3 and 100 characters")
     private String address;
 
-    @NotNull
+    @Valid
+    @NotNull(message = "Consultant must have at least one certificate")
     private List<CertificateRegisterPayload> certificates;
 }

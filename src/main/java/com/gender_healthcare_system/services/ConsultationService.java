@@ -174,7 +174,7 @@ public class ConsultationService {
         ConsultationPayment payment = new ConsultationPayment();
 
         payment.setConsultation(consultation);
-        payment.setOrderId(payment.getOrderId());
+        payment.setTransactionId(payment.getTransactionId());
         payment.setAmount(payload.getPayment().getAmount());
         payment.setCreatedAt(UtilFunctions.getCurrentDateTimeWithTimeZone());
         payment.setMethod(payload.getPayment().getMethod());

@@ -1,8 +1,14 @@
 package com.gender_healthcare_system.services;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.gender_healthcare_system.dtos.login.LoginResponse;
 import com.gender_healthcare_system.dtos.todo.ManagerCustomerDTO;
 
+import com.gender_healthcare_system.dtos.user.CustomerPeriodDetailsDTO;
+import com.gender_healthcare_system.entities.enu.Gender;
+import com.gender_healthcare_system.entities.user.Customer;
 import com.gender_healthcare_system.exceptions.AppException;
 import com.gender_healthcare_system.iservices.ICustomerService;
 import com.gender_healthcare_system.repositories.CustomerRepo;
@@ -32,6 +38,25 @@ public class CustomerService implements ICustomerService {
     public ManagerCustomerDTO getCustomerById(int id) {
         return customerRepo.getCustomerDetailsById(id)
                 .orElseThrow(() -> new AppException(404, "Consultation not found"));
+    }
+
+    public CustomerPeriodDetailsDTO getFemaleCustomerPeriodDetails
+            (int customerId) throws JsonProcessingException {
+
+        Customer customer = customerRepo.getCustomerById(customerId)
+                .orElseThrow(() -> new AppException(400,
+                        "No customer found with ID " + customerId));
+
+        if (customer.getGender() == Gender.MALE){
+
+            throw new AppException(400, "Cannot get period details for MALE customer");
+        }
+
+        ObjectMapper mapper = new ObjectMapper();
+        mapper.registerModule(new JavaTimeModule());
+
+        return mapper.readValue
+                (customer.getGenderSpecificDetails(), CustomerPeriodDetailsDTO.class);
     }
 
     public Map<String, Object> getAllCustomers(int page, String sortField, String sortOrder) {

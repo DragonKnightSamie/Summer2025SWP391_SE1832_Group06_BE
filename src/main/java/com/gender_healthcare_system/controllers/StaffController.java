@@ -4,16 +4,16 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.gender_healthcare_system.dtos.login.LoginResponse;
 import com.gender_healthcare_system.dtos.todo.TestingServiceBookingDTO;
+import com.gender_healthcare_system.dtos.todo.TestingServiceResultDTO;
 import com.gender_healthcare_system.entities.enu.PaymentStatus;
 import com.gender_healthcare_system.entities.todo.TestingServicePayment;
 import com.gender_healthcare_system.entities.user.AccountInfoDetails;
 import com.gender_healthcare_system.payloads.login.LoginRequest;
-import com.gender_healthcare_system.payloads.todo.MomoPaymentPayload;
-import com.gender_healthcare_system.payloads.todo.MomoPaymentRefundPayload;
 import com.gender_healthcare_system.payloads.todo.TestingServiceBookingCompletePayload;
 import com.gender_healthcare_system.payloads.todo.TestingServiceBookingConfirmPayload;
 import com.gender_healthcare_system.services.*;
 import io.swagger.v3.oas.annotations.Parameter;
+import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 
 import org.springframework.http.ResponseEntity;
@@ -30,7 +30,7 @@ import java.util.List;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/staff")
+@RequestMapping("/api/v1/staff")
 @AllArgsConstructor
 public class StaffController {
 
@@ -44,11 +44,14 @@ public class StaffController {
 
     private final MomoPaymentService momoPaymentService;
 
+    private final TestingServiceResultService testingServiceResultService;
+
     private final TestingServiceBookingService testingServiceBookingService;
 
     //Staff login
     @PostMapping("/login")
-    public ResponseEntity<LoginResponse> login(@RequestBody LoginRequest loginRequest) {
+    public ResponseEntity<LoginResponse> login
+    (@RequestBody @Valid LoginRequest loginRequest) {
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(loginRequest.getUsername(),
                         loginRequest.getPassword())
@@ -143,16 +146,7 @@ public class StaffController {
 
     /// /////////////////////////////// Manage Momo Payment Refund /////////////////////////////////
 
-    /*//create refund payment for testing service booking
-    @PostMapping("/payment-transaction/create-refund")
-    //@PreAuthorize("hasAuthority('ROLE_STAFF')")
-    public ResponseEntity<String> createPaymentRefundRequest
-    (@RequestBody MomoPaymentRefundPayload payload) throws Exception {
-
-        return ResponseEntity.ok(momoPaymentService.createMomoRefundPaymentRequest(payload));
-    }
-
-
+    /*
     //Get customer payment info
     @GetMapping("/payment-transaction/check-error")
     @PreAuthorize("hasAuthority('ROLE_STAFF')")
@@ -172,9 +166,20 @@ public class StaffController {
     /// ////////////////////////////////////// Manage Testing Service Bookings //////////////////////////////////////
 
     //get by id
+    @GetMapping("/testing-service-bookings/{testingBookingid}/testing-templates")
+    @PreAuthorize("hasAuthority('ROLE_STAFF')")
+    public ResponseEntity<List<TestingServiceResultDTO>>
+    getTestingBookingTestTemplatesById
+    (@PathVariable int testingBookingid) {
+        return ResponseEntity.ok(
+                testingServiceResultService.getAllServiceResultsByBookingId(testingBookingid));
+    }
+
+    //get by id
     @GetMapping("/testing-service-bookings/{id}")
     @PreAuthorize("hasAuthority('ROLE_STAFF')")
-    public ResponseEntity<TestingServiceBookingDTO> getTestingServiceBookingById(@PathVariable int id) throws JsonProcessingException {
+    public ResponseEntity<TestingServiceBookingDTO>
+    getTestingServiceBookingById(@PathVariable int id) throws JsonProcessingException {
         return ResponseEntity.ok(
                 testingServiceBookingService.getTestingServiceBookingDetailsById(id));
     }
@@ -188,6 +193,7 @@ public class StaffController {
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "serviceBookingId") String sortField,
             @RequestParam(defaultValue = "asc") String sortOrder) {
+
         return ResponseEntity.ok(testingServiceBookingService
                 .getAllTestingServiceBookingsByStaffId(staffId, page, sortField, sortOrder));
     }
@@ -199,6 +205,7 @@ public class StaffController {
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "serviceBookingId") String sortField,
             @RequestParam(defaultValue = "asc") String sortOrder) {
+
         return ResponseEntity.ok(testingServiceBookingService
                 .getAllPendingTestingServiceBookings(page, sortField, sortOrder));
     }
@@ -222,7 +229,7 @@ public class StaffController {
     @PreAuthorize("hasAuthority('ROLE_STAFF')")
     public ResponseEntity<String> confirmTestingServiceBooking(
             @PathVariable int id,
-            @RequestBody TestingServiceBookingConfirmPayload payload) {
+            @RequestBody @Valid TestingServiceBookingConfirmPayload payload) {
         testingServiceBookingService.confirmTestingServiceBooking(id, payload);
         return ResponseEntity.ok("Testing Service Booking confirmed successfully");
     }
@@ -232,7 +239,9 @@ public class StaffController {
     @PreAuthorize("hasAuthority('ROLE_STAFF')")
     public ResponseEntity<String> completeTestingServiceBooking(
             @PathVariable int id,
-            @RequestBody TestingServiceBookingCompletePayload payload) throws JsonProcessingException {
+            @RequestBody @Valid TestingServiceBookingCompletePayload payload)
+            throws JsonProcessingException {
+
         testingServiceBookingService.completeTestingServiceBooking(id, payload);
         return ResponseEntity.ok("Testing Service Booking marked as completed successfully");
     }

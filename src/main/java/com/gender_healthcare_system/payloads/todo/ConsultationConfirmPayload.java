@@ -15,10 +15,10 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 public class ConsultationConfirmPayload implements Serializable {
 
-    @NotNull
+    @NotNull(message = "Consultant ID is required")
     private int consultantId;
 
-    @NotNull
+    @NotNull(message = "Expected Start time is required")
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy HH:mm")
     @Schema(type = "string", example = "05/06/2025 07:00")
     private LocalDateTime expectedStartTime;

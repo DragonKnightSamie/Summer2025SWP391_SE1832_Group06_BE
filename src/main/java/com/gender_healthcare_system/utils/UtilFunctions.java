@@ -1,7 +1,9 @@
 package com.gender_healthcare_system.utils;
 
+import com.gender_healthcare_system.entities.enu.Gender;
 import com.gender_healthcare_system.entities.enu.GenderType;
 import com.gender_healthcare_system.entities.enu.ResultType;
+import com.gender_healthcare_system.entities.todo.GenderSpecificDetails;
 import com.gender_healthcare_system.exceptions.AppException;
 import com.gender_healthcare_system.payloads.todo.TestingServiceResultCompletePayload;
 import com.gender_healthcare_system.payloads.todo.TestingServiceResultPayload;
@@ -17,6 +19,11 @@ public class UtilFunctions {
     public static LocalDateTime getCurrentDateTimeWithTimeZone(){
         ZoneId zone = ZoneId.of("Asia/Bangkok");
         return LocalDateTime.now(zone);
+    }
+
+    public static LocalDate getCurrentDateWithTimeZone(){
+        ZoneId zone = ZoneId.of("Asia/Bangkok");
+        return LocalDate.now(zone);
     }
 
     public static void validateIssueDateAndExpiryDate(LocalDate issueDate,
@@ -178,6 +185,36 @@ public class UtilFunctions {
                 throw new AppException(400, "Real value for test with title "
                         + item.getTitle() + "must be within accepted range: [" +
                         item.getMinValue() + "," + item.getMaxValue() + "]");
+            }
+        }
+    }
+
+    public static void validatePeriodDetails(Gender gender, GenderSpecificDetails details){
+
+        if(gender == Gender.MALE && details != null){
+            throw new AppException(400, "Gender MALE cannot have period details");
+        }
+
+        if(gender == Gender.FEMALE && details == null){
+            throw new AppException(400, "Gender FEMALE must have period details");
+        }
+
+        if(details != null){
+
+            if(Boolean.TRUE.equals(details.getHasMenstrualCycle()) &&
+                    (details.getCycleLengthDays() == null ||
+                            details.getLastCycleStart() == null)){
+
+                throw new AppException(400,
+                        "Cycle details are required when hasMenstrualCycle is true");
+            }
+
+            if(Boolean.FALSE.equals(details.getHasMenstrualCycle()) &&
+                    (details.getCycleLengthDays() != null ||
+                            details.getLastCycleStart() != null)){
+
+                throw new AppException(400,
+                        "Cycle details are not required when hasMenstrualCycle is false");
             }
         }
     }

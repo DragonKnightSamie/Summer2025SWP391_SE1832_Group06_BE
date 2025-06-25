@@ -39,7 +39,7 @@ public class Staff implements Serializable {
 
     //One-to-Many relationship with TestingServicePayment
     @OneToMany(mappedBy = "staff", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private List<TestingServiceBooking> testingServiceHistories;
+    private List<TestingServiceBooking> testingServiceBookings;
 
     //One-to-One relationship with Account
     @OneToOne // xóa thông tài khoản trong bảng staff th sẽ xóa luôn trong bảng account

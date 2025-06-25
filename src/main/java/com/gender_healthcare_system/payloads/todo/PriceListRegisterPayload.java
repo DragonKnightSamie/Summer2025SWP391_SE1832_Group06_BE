@@ -16,10 +16,9 @@ import java.io.Serializable;
 @NoArgsConstructor
 public class PriceListRegisterPayload implements Serializable {
 
-    @NotNull
+    @NotNull(message = "Price is required")
     private long price;
 
-    @Nullable
     @Nationalized
     @Size(min = 5,max = 255, message = "Description must be empty or between 5 and 255 characters")
     private String description;

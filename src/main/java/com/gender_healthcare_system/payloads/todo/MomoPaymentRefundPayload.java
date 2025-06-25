@@ -14,20 +14,20 @@ import org.hibernate.validator.constraints.Length;
 public class MomoPaymentRefundPayload {
 
     @Nationalized
-    @NotBlank
+    @NotBlank(message = "Customer full name is required")
     @Length(min = 5, max = 70, message = "Customer full name " +
             "must be between 5 and 70 characters")
     private String customerFullName;
 
-    @NotNull
+    @NotNull(message = "Amount is required")
     private long amount;
 
     @Nationalized
-    @NotBlank
+    @NotBlank(message = "Description is required")
     @Length(min = 5, max = 100, message = "Description " +
             "must be between 5 and 100 characters")
     private String description;
 
-    @NotNull
+    @NotNull(message = "Transaction ID is required")
     private long transactionId;
 }

@@ -23,12 +23,11 @@ public class TestingServiceRegisterPayload implements Serializable {
     @Length(min = 5, max = 100, message = "Certificate name must be between 5 and 100 characters")
     private String serviceName;
 
-    @Nullable
     @Nationalized
     @Size(min = 5,max = 255, message = "Description must be empty or between 5 and 255 characters")
     private String description;
 
-    @NotNull
+    @NotNull(message = "Service Type Id is required")
     private int serviceTypeId; // foreign key tới TestingServiceType
 
     @NotNull(message = "Service price list is required")

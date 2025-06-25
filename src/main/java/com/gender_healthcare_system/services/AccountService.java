@@ -74,6 +74,9 @@ public class AccountService implements IAccountService {
         customer.setFullName(payload.getFullName());
         customer.setGender(payload.getGender());
 
+        UtilFunctions.validatePeriodDetails
+                (payload.getGender(), payload.getGenderSpecificDetails());
+
         String GenderSpecificDetails = mapper.writeValueAsString(
                 payload.getGenderSpecificDetails());
         customer.setGenderSpecificDetails(GenderSpecificDetails);

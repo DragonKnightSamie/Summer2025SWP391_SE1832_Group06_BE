@@ -55,7 +55,7 @@ public class Customer implements Serializable {
 
     //Relationship with TestingServiceBooking
     @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private List<TestingServiceBooking> testingServiceHistories;
+    private List<TestingServiceBooking> testingServiceBookings;
 
     //One-to-One relationship with Account
     @OneToOne

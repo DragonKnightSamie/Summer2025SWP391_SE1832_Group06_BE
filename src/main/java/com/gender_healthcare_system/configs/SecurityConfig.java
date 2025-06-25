@@ -27,68 +27,67 @@ public class SecurityConfig {
 
     // Các API không cần đăng nhập
     private static final String[] AUTH_WHITELIST = {
-            "/customer/register",
-            "/customer/login",
-            "/admin/login",
-            "/manager/login",
-            "/staff/login",
-            "/consultant/login",
+            "/api/v1/customer/register",
+            "/api/v1/customer/login",
+            "/api/v1/admin/login",
+            "/api/v1/manager/login",
+            "/api/v1/staff/login",
+            "/api/v1/consultant/login",
             "/v3/api-docs/**",
             "/swagger-ui/**",
             "/swagger-ui.html",
-            "staff/payment-transaction/create-refund",
-            "momo/payment-transaction/**", //để tạm API của MoMo ở đây để test
-            "report/**", //để tạm API báo cáo ở đây để test
+            "/api/v1/momo/payment-transactions/**", //để tạm API của MoMo ở đây để test
+            "/api/v1/admin/statistic-reports/**" //để tạm API báo cáo ở đây để test
     };
 
     // Các API blog công khai (xem, tìm kiếm)
     private static final String[] BLOG_PUBLIC_ENDPOINTS = {
-            "/api/blogs/**"
+            "/api/v1/blogs/public/**"
     };
 
     // Các API cần quyền CUSTOMER
     private static final String[] CUSTOMER_AUTHLIST = {
-            "/customer/consultations/**",
-            "/customer/testing-service-bookings/**",
-            "customer/consultant-list/**",
-            "/customer/payment-transaction/**",
-            "/customer/testing-services/**"
+            "/api/v1/customer/consultations/**",
+            "/api/v1/customer/testing-service-bookings/**",
+            "/api/v1/customer/consultant-list/**",
+            "/api/v1/customer/payment-transaction/**",
+            "/api/v1/customer/testing-services/**",
+            "/api/v1/customer/female/**"
 
     };
 
     // Các API cần quyền ADMIN
     private static final String[] ADMIN_AUTHLIST = {
-            "/admin/managers/**"
+            "/api/v1/admin/managers/**"
 
     };
 
     // Các API cần quyền MANAGER
     private static final String[] MANAGER_AUTHLIST = {
-            "/manager/login",
-            "/manager/blogs/**",
-            "/manager/staffs/**",
-            "/manager/consultants/**",
-            "/manager/customers/**",
-            "/manager/testing-service-types/**",
-            "/manager/testing-service-results/**",
-            "/manager/testing-services/**",
-            "/manager/testing-service-forms/**",
-            "/manager/price-lists/**",
-            "/manager/image/**",
+            "/api/v1/manager/blogs/**",
+            "/api/v1/manager/staffs/**",
+            "/api/v1/manager/consultants/**",
+            "/api/v1/manager/customers/**",
+            "/api/v1/manager/testing-service-types/**",
+            "/api/v1/manager/testing-service-results/**",
+            "/api/v1/manager/testing-services/**",
+            "/api/v1/manager/testing-service-forms/**",
+            "/api/v1/manager/price-lists/**",
+            "/api/v1/manager/image/**",
 
     };
 
     // Các API cần quyền STAFF
     private static final String[] STAFF_AUTHLIST = {
-            "/staff/payments/**",
-            "/staff/testing-service-bookings/**"
+            "/api/v1/staff/payments/**",
+            "/api/v1/staff/testing-service-bookings/**"
     };
 
     // Các API cần quyền CONSULTANT
     private static final String[] CONSULTANT_AUTHLIST = {
-            "/consultant/consultations/**",
-            "/consultant/profile/**",
-            "/consultant/certificates/**"
+            "/api/v1/consultant/consultations/**",
+            "/api/v1/consultant/profile/**",
+            "/api/v1/consultant/certificates/**"
     };
 
     @Bean

@@ -2,6 +2,7 @@ package com.gender_healthcare_system.repositories;
 
 import com.gender_healthcare_system.dtos.login.LoginResponse;
 import com.gender_healthcare_system.dtos.todo.ManagerCustomerDTO;
+import com.gender_healthcare_system.entities.enu.Gender;
 import com.gender_healthcare_system.entities.user.Customer;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -32,6 +33,12 @@ public interface CustomerRepo extends JpaRepository<Customer, Integer> {
             "JOIN c.account a " +
             "WHERE c.customerId = :id")
     Optional<ManagerCustomerDTO> getCustomerDetailsById(int id);
+
+    @Query("SELECT c.gender " +
+            "FROM Customer c " +
+            "JOIN c.testingServiceBookings tsh " +
+            "WHERE tsh.serviceBookingId = :id")
+    Gender getCustomerGenderByBookingId(int id);
 
     @Query("SELECT new com.gender_healthcare_system.dtos.todo.ManagerCustomerDTO" +
             "(c.customerId, a.username, a.password, c.fullName, c.dateOfBirth, c.gender," +

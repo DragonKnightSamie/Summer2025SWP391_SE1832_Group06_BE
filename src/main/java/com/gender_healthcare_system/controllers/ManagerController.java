@@ -14,6 +14,7 @@ import com.gender_healthcare_system.payloads.user.ManagerRegisterPayload;
 import com.gender_healthcare_system.payloads.user.StaffRegisterPayload;
 import com.gender_healthcare_system.payloads.user.StaffUpdatePayload;
 import com.gender_healthcare_system.services.*;
+import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -28,7 +29,7 @@ import java.io.IOException;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/manager")
+@RequestMapping("/api/v1/manager")
 @AllArgsConstructor
 public class ManagerController {
 
@@ -61,7 +62,8 @@ public class ManagerController {
     //test
     //Manager registration
     @PostMapping("/register")
-    public ResponseEntity<String> register(@RequestBody ManagerRegisterPayload payload) {
+    public ResponseEntity<String> register
+    (@RequestBody @Valid ManagerRegisterPayload payload) {
         accountService.createManagerAccount(payload);
         return ResponseEntity.ok("Manager registered successfully");
     }
@@ -69,7 +71,8 @@ public class ManagerController {
 
     //Manager login
     @PostMapping("/login")
-    public ResponseEntity<LoginResponse> login(@RequestBody LoginRequest loginRequest) {
+    public ResponseEntity<LoginResponse> login
+    (@RequestBody @Valid LoginRequest loginRequest) {
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(loginRequest.getUsername(),
                         loginRequest.getPassword())
@@ -121,9 +124,9 @@ public class ManagerController {
     //getBlogsById
     @GetMapping("/blogs/{id}")
     @PreAuthorize("hasAuthority('ROLE_MANAGER')")
-    public ResponseEntity<BlogDTO> getBlogById(@PathVariable int id) {
+    public ResponseEntity<BlogDTO> getBlogByIdForManager(@PathVariable int id) {
 
-        return ResponseEntity.ok(blogService.getBlogById(id));
+        return ResponseEntity.ok(blogService.getBlogForManagerById(id));
     }
 
 //    //searchBlogs
@@ -140,7 +143,7 @@ public class ManagerController {
     //MANAGER CREATE BLOGS
     @PostMapping("/blogs/create")
     @PreAuthorize("hasAuthority('ROLE_MANAGER')")
-    public ResponseEntity<?> createBlog(@RequestBody BlogRegisterPayload payload) {
+    public ResponseEntity<?> createBlog(@RequestBody @Valid BlogRegisterPayload payload) {
 
         blogService.createBlog(payload);
         return ResponseEntity.ok("Blog created successfully");
@@ -150,7 +153,7 @@ public class ManagerController {
     @PutMapping("/blogs/update/{id}")
     @PreAuthorize("hasAuthority('ROLE_MANAGER')")
     public ResponseEntity<?> updateBlog
-    (@PathVariable int id, @RequestBody BlogUpdatePayload payload) {
+    (@PathVariable int id, @RequestBody @Valid BlogUpdatePayload payload) {
 
         blogService.updateBlog(id, payload);
         return ResponseEntity.ok("Blog updated successfully");
@@ -198,7 +201,7 @@ public class ManagerController {
     @PostMapping("/consultants/register")
     @PreAuthorize("hasAuthority('ROLE_MANAGER')")
     public ResponseEntity<?> createConsultantAccount
-    (@RequestBody ConsultantRegisterPayload payload) {
+    (@RequestBody @Valid ConsultantRegisterPayload payload) {
 
         accountService.createConsultantAccount(payload);
         return ResponseEntity.ok("Staff account created successfully");
@@ -252,7 +255,8 @@ public class ManagerController {
     //MANAGER CREATE STAFF ACCOUNT
     @PostMapping("/staffs/register")
     @PreAuthorize("hasAuthority('ROLE_MANAGER')")
-    public ResponseEntity<?> createStaffAccount(@RequestBody StaffRegisterPayload payload) {
+    public ResponseEntity<?> createStaffAccount
+    (@RequestBody @Valid StaffRegisterPayload payload) {
         accountService.createStaffAccount(payload);
         return ResponseEntity.ok("Staff account created successfully");
     }
@@ -261,7 +265,7 @@ public class ManagerController {
     @PutMapping("/staffs/update/{id}")
     @PreAuthorize("hasAuthority('ROLE_MANAGER')")
     public ResponseEntity<?> updateStaffAccount
-    (@PathVariable int id, @RequestBody StaffUpdatePayload payload) {
+    (@PathVariable int id, @RequestBody @Valid StaffUpdatePayload payload) {
 
         staffService.updateStaffAccount(id, payload);
         return ResponseEntity.ok("Staff details updated successfully");
@@ -349,7 +353,7 @@ public class ManagerController {
     @PostMapping("/testing-services-types/create")
     @PreAuthorize("hasAuthority('ROLE_MANAGER')")
     public ResponseEntity<String> createTestingServiceType(
-            @RequestBody TestingServiceTypeRegisterPayload payload) {
+            @RequestBody @Valid TestingServiceTypeRegisterPayload payload) {
         testingServiceTypeService.createTestingServiceType(payload);
         return ResponseEntity.ok("Testing Service type created successfully");
     }
@@ -359,7 +363,8 @@ public class ManagerController {
     @PutMapping("/testing-services-types/update/{id}")
     @PreAuthorize("hasAuthority('ROLE_MANAGER')")
     public ResponseEntity<String> updateTestingServiceType(
-            @PathVariable int id, @RequestBody TestingServiceTypeUpdatePayload payload) {
+            @PathVariable int id,
+            @RequestBody @Valid TestingServiceTypeUpdatePayload payload) {
         testingServiceTypeService.updateTestingServiceType(id, payload);
         return ResponseEntity.ok("Testing Service type updated successfully");
     }
@@ -424,7 +429,7 @@ public class ManagerController {
     @PostMapping("/testing-services/create")
     @PreAuthorize("hasAuthority('ROLE_MANAGER')")
     public ResponseEntity<String> createTestingService(
-            @RequestBody TestingServiceRegisterPayload payload) {
+            @RequestBody @Valid TestingServiceRegisterPayload payload) {
         testingService_Service.createTestingService(payload);
         return ResponseEntity.ok("Testing Service created successfully");
     }
@@ -433,8 +438,9 @@ public class ManagerController {
     //Create new price list for existing testing service
     @PostMapping("/testing-services/price-lists/create/{id}")
     @PreAuthorize("hasAuthority('ROLE_MANAGER')")
-    public void createTestingServicePriceList(@PathVariable int id,
-                                              @RequestBody PriceListRegisterPayload payload) {
+    public void createTestingServicePriceList(
+            @PathVariable int id,
+            @RequestBody @Valid PriceListRegisterPayload payload) {
         priceListService.createNewPriceListForExistingService(id, payload);
     }
 
@@ -442,7 +448,8 @@ public class ManagerController {
     @PutMapping("/testing-services/update/{id}")
     @PreAuthorize("hasAuthority('ROLE_MANAGER')")
     public ResponseEntity<String> updateTestingService(
-            @PathVariable int id, @RequestBody TestingServiceUpdatePayload payload) {
+            @PathVariable int id,
+            @RequestBody @Valid TestingServiceUpdatePayload payload) {
         testingService_Service.updateTestingService(id, payload);
         return ResponseEntity.ok("Testing Service updated successfully");
     }
@@ -465,7 +472,7 @@ public class ManagerController {
     @PutMapping("/price-lists/{id}")
     @PreAuthorize("hasAuthority('ROLE_MANAGER')")
     public void updatePriceList(@PathVariable int id,
-                                @RequestBody PriceListUpdatePayload payload) {
+                                @RequestBody @Valid PriceListUpdatePayload payload) {
         priceListService.updatePriceList(id, payload);
     }
 
@@ -483,25 +490,31 @@ public class ManagerController {
 
     @PostMapping(value = "/image/upload", consumes = "multipart/form-data")
     @PreAuthorize("hasAuthority('ROLE_MANAGER')")
-    public ResponseEntity<ImageUploadDTO> uploadImage(@RequestParam("file") MultipartFile file,
-                                                      @RequestParam("folder") String folder) throws IOException {
+    public ResponseEntity<ImageUploadDTO> uploadImage(
+            @RequestParam("file") MultipartFile file,
+            @RequestParam("folder") String folder) throws IOException {
         return ResponseEntity.ok(imageUploadService.uploadImage(file, folder));
     }
 
 
     @PutMapping(value = "/image/replace", consumes = "multipart/form-data")
-    public ResponseEntity<ImageUploadDTO> replaceImage(@RequestParam("file") MultipartFile file,
-                                                       @RequestParam("folder") String folder,
-                                                       @RequestParam("id") String publicId) throws IOException {
+    public ResponseEntity<ImageUploadDTO> replaceImage(
+            @RequestParam("file") MultipartFile file,
+            @RequestParam("folder") String folder,
+            @RequestParam("id") String publicId) throws IOException {
+
         return ResponseEntity.ok(imageUploadService.replaceImage(file, folder, publicId));
     }
 
 
     @DeleteMapping("/image/delete")
     @PreAuthorize("hasAuthority('ROLE_MANAGER')")
-    public ResponseEntity<?> deleteImage(@RequestParam("id") String publicId) throws IOException {
+    public ResponseEntity<?> deleteImage(
+            @RequestParam("id") String publicId) throws IOException {
+
         boolean isDelete = imageUploadService.deleteImage(publicId);
-        return isDelete ? ResponseEntity.ok("Deleted") : ResponseEntity.status(404).body("Not found");
+        return isDelete ? ResponseEntity.ok("Deleted") :
+                ResponseEntity.status(404).body("Not found");
     }
 
 }

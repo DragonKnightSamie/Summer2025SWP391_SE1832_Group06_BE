@@ -21,13 +21,13 @@ import java.math.BigDecimal;
 public class TestingServiceResultPayload implements Serializable {
 
     @Nationalized
-    @NotBlank
+    @NotBlank(message = "Title is required")
     @Length(min = 5, max = 50,
             message = "Test result title must be between 5 and 50 characters")
     private String title;
 
     @Nationalized
-    @NotBlank
+    @NotBlank(message = "Description is required")
     @Length(min = 5, max = 100,
             message = "Test result description must be between 5 and 100 characters")
     private String description;

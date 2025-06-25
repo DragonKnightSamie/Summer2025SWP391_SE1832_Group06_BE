@@ -8,7 +8,6 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 import org.hibernate.annotations.Nationalized;
-import org.hibernate.validator.constraints.Length;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
@@ -34,8 +33,8 @@ public class ConsultationPayment implements Serializable {
     private Consultation consultation;
 
     //oderID
-    @Column(name = "order_id", nullable = false, unique = true, length = 30)
-    private String orderId;
+    @Column(name = "transaction_id", nullable = false, unique = true, length = 30)
+    private String transactionId;
 
 
     @Column(name = "amount", nullable = false)

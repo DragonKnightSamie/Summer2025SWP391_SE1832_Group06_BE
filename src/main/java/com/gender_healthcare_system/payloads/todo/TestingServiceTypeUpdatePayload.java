@@ -20,12 +20,12 @@ import java.time.LocalDateTime;
 public class TestingServiceTypeUpdatePayload implements Serializable {
 
     @Nationalized
-    @NotBlank
+    @NotBlank(message = "Service type name is required")
     @Length(min = 5, max = 100, message = "Service type name must be between 5 and 100 characters")
     private String serviceTypeName;
 
     @Nationalized
-    @NotBlank
+    @NotBlank(message = "Title is required")
     @Length(min = 5, max = 100, message = "Service type title must be between 5 and 100 characters")
     private String title;
 
@@ -33,8 +33,4 @@ public class TestingServiceTypeUpdatePayload implements Serializable {
     @Size(min = 5,max = 255, message = "Service type content must be empty or between 5 and 255 characters")
     private String content;
 
-    @NotNull
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy HH:mm")
-    @Schema(type = "string", example = "05/06/2025 07:00")
-    private LocalDateTime createdAt;
 }

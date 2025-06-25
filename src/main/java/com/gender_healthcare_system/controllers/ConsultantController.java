@@ -5,7 +5,6 @@ import com.gender_healthcare_system.dtos.login.ConsultantLoginResponse;
 import com.gender_healthcare_system.dtos.todo.ConsultantConsultationDTO;
 import com.gender_healthcare_system.dtos.todo.ConsultantScheduleDTO;
 import com.gender_healthcare_system.dtos.user.ConsultantDetailsDTO;
-import com.gender_healthcare_system.dtos.login.LoginResponse;
 import com.gender_healthcare_system.entities.user.AccountInfoDetails;
 import com.gender_healthcare_system.payloads.login.LoginRequest;
 import com.gender_healthcare_system.payloads.todo.CertificateUpdatePayload;
@@ -14,6 +13,7 @@ import com.gender_healthcare_system.payloads.todo.ConsultationConfirmPayload;
 import com.gender_healthcare_system.payloads.user.ConsultantUpdatePayload;
 import com.gender_healthcare_system.services.*;
 import io.swagger.v3.oas.annotations.Parameter;
+import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -27,7 +27,7 @@ import java.time.LocalDate;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/consultant")
+@RequestMapping("/api/v1/consultant")
 @AllArgsConstructor
 public class ConsultantController {
 
@@ -42,7 +42,8 @@ public class ConsultantController {
     private final AuthenticationManager authenticationManager;
 
     @PostMapping("/login")
-    public ResponseEntity<ConsultantLoginResponse> login(@RequestBody LoginRequest loginRequest) {
+    public ResponseEntity<ConsultantLoginResponse> login
+            (@RequestBody @Valid LoginRequest loginRequest) {
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
                         loginRequest.getUsername(),
@@ -101,7 +102,7 @@ public class ConsultantController {
     @PutMapping("profile/update/{id}")
     @PreAuthorize("hasAuthority('ROLE_CONSULTANT')")
     public ResponseEntity<?> updateConsultantProfile
-    (@PathVariable int id, @RequestBody ConsultantUpdatePayload payload) {
+    (@PathVariable int id, @RequestBody @Valid ConsultantUpdatePayload payload) {
 
         consultantService.updateConsultantDetails(id, payload);
         return ResponseEntity.ok("Consultant profile updated successfully");
@@ -115,7 +116,7 @@ public class ConsultantController {
     @PutMapping("certificates/update/{id}")
     @PreAuthorize("hasAuthority('ROLE_CONSULTANT')")
     public ResponseEntity<?> updateConsultantCertificate
-    (@PathVariable int id, @RequestBody CertificateUpdatePayload payload) {
+    (@PathVariable int id, @RequestBody @Valid CertificateUpdatePayload payload) {
 
         certificateService.updateConsultantCertificate(id, payload);
         return ResponseEntity.ok("Consultant certificate updated successfully");
@@ -168,7 +169,7 @@ public class ConsultantController {
     //update consultant có thể check lịch trước khi reschedule consultation.
     //Get consultant schedule in a specific date for check
     @GetMapping("/consultations/consultant/{consultantId}/check-schedule")
-    @PreAuthorize("hasAuthority('ROLE_CUSTOMER')")
+    @PreAuthorize("hasAuthority('ROLE_CONSULTANT')")
     public ResponseEntity<ConsultantScheduleDTO> getConsultantScheduleByDate
     (@PathVariable int consultantId,
      @Parameter(example = "05/06/2025")
@@ -184,7 +185,7 @@ public class ConsultantController {
     @PostMapping("/consultations/{id}/reschedule/")
     @PreAuthorize("hasAuthority('ROLE_CONSULTANT')")
     public ResponseEntity<String> reScheduleConsultation
-    (@PathVariable int id, @RequestBody ConsultationConfirmPayload payload) {
+    (@PathVariable int id, @RequestBody @Valid ConsultationConfirmPayload payload) {
 
         consultationService.reScheduleConsultation(id, payload);
         return ResponseEntity.ok("Consultation rescheduled successfully");
@@ -194,7 +195,7 @@ public class ConsultantController {
     @PostMapping("/consultations/complete")
     @PreAuthorize("hasAuthority('ROLE_CONSULTANT')")
     public ResponseEntity<String> completeConsultation
-    (@RequestBody ConsultationCompletePayload payload) {
+    (@RequestBody @Valid ConsultationCompletePayload payload) {
 
         consultationService.completeConsultation(payload);
         return ResponseEntity.ok("Consultation completed successfully");

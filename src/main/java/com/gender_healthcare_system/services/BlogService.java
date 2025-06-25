@@ -62,7 +62,7 @@ public class BlogService {
     }
 
     ////////////////////////////// Get blog by id //////////////////////////////
-    public BlogDTO getBlogById(int id) {
+    public BlogDTO getBlogForManagerById(int id) {
         return blogRepo.getBlogDetailsById(id)
                 .orElseThrow(() -> new AppException(404, "Blog not found with ID " + id));
     }

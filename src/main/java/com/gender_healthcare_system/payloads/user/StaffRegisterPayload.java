@@ -20,15 +20,15 @@ public class StaffRegisterPayload implements Serializable {
     private String username;
 
     @NotBlank(message = "Password is required")
-    @Length(min = 5, max = 50)
+    @Length(min = 3, max = 50, message = "Password must be between 3 and 50 characters")
     private String password;
 
     @NotBlank(message = "Full name is required")
-    @Length(max = 70)
+    @Length(min = 3,max = 70, message = "Full name must be between 3 and 70 characters")
     private String fullName;
 
     @NotBlank(message = "Phone is required")
-    @Length(max = 15)
+    @Length(min = 10, max = 15, message = "Phone number must be between 10 and 15 digits")
     private String phone;
 
     @NotBlank(message = "Email is required")
@@ -37,7 +37,7 @@ public class StaffRegisterPayload implements Serializable {
     private String email;
 
     @NotBlank(message = "Address is required")
-    @Length(max = 100)
+    @Length(min = 3, max = 100, message = "Address must be between 3 and 100 characters")
     private String address;
 
 

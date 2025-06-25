@@ -28,7 +28,7 @@ public class CertificateUpdatePayload implements Serializable {
     @Length(min = 3, max = 100, message = "Issued by must be between 3 and 100 characters")
     private String issuedBy;
 
-    @NotNull
+    @NotNull(message = "Issue Date is required")
     @Schema(type = "string", example = "05/06/2025")
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy")
     private LocalDate issueDate;
@@ -42,7 +42,7 @@ public class CertificateUpdatePayload implements Serializable {
     @Length(min = 5, max = 255, message = "Description must be between 5 and 255 characters")
     private String description;
 
-    @NotBlank
+    @NotBlank(message = "Image URL is required")
     @Length(min = 5, max = 255, message = "Image Url must be between 5 and 255 characters")
     private String imageUrl;
 }

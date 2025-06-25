@@ -15,15 +15,15 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 public class ConsultationCompletePayload implements Serializable {
 
-    @NotNull
+    @NotNull(message = "Consultation ID is required")
     private int consultationId;
 
-    @NotNull
+    @NotNull(message = "Real Start time is required")
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy HH:mm")
     @Schema(type = "string", example = "05/06/2025 07:00")
     private LocalDateTime realStartTime;
 
-    @NotNull
+    @NotNull(message = "Real End time is required")
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy HH:mm")
     @Schema(type = "string", example = "05/06/2025 07:00")
     private LocalDateTime realEndTime;

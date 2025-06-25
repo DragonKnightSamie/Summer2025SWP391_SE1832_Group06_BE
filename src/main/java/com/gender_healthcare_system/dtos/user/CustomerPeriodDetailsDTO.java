@@ -1,40 +1,29 @@
-package com.gender_healthcare_system.entities.todo;
+package com.gender_healthcare_system.dtos.user;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.v3.oas.annotations.media.Schema;
-import jakarta.persistence.Embeddable;
-import jakarta.validation.constraints.AssertTrue;
-import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.validator.constraints.Length;
-import org.springframework.format.annotation.DateTimeFormat;
 
 import java.io.Serializable;
 import java.time.LocalDate;
 
-@Embeddable
 @Data
-@NoArgsConstructor
 @AllArgsConstructor
-public class GenderSpecificDetails implements Serializable {
+@NoArgsConstructor
+public class CustomerPeriodDetailsDTO implements Serializable {
 
-    @NotNull(message = "Has MenstrualCycle is required")
     private Boolean hasMenstrualCycle; // true nếu có, false nếu không
 
-    @Size(min = 21, max = 45, message =
-            "Cycle length days should be between 21 to 45 days if provided")
     private Integer cycleLengthDays;
 
     @Schema(type = "string", example = "05/06/2025")
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy")
     private LocalDate lastCycleStart;
 
-    @Length(min = 5, max = 255, message = "Notes must be 5 to 255 characters if provided")
     private String notes;
-
 }
-

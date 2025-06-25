@@ -1,11 +1,10 @@
 package com.gender_healthcare_system.repositories;
 
+import com.gender_healthcare_system.dtos.report.StatisticResponseDTO;
 import com.gender_healthcare_system.dtos.todo.StaffServiceBookingListDTO;
 import com.gender_healthcare_system.dtos.todo.TestingServiceBookingDTO;
 import com.gender_healthcare_system.dtos.todo.CustomerServiceBookingListDTO;
-import com.gender_healthcare_system.entities.enu.ConsultationStatus;
 import com.gender_healthcare_system.entities.enu.TestingServiceBookingStatus;
-import com.gender_healthcare_system.entities.enu.TestingServiceStatus;
 import com.gender_healthcare_system.entities.todo.TestingServiceBooking;
 import com.gender_healthcare_system.entities.user.Staff;
 import com.gender_healthcare_system.payloads.todo.EvaluatePayload;
@@ -152,19 +151,15 @@ public interface TestingServiceBookingRepo extends JpaRepository<TestingServiceB
     void deleteTestingServiceBooking(@Param("id") int id);
 
     //report
-    @Query("SELECT COUNT(b) FROM TestingServiceBooking b WHERE b.status = :status AND b.createdAt >= :from")
-    long countByStatusAndPeriod(@Param("status") TestingServiceStatus status, @Param("from") LocalDateTime from);
-
-    @Query("SELECT SUM(pl.price) FROM TestingServiceBooking b " +
-            "JOIN b.testingService ts " +
-            "JOIN ts.priceLists pl " +
-            "WHERE b.status = 'COMPLETED' AND pl.status = 'ACTIVE'")
-    Long getTotalRevenueFromTestingServices();
-
-    @Query("SELECT COUNT(b) FROM TestingServiceBooking b " +
-            "WHERE b.status = :status AND b.createdAt >= :fromDate")
-    long countByStatusAndCreatedAtAfter(
-            @Param("status") TestingServiceBookingStatus status,
-            @Param("fromDate") LocalDateTime fromDate);
+    @Query("SELECT new com.gender_healthcare_system.dtos.report.StatisticResponseDTO" +
+            "(CAST(b.createdAt AS DATE), COUNT(b), SUM(p.amount)) " +
+            "FROM TestingServiceBooking b " +
+            "JOIN b.testingServicePayment p " +
+            "WHERE b.status = :status " +
+            "AND b.createdAt >= :from " +
+            "GROUP BY CAST(b.createdAt AS DATE) " +
+            "ORDER BY CAST(b.createdAt AS DATE)")
+    List<StatisticResponseDTO> getTestingBookingsStatistics
+    (@Param("status") TestingServiceBookingStatus status, @Param("from") LocalDate from);
 
 }

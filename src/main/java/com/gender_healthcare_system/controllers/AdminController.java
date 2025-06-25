@@ -10,6 +10,8 @@ import com.gender_healthcare_system.payloads.user.ManagerUpdatePayload;
 import com.gender_healthcare_system.services.AccountService;
 import com.gender_healthcare_system.services.JwtService;
 import com.gender_healthcare_system.services.ManagerService;
+import com.gender_healthcare_system.services.ReportService;
+import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -23,7 +25,7 @@ import java.util.Map;
 
 @RestController
 @AllArgsConstructor
-@RequestMapping("/admin")
+@RequestMapping("/api/v1/admin")
 public class AdminController {
 
     private final JwtService jwtService;
@@ -33,10 +35,11 @@ public class AdminController {
     private final ManagerService managerService;
 
     private final AccountService accountService;
+    private final ReportService reportService;
 
     //Admin login
     @PostMapping("/login")
-    public AdminLoginResponse login(@RequestBody LoginRequest loginRequest) {
+    public AdminLoginResponse login(@RequestBody @Valid LoginRequest loginRequest) {
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(loginRequest.getUsername(),
                         loginRequest.getPassword())
@@ -72,7 +75,28 @@ public class AdminController {
         return adminLoginDetails;
     }
 
+    /// //////////////////////// Manage Statistic Reports //////////////////////////////////
 
+    @GetMapping("/statistic-reports/consultations")
+    public ResponseEntity<?> getConsultationsStatistics(
+            @RequestParam(defaultValue = "30") int periodByDays) {
+
+        return ResponseEntity.ok(reportService.getConsultationsStatistics(periodByDays));
+    }
+
+    @GetMapping("/statistic-reports/testing-service-bookings")
+    public ResponseEntity<?> getTestingBookingsStatistics
+            (@RequestParam(defaultValue = "30") int periodDays) {
+
+        return ResponseEntity.ok(
+                reportService.getTestingBookingsStatistics(periodDays));
+    }
+
+    @GetMapping("/statistic-reports/users/count")
+    public ResponseEntity<?> getTotalUserCount() {
+        long count = reportService.getTotalUserCount();
+        return ResponseEntity.ok(count);
+    }
 
     /////////////////////////// Manage Managers /////////////////////////////////////
 
@@ -101,7 +125,7 @@ public class AdminController {
     @PostMapping("/managers/register")
     @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     public ResponseEntity<?> createManagerAccount
-    (@RequestBody ManagerRegisterPayload payload) {
+    (@RequestBody @Valid ManagerRegisterPayload payload) {
 
         accountService.createManagerAccount(payload);
         return ResponseEntity.ok("Manager account created successfully");
@@ -111,7 +135,7 @@ public class AdminController {
     @PostMapping("/managers/update/{id}")
     @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     public ResponseEntity<?> updateManagerDetails
-    (@PathVariable int id, @RequestBody ManagerUpdatePayload payload) {
+    (@PathVariable int id, @RequestBody @Valid ManagerUpdatePayload payload) {
 
         managerService.updateManagerDetails(id, payload);
         return ResponseEntity.ok("Manager profile updated successfully");

@@ -2,8 +2,8 @@ package com.gender_healthcare_system.controllers;
 
 import org.springframework.web.bind.annotation.*;
 
-@RestController
-@RequestMapping("/api/consultation")
+/*@RestController
+@RequestMapping("/api/consultation")*/
 public class ConsultationController {
 
     /*@Autowired

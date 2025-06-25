@@ -33,8 +33,8 @@ public class TestingServicePayment implements Serializable {
     private int serviceHistoryId;*/
 
     //oderID
-    @Column(name = "order_id", nullable = false, unique = true, length = 30)
-    private String orderId;
+    @Column(name = "transaction_id", nullable = false, unique = true, length = 30)
+    private String transactionId;
 
 
     @Column(name = "amount", nullable = false)

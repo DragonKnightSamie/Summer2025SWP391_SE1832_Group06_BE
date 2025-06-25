@@ -2,6 +2,7 @@ package com.gender_healthcare_system.payloads.todo;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -15,17 +16,18 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 public class ConsultationRegisterPayload implements Serializable {
 
-    @NotNull
+    @NotNull(message = "Expected Start time is required")
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy HH:mm")
     @Schema(type = "string", example = "05/06/2025 07:00")
     private LocalDateTime expectedStartTime;
 
-    @NotNull
+    @NotNull(message = "Customer ID is required")
     private int customerId;
 
-    @NotNull
+    @NotNull(message = "Consultant ID is required")
     private int consultantId;
 
-    @NotNull
+    @Valid
+    @NotNull(message = "Consultation payment is required")
     private ConsultationPaymentPayload payment;
 }

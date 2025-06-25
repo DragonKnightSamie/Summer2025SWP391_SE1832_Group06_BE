@@ -18,24 +18,23 @@ import java.io.Serializable;
 @NoArgsConstructor
 public class TestingServiceBookingRegisterPayload implements Serializable {
 
-    @NotNull
+    @NotNull(message = "Service Id is required")
     private int serviceId;
 
-    @NotNull
+    @NotNull(message = "Customer Id is required")
     private int customerId;
 
-    @NotBlank
+    @NotBlank(message = "Payment Transaction Id is required")
     @Length(min = 13, max = 20, message = "Order ID must be between 13 and 20 characters")
-    private String paymentOrderId;
+    private String paymentTransactionId;
 
-    @NotNull
+    @NotNull(message = "Payment amount is required")
     private long paymentAmount;
 
-    @NotNull
+    @NotNull(message = "Payment method is required")
     private PaymentMethod paymentMethod;
 
     @Nationalized
-    @Nullable
     @Size(min = 5, max = 100, message = "Description must be either " +
             "empty or between 5 to 100 characters")
     private String description;

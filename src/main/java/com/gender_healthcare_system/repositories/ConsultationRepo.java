@@ -1,5 +1,6 @@
 package com.gender_healthcare_system.repositories;
 
+import com.gender_healthcare_system.dtos.report.StatisticResponseDTO;
 import com.gender_healthcare_system.dtos.todo.ConsultantConsultationDTO;
 import com.gender_healthcare_system.dtos.todo.ConsultationsDTO;
 import com.gender_healthcare_system.entities.enu.ConsultationStatus;
@@ -108,10 +109,16 @@ public interface ConsultationRepo extends JpaRepository<Consultation, Integer> {
             (int consultantConsultantId, LocalDateTime expectedStartTime);
 
     //report
-    @Query("SELECT COUNT(c) FROM Consultation c WHERE c.status = :status AND c.createdAt >= :from")
-    long countByStatusAndPeriod(@Param("status") ConsultationStatus status, @Param("from") LocalDateTime from);
-
-    @Query("SELECT SUM(p.amount) FROM ConsultationPayment p WHERE p.consultation.status = 'COMPLETED'")
-    Long getTotalRevenueFromConsultations();
+    @Query("SELECT new com.gender_healthcare_system.dtos.report.StatisticResponseDTO" +
+            "(CAST(c.createdAt as date), COUNT(c), " +
+            "SUM(p.amount)) " +
+            "FROM Consultation c " +
+            "JOIN c.consultationPayment p " +
+            "WHERE c.status = :status " +
+            "AND CAST(c.createdAt as DATE) >= :from " +
+            "GROUP BY CAST(c.createdAt as DATE) " +
+            "ORDER BY CAST(c.createdAt as DATE)")
+    List<StatisticResponseDTO> getConsultationsStatistics
+    (@Param("status") ConsultationStatus status, @Param("from") LocalDate fromDate);
 
 }

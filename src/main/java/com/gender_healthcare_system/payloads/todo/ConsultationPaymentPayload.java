@@ -19,18 +19,17 @@ import java.io.Serializable;
 @NoArgsConstructor
 public class ConsultationPaymentPayload implements Serializable {
 
-    @NotBlank
+    @NotBlank(message = "Transaction ID is required")
     @Length(min = 13, max = 20, message = "Order ID must be between 13 and 20 characters")
-    private String orderId;
+    private String transactionId;
 
-    @NotNull
+    @NotNull(message = "Amount is required")
     private long amount;
 
-    @NotNull
+    @NotNull(message = "Method is required")
     private PaymentMethod method;
 
     @Nationalized
-    @Nullable
     @Size(min = 5, max = 100, message = "Description must be either " +
             "empty or between 5 to 100 characters")
     private String description;

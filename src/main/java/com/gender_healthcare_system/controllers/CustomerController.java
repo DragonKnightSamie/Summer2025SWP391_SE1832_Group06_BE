@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.gender_healthcare_system.dtos.login.LoginResponse;
 import com.gender_healthcare_system.dtos.todo.*;
+import com.gender_healthcare_system.dtos.user.CustomerPeriodDetailsDTO;
 import com.gender_healthcare_system.dtos.user.ListConsultantDTO;
 import com.gender_healthcare_system.entities.user.AccountInfoDetails;
 import com.gender_healthcare_system.payloads.login.LoginRequest;
@@ -14,6 +15,7 @@ import com.gender_healthcare_system.payloads.todo.TestingServiceBookingRegisterP
 import com.gender_healthcare_system.payloads.user.CustomerPayload;
 import com.gender_healthcare_system.services.*;
 import io.swagger.v3.oas.annotations.Parameter;
+import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 
 import org.springframework.http.ResponseEntity;
@@ -29,7 +31,7 @@ import java.util.List;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/customer")
+@RequestMapping("/api/v1/customer")
 @AllArgsConstructor
 public class CustomerController {
 
@@ -56,14 +58,14 @@ public class CustomerController {
     private final MomoPaymentService momoPaymentService;
 
     @PostMapping("/register")
-    public String register(@RequestBody CustomerPayload customerPayload)
+    public String register(@RequestBody @Valid CustomerPayload customerPayload)
             throws JsonProcessingException {
         accountService.createCustomerAccount(customerPayload);
         return "Customer registered successfully";
     }
 
     @PostMapping("/login")
-    public ResponseEntity<LoginResponse> login(@RequestBody LoginRequest loginRequest) {
+    public ResponseEntity<LoginResponse> login(@RequestBody @Valid LoginRequest loginRequest) {
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(loginRequest.getUsername(),
                         loginRequest.getPassword())
@@ -96,35 +98,44 @@ public class CustomerController {
         return ResponseEntity.ok(loginDetails);
     }
 
+    //get period details for a female customers
+    @GetMapping("/female/period-details/{customerId}")
+    @PreAuthorize("hasAuthority('ROLE_CUSTOMER')")
+    public ResponseEntity<CustomerPeriodDetailsDTO>
+    getPeriodDetailsForFemaleCustomer
+    (@PathVariable int customerId) throws JsonProcessingException {
 
+        return ResponseEntity.ok(customerService.getFemaleCustomerPeriodDetails(customerId));
+    }
 
     /// /////////////////////////////// Manage Momo Payment /////////////////////////////////
 
     //create payment for consultation registering
-    @PostMapping("/payment-transaction/create")
+    /*@PostMapping("/payment-transaction/create")
     @PreAuthorize("hasAuthority('ROLE_CUSTOMER')")
     public ResponseEntity<String> createPaymentRequest
-    (@RequestBody MomoPaymentPayload payload) throws Exception {
+    (@RequestBody @Valid MomoPaymentPayload payload) throws Exception {
 
         return ResponseEntity.ok(momoPaymentService.createMomoPaymentRequest(payload));
-    }
+    }*/
 
 
     //Get customer payment info
-    @GetMapping("/payment-transaction/check-error")
+    /*@GetMapping("/payment-transaction/check-error")
     @PreAuthorize("hasAuthority('ROLE_CUSTOMER')")
     public ResponseEntity<String> handleCallback(
-            @RequestParam String orderId,
+            @RequestParam String transactionId,
             @RequestParam String resultCode
     ) {
         if ("0".equals(resultCode)) {
             // payment success
-            return ResponseEntity.ok("Payment successful for orderId " + orderId);
+            return ResponseEntity.ok(
+                    "Payment successful for transactionId " + transactionId);
         } else {
             // payment failed
             return ResponseEntity.status(400).body("Payment failed with code: " + resultCode);
         }
-    }
+    }*/
 
 
     /// /////////////////////////////// Manage Testing Service Bookings /////////////////////////
@@ -179,7 +190,7 @@ public class CustomerController {
     @PostMapping("/testing-service-bookings/register")
     @PreAuthorize("hasAuthority('ROLE_CUSTOMER')")
     public ResponseEntity<String> registerTestingServiceBooking
-    (@RequestBody TestingServiceBookingRegisterPayload payload) {
+    (@RequestBody @Valid TestingServiceBookingRegisterPayload payload) {
 
         testingServiceBookingService.createTestingServiceBooking(payload);
         return ResponseEntity.ok("Testing Service Booking registered successfully");
@@ -190,7 +201,7 @@ public class CustomerController {
     @PreAuthorize("hasAuthority('ROLE_CUSTOMER')")
     public ResponseEntity<String> updateTestingServiceBookingCommentAndRating
     (@PathVariable int id,
-     @RequestBody EvaluatePayload payload) {
+     @RequestBody @Valid EvaluatePayload payload) {
 
         testingServiceBookingService
                 .updateTestingServiceBookingCommentAndRating(id, payload);
@@ -222,7 +233,8 @@ public class CustomerController {
     //get consultant certificates by ID
     @GetMapping("/consultant-list/certificates/{consultantId}")
     @PreAuthorize("hasAuthority('ROLE_CUSTOMER')")
-    public ResponseEntity<List<CertificateDTO>> getConsultantCertificates(@PathVariable int consultantId) {
+    public ResponseEntity<List<CertificateDTO>> getConsultantCertificates
+    (@PathVariable int consultantId) {
         return ResponseEntity.ok(certificateService.getConsultantCertificates(consultantId));
     }
 
@@ -243,7 +255,8 @@ public class CustomerController {
     //Get consultation by ID
     @GetMapping("/consultations/{id}")
     @PreAuthorize("hasAuthority('ROLE_CUSTOMER')")
-    public ResponseEntity<ConsultantConsultationDTO> getConsultationById(@PathVariable int id) {
+    public ResponseEntity<ConsultantConsultationDTO>
+    getConsultationById(@PathVariable int id) {
         return ResponseEntity.ok(consultationService.getConsultationById(id));
     }
 
@@ -266,7 +279,7 @@ public class CustomerController {
     @PostMapping("/consultations/register")
     @PreAuthorize("hasAuthority('ROLE_CUSTOMER')")
     public ResponseEntity<String> registerConsultation
-    (@RequestBody ConsultationRegisterPayload payload) {
+    (@RequestBody @Valid ConsultationRegisterPayload payload) {
 
         consultationService.registerConsultation(payload);
         return ResponseEntity.ok("Consultation registered successfully");
@@ -277,7 +290,7 @@ public class CustomerController {
     @PreAuthorize("hasAuthority('ROLE_CUSTOMER')")
     public ResponseEntity<String> updateConsultationCommentAndRating
     (@PathVariable int id,
-     @RequestBody EvaluatePayload payload) {
+     @RequestBody @Valid EvaluatePayload payload) {
 
         consultationService.updateConsultationCommentAndRating(id, payload);
         return ResponseEntity.ok(
