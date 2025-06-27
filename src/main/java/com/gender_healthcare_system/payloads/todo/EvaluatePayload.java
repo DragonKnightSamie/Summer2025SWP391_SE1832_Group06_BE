@@ -16,10 +16,11 @@ import java.io.Serializable;
 @NoArgsConstructor
 public class EvaluatePayload implements Serializable {
 
-    @NotNull(message = "Rating is required")
+    @NotNull
     private Rating rating = Rating.EXCELLENT;
 
     @Nationalized
+    @Nullable
     @Size(min = 5,max = 255, message = "Comment must be empty or between 5 and 255 characters")
     private String comment;
 }

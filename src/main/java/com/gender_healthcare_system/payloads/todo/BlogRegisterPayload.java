@@ -16,7 +16,7 @@ import java.io.Serializable;
 public class BlogRegisterPayload implements Serializable {
 
     @NotNull(message = "Manager ID is required")
-    private int managerId;
+    private Integer managerId;
 
     @Nationalized
     @NotBlank(message = "Author is required")

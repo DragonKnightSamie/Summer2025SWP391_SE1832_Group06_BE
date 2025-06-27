@@ -1,8 +1,11 @@
 package com.gender_healthcare_system.dtos.login;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class LoginResponse {
 
-    private int id;
+    private Integer id;
     private String username;
     private String fullname;
     private String email;
@@ -11,17 +14,17 @@ public class LoginResponse {
     public LoginResponse() {
     }
 
-    public LoginResponse(int id, String fullname, String email) {
+    public LoginResponse(Integer id, String fullname, String email) {
         this.id = id;
         this.fullname = fullname;
         this.email = email;
     }
 
-    public int getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 

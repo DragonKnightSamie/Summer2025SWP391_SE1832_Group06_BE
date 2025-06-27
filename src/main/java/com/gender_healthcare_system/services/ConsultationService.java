@@ -165,6 +165,7 @@ public class ConsultationService {
         consultation.setExpectedStartTime(payload.getExpectedStartTime());
         LocalDateTime expectedEndTime = payload.getExpectedStartTime().plusHours(1);
         consultation.setExpectedEndTime(expectedEndTime);
+        consultation.setDescription(payload.getDescription()); //thêm description
         consultation.setStatus(ConsultationStatus.CONFIRMED);
         consultation.setCustomer(customer);
         consultation.setConsultant(consultant);

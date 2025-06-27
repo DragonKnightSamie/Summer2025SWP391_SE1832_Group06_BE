@@ -28,7 +28,7 @@ public class TestingServiceRegisterPayload implements Serializable {
     private String description;
 
     @NotNull(message = "Service Type Id is required")
-    private int serviceTypeId; // foreign key tới TestingServiceType
+    private Integer serviceTypeId; // foreign key tới TestingServiceType
 
     @NotNull(message = "Service price list is required")
     private List<PriceListRegisterPayload> priceList;

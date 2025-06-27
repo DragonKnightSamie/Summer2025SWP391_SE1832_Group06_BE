@@ -65,6 +65,10 @@ public class Consultation implements Serializable {
     @Column(name = "real_end_time")
     private LocalDateTime realEndTime;
 
+    @Column(name = "description", length = 255)
+    @Nationalized
+    private String description;
+
     //Enum
     @Column(name = "status", nullable = false, length = 15)
     @Enumerated(EnumType.STRING)

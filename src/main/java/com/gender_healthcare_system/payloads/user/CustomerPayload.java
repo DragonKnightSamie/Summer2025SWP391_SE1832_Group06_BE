@@ -42,7 +42,7 @@ public class CustomerPayload implements Serializable {
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy")
     private LocalDate dateOfBirth;
 
-    @NotBlank(message = "Gender is required")
+    @NotNull(message = "Gender is required")
     private Gender gender; //Enum
 
     @Valid

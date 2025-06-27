@@ -3,6 +3,7 @@ package com.gender_healthcare_system.payloads.user;
 import com.gender_healthcare_system.entities.enu.AccountStatus;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -33,6 +34,6 @@ public class ManagerUpdatePayload implements Serializable {
     @Length(min = 3, max = 100, message = "Address must be between 3 and 100 characters")
     private String address;
 
-    @NotBlank(message = "Status is required")
+    @NotNull(message = "Status is required")
     private AccountStatus status;
 }

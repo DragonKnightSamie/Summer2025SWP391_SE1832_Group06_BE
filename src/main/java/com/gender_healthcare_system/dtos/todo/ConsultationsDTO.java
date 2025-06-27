@@ -41,6 +41,9 @@ public class ConsultationsDTO implements Serializable {
     @Schema(type = "string", example = "05/06/2025 07:00")
     private LocalDateTime realEndTime;
 
+    @Schema(type = "string", example = "Tư vấn sức khỏe sinh sản tổng quát")
+    private String description;
+
     private ConsultationStatus status;
 
 }

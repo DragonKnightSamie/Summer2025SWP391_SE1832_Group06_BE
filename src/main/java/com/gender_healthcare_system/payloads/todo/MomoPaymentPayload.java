@@ -1,5 +1,7 @@
 package com.gender_healthcare_system.payloads.todo;
 
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
@@ -22,7 +24,9 @@ public class MomoPaymentPayload implements Serializable {
     private String customerFullName;
 
     @NotNull(message = "Amount is required")
-    private long amount;
+    @Min(value = 10000, message = "Value must be at least 10,000 VND")
+    @Max(value = 20000000, message = "Value must not exceed 20,000,000 VND")
+    private Long amount;
 
     @Nationalized
     @NotBlank(message = "Description is required")

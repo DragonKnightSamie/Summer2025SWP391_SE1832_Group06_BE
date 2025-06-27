@@ -16,7 +16,7 @@ import java.time.LocalDateTime;
 public class ConsultationConfirmPayload implements Serializable {
 
     @NotNull(message = "Consultant ID is required")
-    private int consultantId;
+    private Integer consultantId;
 
     @NotNull(message = "Expected Start time is required")
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy HH:mm")

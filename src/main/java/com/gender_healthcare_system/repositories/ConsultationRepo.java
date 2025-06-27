@@ -26,7 +26,7 @@ public interface ConsultationRepo extends JpaRepository<Consultation, Integer> {
 
     @Query("SELECT new com.gender_healthcare_system.dtos.todo" +
             ".ConsultationsDTO(c.consultationId,c.consultant.fullName, c.createdAt, " +
-            "c.expectedStartTime, c.realStartTime, c.expectedEndTime, c.realEndTime, " +
+            "c.expectedStartTime, c.realStartTime, c.expectedEndTime, c.realEndTime, c.description," +
             "c.status) " +
             "FROM Consultation c " +
             "JOIN c.customer " +
@@ -35,7 +35,7 @@ public interface ConsultationRepo extends JpaRepository<Consultation, Integer> {
 
     @Query("SELECT new com.gender_healthcare_system.dtos.todo" +
             ".ConsultationsDTO(c.consultationId,c.consultant.fullName, c.createdAt, " +
-            "c.expectedStartTime, c.realStartTime, c.expectedEndTime, c.realEndTime, " +
+            "c.expectedStartTime, c.realStartTime, c.expectedEndTime, c.realEndTime, c.description," +
             "c.status) " +
             "FROM Consultation c " +
             "JOIN c.consultant " +
@@ -53,7 +53,7 @@ public interface ConsultationRepo extends JpaRepository<Consultation, Integer> {
 
     @Query("SELECT new com.gender_healthcare_system.dtos.todo" +
             ".ConsultantConsultationDTO(c.consultationId, c.createdAt, " +
-            "c.expectedStartTime, c.realStartTime, c.expectedEndTime, c.realEndTime, " +
+            "c.expectedStartTime, c.realStartTime, c.expectedEndTime, c.realEndTime,c.description," +
             "c.status, new com.gender_healthcare_system.dtos.user.CustomerDTO" +
             "(cu.customerId, cu.fullName, cu.dateOfBirth, cu.gender, " +
             "cu.genderSpecificDetails, cu.phone, cu.email, cu.address)" +

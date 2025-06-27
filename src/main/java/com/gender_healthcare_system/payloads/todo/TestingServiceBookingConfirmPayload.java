@@ -16,7 +16,7 @@ import java.time.LocalDateTime;
 public class TestingServiceBookingConfirmPayload implements Serializable {
 
     @NotNull(message = "Staff Id is required")
-    private int staffId;
+    private Integer staffId;
 
     @NotNull(message = "Expected Start time is required")
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy HH:mm")

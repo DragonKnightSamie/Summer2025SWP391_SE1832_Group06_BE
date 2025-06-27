@@ -22,10 +22,13 @@ public class ConsultationRegisterPayload implements Serializable {
     private LocalDateTime expectedStartTime;
 
     @NotNull(message = "Customer ID is required")
-    private int customerId;
+    private Integer customerId;
 
     @NotNull(message = "Consultant ID is required")
-    private int consultantId;
+    private Integer consultantId;
+
+    @Schema(type = "string", example = "Tư vấn sức khỏe sinh sản tổng quát")
+    private String description;
 
     @Valid
     @NotNull(message = "Consultation payment is required")

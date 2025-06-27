@@ -222,7 +222,7 @@ public class TestingServiceBookingService {
         TestingServicePayment servicePayment = new TestingServicePayment();
 
         servicePayment.setTestingServiceBooking(serviceBooking);
-        servicePayment.setTransactionId(payload.getPaymentTransactionId());
+        servicePayment.setTransactionId(payload.getPaymentOrderId());
         servicePayment.setAmount(payload.getPaymentAmount());
         servicePayment.setMethod(payload.getPaymentMethod());
         servicePayment.setCreatedAt(UtilFunctions.getCurrentDateTimeWithTimeZone());

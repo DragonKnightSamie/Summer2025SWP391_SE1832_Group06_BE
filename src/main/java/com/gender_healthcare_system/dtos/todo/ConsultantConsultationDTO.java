@@ -12,8 +12,8 @@ import java.io.Serializable;
 import java.time.LocalDateTime;
 
 @Data
-@AllArgsConstructor
 @NoArgsConstructor
+@AllArgsConstructor
 public class ConsultantConsultationDTO implements Serializable {
 
     private int consultationId;
@@ -38,7 +38,11 @@ public class ConsultantConsultationDTO implements Serializable {
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy HH:mm")
     private LocalDateTime realEndTime;
 
+    @Schema(type = "string", example = "Tư vấn sức khỏe sinh sản tổng quát")
+    private String description;
+
     private ConsultationStatus status;
 
     private CustomerDTO customerDetails;
+
 }
