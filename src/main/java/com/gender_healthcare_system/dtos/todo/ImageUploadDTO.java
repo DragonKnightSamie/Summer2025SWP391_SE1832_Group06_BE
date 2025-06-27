@@ -15,6 +15,6 @@ public class ImageUploadDTO implements Serializable {
     private String url; // https://res.cloudinary.com/dzj3q1v2f/image/upload/v1699999999/img/avatar_01.jpg
     private String format; // jpg, png, etc.
     private String resourceType; // image, video, etc.
-    private long bytes; // size in bytes
+    private Long bytes; // size in bytes
 
 }

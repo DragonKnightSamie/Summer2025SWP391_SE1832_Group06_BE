@@ -15,7 +15,7 @@ import java.util.List;
 @NoArgsConstructor
 public class ConsultantScheduleDTO implements Serializable {
 
-    private int consultantId;
+    private Integer consultantId;
 
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy HH:mm")
     @Schema(type = "string", example = "05/06/2025 07:00")

@@ -16,7 +16,7 @@ import java.time.LocalDate;
 @NoArgsConstructor
 public class ManagerCustomerDTO implements Serializable {
 
-    private int customerId;
+    private Integer customerId;
 
     private String userName;
 

@@ -17,9 +17,7 @@ import java.util.Date;
 public class StatisticResponseDTO implements Serializable {
 
     private LocalDate date;
-
     private Long totalCount;
-
     private Long totalAmount;
 
     public StatisticResponseDTO(Date date, Long totalCount, Long totalAmount) {

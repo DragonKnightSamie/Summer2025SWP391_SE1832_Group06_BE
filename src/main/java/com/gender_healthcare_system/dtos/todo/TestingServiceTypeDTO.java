@@ -13,7 +13,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 public class TestingServiceTypeDTO implements Serializable {
 
-    private int serviceTypeId;
+    private Integer serviceTypeId;
 
     private String serviceTypeName;
 

@@ -15,7 +15,7 @@ import java.time.LocalDate;
 @NoArgsConstructor
 public class CertificateDTO implements Serializable {
 
-    private int certificateId;
+    private Integer certificateId;
 
     @Nationalized
     private String certificateName;

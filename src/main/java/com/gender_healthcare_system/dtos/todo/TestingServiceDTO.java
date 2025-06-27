@@ -12,7 +12,7 @@ import java.io.Serializable;
 @NoArgsConstructor
 public class TestingServiceDTO implements Serializable {
 
-    private int serviceId;
+    private Integer serviceId;
     private String serviceName;
     private String description;
     private TestingServiceStatus status;
@@ -20,7 +20,7 @@ public class TestingServiceDTO implements Serializable {
     private TestingServiceTypeDTO testingServiceType;
     private PriceListDTO priceList;
 
-    public TestingServiceDTO(int serviceId, String serviceName, String description, TestingServiceStatus status) {
+    public TestingServiceDTO(Integer serviceId, String serviceName, String description, TestingServiceStatus status) {
         this.serviceId = serviceId;
         this.serviceName = serviceName;
         this.description = description;

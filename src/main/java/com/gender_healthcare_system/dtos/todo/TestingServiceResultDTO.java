@@ -15,7 +15,7 @@ import java.math.BigDecimal;
 @NoArgsConstructor
 public class TestingServiceResultDTO implements Serializable {
 
-    private int serviceResultId;
+    private Integer serviceResultId;
 
     private String title;
 

@@ -12,7 +12,7 @@ import java.io.Serializable;
 @AllArgsConstructor
 public class ConsultantsDTO implements Serializable {
 
-    private int consultantId;
+    private Integer consultantId;
     private String userName;
     private String password;
     private String fullName;

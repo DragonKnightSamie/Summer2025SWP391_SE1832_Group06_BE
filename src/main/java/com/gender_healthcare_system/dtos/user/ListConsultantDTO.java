@@ -11,7 +11,7 @@ import java.io.Serializable;
 @AllArgsConstructor
 public class ListConsultantDTO implements Serializable {
 
-    private int consultantId;
+    private Integer consultantId;
     private String fullName;
     private String avatarUrl;
     private String phone;

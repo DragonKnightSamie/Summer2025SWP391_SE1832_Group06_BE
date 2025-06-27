@@ -12,12 +12,12 @@ import java.io.Serializable;
 @AllArgsConstructor
 public class PriceListDTO implements Serializable {
 
-    private int priceId;
-    private long price;
+    private Integer priceId;
+    private Long price;
     private String description;
     private PriceListStatus status;
 
-    public PriceListDTO(int priceId, long price, String description) {
+    public PriceListDTO(Integer priceId, Long price, String description) {
         this.priceId = priceId;
         this.price = price;
         this.description = description;

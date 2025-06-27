@@ -18,7 +18,7 @@ import java.util.List;
 public class TestingServiceBookingDTO implements Serializable {
 
     /* ====== CÁC TRƯỜNG CHÍNH ====== */
-    private int serviceBookingId;
+    private Integer serviceBookingId;
 
     private String serviceName;
 

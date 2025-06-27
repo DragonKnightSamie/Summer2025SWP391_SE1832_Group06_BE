@@ -15,7 +15,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 public class CustomerServiceBookingListDTO implements Serializable {
 
-    private int serviceBookingId;
+    private Integer serviceBookingId;
 
     private String serviceName;
 

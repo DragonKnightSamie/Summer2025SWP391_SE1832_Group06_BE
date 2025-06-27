@@ -15,7 +15,7 @@ import java.time.LocalDate;
 @NoArgsConstructor
 public class CustomerDTO implements Serializable {
 
-    private int customerId;
+    private Integer customerId;
 
     private String fullName;
 

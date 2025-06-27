@@ -14,7 +14,7 @@ import java.util.List;
 @NoArgsConstructor
 public class ConsultantDetailsDTO implements Serializable {
 
-    private int consultantId;
+    private Integer consultantId;
     private String userName;
     private String password;
     private String fullName;
@@ -25,7 +25,7 @@ public class ConsultantDetailsDTO implements Serializable {
     private AccountStatus status;
     private List<CertificateDTO> certificateList;
 
-    public ConsultantDetailsDTO(int consultantId, String userName, String password,
+    public ConsultantDetailsDTO(Integer consultantId, String userName, String password,
                                 String fullName, String avatarUrl, String phone,
                                 String email, String address, AccountStatus status) {
         this.consultantId = consultantId;

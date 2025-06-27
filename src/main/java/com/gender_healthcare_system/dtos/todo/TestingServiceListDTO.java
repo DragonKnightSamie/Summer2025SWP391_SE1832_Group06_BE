@@ -12,7 +12,7 @@ import java.io.Serializable;
 @NoArgsConstructor
 public class TestingServiceListDTO implements Serializable {
 
-    private int serviceId;
+    private Integer serviceId;
     private String serviceName;
     private String serviceTypeName;
     private String description;

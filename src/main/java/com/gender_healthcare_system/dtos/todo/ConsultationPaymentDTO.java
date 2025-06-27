@@ -4,6 +4,8 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import com.gender_healthcare_system.entities.enu.PaymentMethod;
 import com.gender_healthcare_system.entities.enu.PaymentStatus;
 import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -16,9 +18,9 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 public class ConsultationPaymentDTO implements Serializable {
 
-    private int consultationPaymentId;
+    private Integer consultationPaymentId;
 
-    private long amount;
+    private Long amount;
 
     private PaymentMethod method;
 

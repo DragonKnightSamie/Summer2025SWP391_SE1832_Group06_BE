@@ -16,7 +16,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 public class ConsultantConsultationDTO implements Serializable {
 
-    private int consultationId;
+    private Integer consultationId;
 
     @Schema(type = "string", example = "05/06/2025 07:00")
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy HH:mm")

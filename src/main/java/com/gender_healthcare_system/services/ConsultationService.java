@@ -261,9 +261,9 @@ public class ConsultationService {
 
         boolean consultationExist = consultationRepo.existsById(id);
 
-        if(consultationExist){
+        if(!consultationExist){
 
-            throw new AppException(409,
+            throw new AppException(404,
                     "Consultation not found");
         }
 

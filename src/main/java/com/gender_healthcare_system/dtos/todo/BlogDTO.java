@@ -14,7 +14,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 public class BlogDTO implements Serializable {
 
-    private int blogId;
+    private Integer blogId;
 
     @Nationalized
     private String author;
@@ -31,7 +31,7 @@ public class BlogDTO implements Serializable {
 
     private BlogStatus status;
 
-    public BlogDTO(int blogId,
+    public BlogDTO(Integer blogId,
                    String author,
                    String title,
                    String content,

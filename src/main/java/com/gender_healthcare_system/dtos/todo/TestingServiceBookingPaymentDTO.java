@@ -13,7 +13,7 @@ import java.io.Serializable;
 @NoArgsConstructor
 public class TestingServiceBookingPaymentDTO implements Serializable {
 
-    private long amount;
+    private Long amount;
     private PaymentMethod method;
     private PaymentStatus status;
 

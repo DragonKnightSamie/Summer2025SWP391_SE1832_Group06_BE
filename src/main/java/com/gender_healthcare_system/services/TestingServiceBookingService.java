@@ -314,7 +314,7 @@ public class TestingServiceBookingService {
 
         boolean serviceBookingExist = testingServiceBookingRepo.existsById(id);
 
-        if(serviceBookingExist){
+        if(!serviceBookingExist){
 
             throw new AppException(404,
                     "Testing Service not found with ID " + id);

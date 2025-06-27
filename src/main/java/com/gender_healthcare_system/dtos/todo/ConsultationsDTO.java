@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import com.gender_healthcare_system.entities.enu.ConsultationStatus;
 import com.gender_healthcare_system.entities.user.Consultant;
 import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -16,7 +17,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 public class ConsultationsDTO implements Serializable {
 
-    private int consultationId;
+    private Integer consultationId;
 
     @Schema(type = "string", example = "Phan Hoang S")
     private String consultantName;
@@ -44,6 +45,7 @@ public class ConsultationsDTO implements Serializable {
     @Schema(type = "string", example = "Tư vấn sức khỏe sinh sản tổng quát")
     private String description;
 
+    @NotNull
     private ConsultationStatus status;
 
 }
