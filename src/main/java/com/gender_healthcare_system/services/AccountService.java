@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.gender_healthcare_system.entities.enu.AccountStatus;
+import com.gender_healthcare_system.entities.enu.Gender;
 import com.gender_healthcare_system.entities.todo.Certificate;
 import com.gender_healthcare_system.entities.user.*;
 import com.gender_healthcare_system.exceptions.AppException;
@@ -77,8 +78,12 @@ public class AccountService implements IAccountService {
         UtilFunctions.validatePeriodDetails
                 (payload.getGender(), payload.getGenderSpecificDetails());
 
-        String GenderSpecificDetails = mapper.writeValueAsString(
-                payload.getGenderSpecificDetails());
+        String GenderSpecificDetails = null;
+        if(payload.getGender() == Gender.FEMALE) {
+
+            GenderSpecificDetails = mapper.writeValueAsString(
+                    payload.getGenderSpecificDetails());
+        }
         customer.setGenderSpecificDetails(GenderSpecificDetails);
 
         customer.setDateOfBirth(payload.getDateOfBirth());

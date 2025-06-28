@@ -1,8 +1,7 @@
 package com.gender_healthcare_system.repositories;
 
 import com.gender_healthcare_system.dtos.report.StatisticResponseDTO;
-import com.gender_healthcare_system.dtos.todo.ConsultantConsultationDTO;
-import com.gender_healthcare_system.dtos.todo.ConsultationsDTO;
+import com.gender_healthcare_system.dtos.todo.ConsultationDTO;
 import com.gender_healthcare_system.entities.enu.ConsultationStatus;
 import com.gender_healthcare_system.entities.todo.Consultation;
 import com.gender_healthcare_system.payloads.todo.ConsultationCompletePayload;
@@ -25,22 +24,22 @@ import java.util.Optional;
 public interface ConsultationRepo extends JpaRepository<Consultation, Integer> {
 
     @Query("SELECT new com.gender_healthcare_system.dtos.todo" +
-            ".ConsultationsDTO(c.consultationId,c.consultant.fullName, c.createdAt, " +
-            "c.expectedStartTime, c.realStartTime, c.expectedEndTime, c.realEndTime, c.description," +
-            "c.status) " +
+            ".ConsultationDTO(c.consultationId,c.consultant.fullName, c.createdAt, " +
+            "c.expectedStartTime, c.realStartTime, c.expectedEndTime, c.realEndTime," +
+            " c.description, c.status) " +
             "FROM Consultation c " +
             "JOIN c.customer " +
             "WHERE c.customer.customerId = :customerId")
-    Page<ConsultationsDTO> findByCustomerId(int customerId, Pageable pageable);
+    Page<ConsultationDTO> findByCustomerId(int customerId, Pageable pageable);
 
     @Query("SELECT new com.gender_healthcare_system.dtos.todo" +
-            ".ConsultationsDTO(c.consultationId,c.consultant.fullName, c.createdAt, " +
-            "c.expectedStartTime, c.realStartTime, c.expectedEndTime, c.realEndTime, c.description," +
-            "c.status) " +
+            ".ConsultationDTO(c.consultationId,c.consultant.fullName, c.createdAt, " +
+            "c.expectedStartTime, c.realStartTime, c.expectedEndTime, c.realEndTime, " +
+            "c.description, c.status) " +
             "FROM Consultation c " +
             "JOIN c.consultant " +
             "WHERE c.consultant.consultantId = :consultantId")
-    Page<ConsultationsDTO> findByConsultantId(int consultantId, Pageable pageable);
+    Page<ConsultationDTO> findByConsultantId(int consultantId, Pageable pageable);
 
     @Query("SELECT new com.gender_healthcare_system.entities.todo" +
             ".Consultation(c.consultationId, c.createdAt, " +
@@ -52,8 +51,9 @@ public interface ConsultationRepo extends JpaRepository<Consultation, Integer> {
     Optional<Consultation> findConsultationById(int id);
 
     @Query("SELECT new com.gender_healthcare_system.dtos.todo" +
-            ".ConsultantConsultationDTO(c.consultationId, c.createdAt, " +
-            "c.expectedStartTime, c.realStartTime, c.expectedEndTime, c.realEndTime,c.description," +
+            ".ConsultationDTO(c.consultationId, c.createdAt, " +
+            "c.expectedStartTime, c.realStartTime, c.expectedEndTime, " +
+            "c.realEndTime,c.description," +
             "c.status, new com.gender_healthcare_system.dtos.user.CustomerDTO" +
             "(cu.customerId, cu.fullName, cu.dateOfBirth, cu.gender, " +
             "cu.genderSpecificDetails, cu.phone, cu.email, cu.address)" +
@@ -61,7 +61,16 @@ public interface ConsultationRepo extends JpaRepository<Consultation, Integer> {
             "FROM Consultation c " +
             "JOIN c.customer cu " +
             "WHERE c.consultationId = :id")
-    Optional<ConsultantConsultationDTO> getConsultationDetailsById(int id);
+    Optional<ConsultationDTO> getConsultationDetailsById(int id);
+
+    @Query("SELECT new com.gender_healthcare_system.dtos.todo" +
+            ".ConsultationDTO(c.consultationId, c.createdAt, " +
+            "c.expectedStartTime, c.realStartTime, c.expectedEndTime, " +
+            "c.realEndTime,c.description, c.status) " +
+            "FROM Consultation c " +
+            "JOIN c.customer cu " +
+            "WHERE c.consultationId = :id")
+    Optional<ConsultationDTO> getConsultationDetailsByIdForCustomer(int id);
 
     @Query("SELECT c.expectedStartTime " +
             "FROM Consultation c " +

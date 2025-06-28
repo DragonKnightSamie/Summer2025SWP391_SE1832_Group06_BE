@@ -1,11 +1,9 @@
 package com.gender_healthcare_system.services;
 
-import com.gender_healthcare_system.dtos.login.ConsultantLoginResponse;
 import com.gender_healthcare_system.dtos.login.LoginResponse;
 import com.gender_healthcare_system.dtos.todo.CertificateDTO;
-import com.gender_healthcare_system.dtos.user.ConsultantDetailsDTO;
-import com.gender_healthcare_system.dtos.user.ConsultantsDTO;
-import com.gender_healthcare_system.dtos.user.ListConsultantDTO;
+import com.gender_healthcare_system.dtos.user.ConsultantDTO;
+import com.gender_healthcare_system.entities.enu.AccountStatus;
 import com.gender_healthcare_system.exceptions.AppException;
 import com.gender_healthcare_system.payloads.user.ConsultantUpdatePayload;
 import com.gender_healthcare_system.repositories.CertificateRepo;
@@ -31,13 +29,14 @@ public class ConsultantService {
 
     private final CertificateRepo certificateRepo;
 
-    public ConsultantLoginResponse getConsultantLoginDetails(int id) {
+    public LoginResponse getConsultantLoginDetails(int id) {
         return consultantRepo.getConsultantLoginDetails(id);
     }
 
     //get all consultant
-    public List<ListConsultantDTO> getAllConsultantsForCustomer() {
-        List<ListConsultantDTO> consultants = consultantRepo.getAllConsultantsForCustomer();
+    public List<ConsultantDTO> getAllConsultantsForCustomer() {
+        List<ConsultantDTO> consultants = consultantRepo
+                .getAllConsultantsForCustomer(AccountStatus.ACTIVE);
         if (consultants.isEmpty()) {
             throw new AppException(404, "No Consultants found");
         }
@@ -58,14 +57,14 @@ public class ConsultantService {
                 .of(page, itemSize, sort);
 
 
-        Page<ConsultantsDTO> pageResult = consultantRepo.getAllConsultants(pageRequest);
+        Page<ConsultantDTO> pageResult = consultantRepo.getAllConsultants(pageRequest);
 
         if (!pageResult.hasContent()) {
 
             throw new AppException(404, "No Consultants found");
         }
 
-        List<ConsultantsDTO> consultantList = pageResult.getContent();
+        List<ConsultantDTO> consultantList = pageResult.getContent();
 
         Map<String, Object> map = new HashMap<>();
         map.put("totalItems", pageResult.getTotalElements());
@@ -76,8 +75,22 @@ public class ConsultantService {
         return map;
     }
 
-    public ConsultantDetailsDTO getConsultantDetails(int consultantId) {
-        ConsultantDetailsDTO consultantDetail =
+    public ConsultantDTO getConsultantDetails(int consultantId) {
+        ConsultantDTO consultantDetail =
+                consultantRepo.getConsultantDetails(consultantId)
+                        .orElseThrow(() -> new AppException(404, "Consultant not found"));
+
+        List<CertificateDTO> certificateList =
+                certificateRepo.getCertificatesByConsultantId(consultantId);
+
+        consultantDetail.setCertificateList(certificateList);
+        consultantDetail.setPassword(null);
+
+        return consultantDetail;
+    }
+
+    public ConsultantDTO getConsultantDetailsForManager(int consultantId) {
+        ConsultantDTO consultantDetail =
                 consultantRepo.getConsultantDetails(consultantId)
                         .orElseThrow(() -> new AppException(404, "Consultant not found"));
 

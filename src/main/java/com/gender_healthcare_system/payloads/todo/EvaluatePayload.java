@@ -16,7 +16,7 @@ import java.io.Serializable;
 @NoArgsConstructor
 public class EvaluatePayload implements Serializable {
 
-    @NotNull
+    @NotNull(message = "Rating is required")
     private Rating rating = Rating.EXCELLENT;
 
     @Nationalized

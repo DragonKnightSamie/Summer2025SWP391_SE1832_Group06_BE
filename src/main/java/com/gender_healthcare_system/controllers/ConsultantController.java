@@ -1,10 +1,11 @@
 package com.gender_healthcare_system.controllers;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.gender_healthcare_system.dtos.login.ConsultantLoginResponse;
-import com.gender_healthcare_system.dtos.todo.ConsultantConsultationDTO;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.gender_healthcare_system.dtos.login.LoginResponse;
+import com.gender_healthcare_system.dtos.todo.ConsultationDTO;
 import com.gender_healthcare_system.dtos.todo.ConsultantScheduleDTO;
-import com.gender_healthcare_system.dtos.user.ConsultantDetailsDTO;
+import com.gender_healthcare_system.dtos.user.ConsultantDTO;
 import com.gender_healthcare_system.entities.user.AccountInfoDetails;
 import com.gender_healthcare_system.payloads.login.LoginRequest;
 import com.gender_healthcare_system.payloads.todo.CertificateUpdatePayload;
@@ -42,7 +43,7 @@ public class ConsultantController {
     private final AuthenticationManager authenticationManager;
 
     @PostMapping("/login")
-    public ResponseEntity<ConsultantLoginResponse> login
+    public ResponseEntity<LoginResponse> login
             (@RequestBody @Valid LoginRequest loginRequest) {
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
@@ -68,15 +69,18 @@ public class ConsultantController {
                 (AccountInfoDetails) authentication.getPrincipal();
         int id = account.getId();
 
-        ConsultantLoginResponse loginDetails = consultantService
+        LoginResponse loginDetails = consultantService
                 .getConsultantLoginDetails(id);
-        loginDetails.setUsername(loginRequest.getUsername());
+        //loginDetails.setUsername(loginRequest.getUsername());
 
-        String jwtToken = jwtService.generateToken(loginRequest.getUsername());
+        String jwtToken = jwtService.generateToken(id, loginRequest.getUsername(),
+                account.getRolename(), loginDetails.getFullname(), loginDetails.getEmail());
+
         loginDetails.setToken(jwtToken);
+        loginDetails.setFullname(null);
+        loginDetails.setEmail(null);
 
         return ResponseEntity.ok(loginDetails);
-        //return jwtService.generateToken(loginRequest.getUsername());
     }
 
 
@@ -86,11 +90,11 @@ public class ConsultantController {
 
     //Consultant get profile infos
     @GetMapping("/profile/{id}")
-    @PreAuthorize("hasAuthority('ROLE_MANAGER')")
-    public ResponseEntity<ConsultantDetailsDTO>
+    @PreAuthorize("hasAuthority('ROLE_CONSULTANT')")
+    public ResponseEntity<ConsultantDTO>
     getConsultantProfile(@PathVariable int id) {
 
-        ConsultantDetailsDTO consultantDetails = consultantService.getConsultantDetails(id);
+        ConsultantDTO consultantDetails = consultantService.getConsultantDetails(id);
         if (consultantDetails != null) {
             return ResponseEntity.ok(consultantDetails);
         } else {
@@ -142,8 +146,9 @@ public class ConsultantController {
     //Get consultation by ID
     @GetMapping("/consultations/{id}")
     @PreAuthorize("hasAuthority('ROLE_CONSULTANT')")
-    public ResponseEntity<ConsultantConsultationDTO> getConsultationById(@PathVariable int id) {
-        ConsultantConsultationDTO dto = consultationService.getConsultationById(id);
+    public ResponseEntity<ConsultationDTO>
+    getConsultationById(@PathVariable int id) throws JsonProcessingException {
+        ConsultationDTO dto = consultationService.getConsultationById(id);
         return ResponseEntity.ok(dto);
     }
 

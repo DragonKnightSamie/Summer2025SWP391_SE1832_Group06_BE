@@ -24,8 +24,20 @@ public class JwtService {
 
     private final Set<String> blacklistedTokens = ConcurrentHashMap.newKeySet();
 
-    public String generateToken(String username) {
+    public String generateToken(int id, String username, String roleName,
+                                String fullName, String email) {
         Map<String, Object> claims = new HashMap<>();
+        claims.put("ID", id);
+        claims.put("Role", roleName);
+        claims.put("Full Name", fullName);
+        claims.put("Email", email);
+        return createToken(claims, username);
+    }
+
+    public String generateTokenForAdmin(int id, String username, String roleName) {
+        Map<String, Object> claims = new HashMap<>();
+        claims.put("ID", id);
+        claims.put("Role", roleName);
         return createToken(claims, username);
     }
 

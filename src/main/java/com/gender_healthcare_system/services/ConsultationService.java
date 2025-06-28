@@ -1,9 +1,13 @@
 package com.gender_healthcare_system.services;
 
-import com.gender_healthcare_system.dtos.todo.ConsultantConsultationDTO;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import com.gender_healthcare_system.dtos.todo.ConsultationDTO;
 import com.gender_healthcare_system.dtos.todo.ConsultantScheduleDTO;
-import com.gender_healthcare_system.dtos.todo.ConsultationsDTO;
+import com.gender_healthcare_system.dtos.user.CustomerPeriodDetailsDTO;
 import com.gender_healthcare_system.entities.enu.ConsultationStatus;
+import com.gender_healthcare_system.entities.enu.Gender;
 import com.gender_healthcare_system.entities.enu.PaymentStatus;
 import com.gender_healthcare_system.entities.todo.Consultation;
 import com.gender_healthcare_system.entities.todo.ConsultationPayment;
@@ -47,8 +51,34 @@ public class ConsultationService {
     private final ConsultationPaymentRepo consultationPaymentRepo;
 
     //getConsultationById
-    public ConsultantConsultationDTO getConsultationById(int id) {
-        return consultationRepo.getConsultationDetailsById(id)
+    public ConsultationDTO getConsultationById(int id)
+            throws JsonProcessingException {
+         ConsultationDTO consultation = consultationRepo.getConsultationDetailsById(id)
+                .orElseThrow(() -> new AppException(404, "Consultation not found"));
+
+        ObjectMapper mapper = new ObjectMapper();
+        mapper.registerModule(new JavaTimeModule());
+
+        CustomerPeriodDetailsDTO periodDetails = null;
+
+        if(consultation.getCustomerDetails().getGender() == Gender.FEMALE
+                && consultation.getCustomerDetails().getGenderSpecificDetails() != null){
+
+            periodDetails = mapper.readValue
+                    (consultation.getCustomerDetails().getGenderSpecificDetails(),
+                            CustomerPeriodDetailsDTO.class);
+        }
+
+        consultation.getCustomerDetails().setPeriodDetails(periodDetails);
+        consultation.getCustomerDetails().setGenderSpecificDetails(null);
+
+        return consultation;
+    }
+
+    public ConsultationDTO getConsultationByIdForCustomer(int id) {
+
+        return consultationRepo
+                .getConsultationDetailsByIdForCustomer(id)
                 .orElseThrow(() -> new AppException(404, "Consultation not found"));
     }
 
@@ -68,7 +98,7 @@ public class ConsultationService {
                 .of(page, itemSize, sort);
 
 
-        Page<ConsultationsDTO> pageResult =
+        Page<ConsultationDTO> pageResult =
                 consultationRepo.findByCustomerId(customerId, pageRequest);
 
         if(!pageResult.hasContent()){
@@ -76,7 +106,7 @@ public class ConsultationService {
             throw new AppException(404, "No Consultations found");
         }
 
-        List<ConsultationsDTO> consultationList = pageResult.getContent();
+        List<ConsultationDTO> consultationList = pageResult.getContent();
 
         Map<String, Object> map = new HashMap<>();
 
@@ -104,7 +134,7 @@ public class ConsultationService {
                 .of(page, itemSize, sort);
 
 
-        Page<ConsultationsDTO> pageResult =
+        Page<ConsultationDTO> pageResult =
                 consultationRepo.findByConsultantId(consultantId, pageRequest);
 
         if(!pageResult.hasContent()){
@@ -112,7 +142,7 @@ public class ConsultationService {
             throw new AppException(404, "No Consultations found");
         }
 
-        List<ConsultationsDTO> consultationList = pageResult.getContent();
+        List<ConsultationDTO> consultationList = pageResult.getContent();
 
         Map<String, Object> map = new HashMap<>();
         map.put("totalItems", pageResult.getTotalElements());
@@ -175,11 +205,11 @@ public class ConsultationService {
         ConsultationPayment payment = new ConsultationPayment();
 
         payment.setConsultation(consultation);
-        payment.setTransactionId(payment.getTransactionId());
+        payment.setTransactionId(payload.getPayment().getTransactionId());
         payment.setAmount(payload.getPayment().getAmount());
         payment.setCreatedAt(UtilFunctions.getCurrentDateTimeWithTimeZone());
         payment.setMethod(payload.getPayment().getMethod());
-        payment.setDescription(payment.getDescription());
+        payment.setDescription(payload.getDescription());
         payment.setStatus(PaymentStatus.PAID);
 
         consultationPaymentRepo.saveAndFlush(payment);

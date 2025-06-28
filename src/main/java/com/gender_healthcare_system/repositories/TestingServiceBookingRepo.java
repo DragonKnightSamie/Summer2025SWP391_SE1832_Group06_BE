@@ -1,9 +1,7 @@
 package com.gender_healthcare_system.repositories;
 
 import com.gender_healthcare_system.dtos.report.StatisticResponseDTO;
-import com.gender_healthcare_system.dtos.todo.StaffServiceBookingListDTO;
 import com.gender_healthcare_system.dtos.todo.TestingServiceBookingDTO;
-import com.gender_healthcare_system.dtos.todo.CustomerServiceBookingListDTO;
 import com.gender_healthcare_system.entities.enu.TestingServiceBookingStatus;
 import com.gender_healthcare_system.entities.todo.TestingServiceBooking;
 import com.gender_healthcare_system.entities.user.Staff;
@@ -32,14 +30,15 @@ public interface TestingServiceBookingRepo extends JpaRepository<TestingServiceB
             "tsb.result, tsb.rating, tsb.comment,tsb.createdAt, tsb.expectedStartTime, " +
             "tsb.realStartTime, tsb.expectedEndTime, tsb.realEndTime, tsb.status, " +
             "new com.gender_healthcare_system.dtos.todo.TestingServiceBookingPaymentDTO" +
-            "(tsp.amount, tsp.method, tsp.status)) " +
+            "(tsp.transactionId, tsp.amount, tsp.method, tsp.createdAt, " +
+            "tsp.description, tsp.status)) " +
             "FROM TestingServiceBooking tsb " +
             "JOIN tsb.testingService ts " +
             "LEFT JOIN tsb.staff s " +
             "JOIN tsb.customer c " +
             "LEFT JOIN tsb.testingServicePayment tsp " +
             "WHERE tsb.serviceBookingId = :id")
-    Optional<TestingServiceBookingDTO> getTestingServiceBookingDetailsById(@Param("id") int id);
+    Optional<TestingServiceBookingDTO> getTestingBookingDetailsById(@Param("id") int id);
 
     @Query("SELECT new com.gender_healthcare_system.entities.todo.TestingServiceBooking(" +
             "tsb.serviceBookingId, tsb.result, tsb.rating, tsb.comment, " +
@@ -51,18 +50,18 @@ public interface TestingServiceBookingRepo extends JpaRepository<TestingServiceB
 
 
     //get all TestingServiceBooking (only entity)
-    @Query("SELECT new com.gender_healthcare_system.dtos.todo.CustomerServiceBookingListDTO" +
+    @Query("SELECT new com.gender_healthcare_system.dtos.todo.TestingServiceBookingDTO" +
             "(tsb.serviceBookingId, ts.serviceName, s.fullName, tsb.createdAt, tsb.status) " +
             "FROM TestingServiceBooking tsb " +
             "JOIN tsb.testingService ts " +
             "LEFT JOIN tsb.staff s " +
             "JOIN tsb.customer c " +
             "WHERE c.customerId = :id")
-    Page<CustomerServiceBookingListDTO> getAllTestingServiceBookingsByCustomerId
+    Page<TestingServiceBookingDTO> getAllTestingServiceBookingsByCustomerId
     (int id, Pageable pageable);
 
     //get all TestingServiceBooking (only entity)
-    @Query("SELECT new com.gender_healthcare_system.dtos.todo.CustomerServiceBookingListDTO" +
+    @Query("SELECT new com.gender_healthcare_system.dtos.todo.TestingServiceBookingDTO" +
             "(tsb.serviceBookingId, ts.serviceName, c.fullName, tsb.createdAt, tsb.status) " +
             "FROM TestingServiceBooking tsb " +
             "JOIN tsb.testingService ts " +
@@ -70,16 +69,16 @@ public interface TestingServiceBookingRepo extends JpaRepository<TestingServiceB
             "JOIN tsb.customer c " +
             "WHERE s.staffId = :id " +
             "AND NOT tsb.status = :status")
-    Page<StaffServiceBookingListDTO> getAllTestingServiceBookingsByStaffId
+    Page<TestingServiceBookingDTO> getAllTestingServiceBookingsByStaffId
     (int id, Pageable pageable, TestingServiceBookingStatus status);
 
-    @Query("SELECT new com.gender_healthcare_system.dtos.todo.CustomerServiceBookingListDTO" +
+    @Query("SELECT new com.gender_healthcare_system.dtos.todo.TestingServiceBookingDTO" +
             "(tsb.serviceBookingId, ts.serviceName, c.fullName, tsb.createdAt, tsb.status) " +
             "FROM TestingServiceBooking tsb " +
             "JOIN tsb.testingService ts " +
             "JOIN tsb.customer c " +
             "WHERE NOT tsb.status = :status")
-    Page<StaffServiceBookingListDTO> getAllPendingTestingServiceBookings
+    Page<TestingServiceBookingDTO> getAllPendingTestingServiceBookings
             (Pageable pageable, TestingServiceBookingStatus status);
 
     @Query("SELECT tsb.expectedStartTime " +

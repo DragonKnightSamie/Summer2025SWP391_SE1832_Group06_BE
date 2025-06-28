@@ -1,9 +1,6 @@
 package com.gender_healthcare_system.repositories;
 
-import com.gender_healthcare_system.dtos.todo.CustomerTestingServiceListDTO;
 import com.gender_healthcare_system.dtos.todo.TestingServiceDTO;
-import com.gender_healthcare_system.dtos.todo.TestingServiceListDTO;
-import com.gender_healthcare_system.entities.enu.TestingServiceStatus;
 import com.gender_healthcare_system.entities.todo.TestingService;
 import com.gender_healthcare_system.payloads.todo.TestingServiceUpdatePayload;
 import org.springframework.data.domain.Page;
@@ -41,18 +38,18 @@ public interface TestingServiceRepo extends JpaRepository<TestingService, Intege
     Optional<TestingService> getTestingService(int id);
 
     // Get all TestingServices (only entity)
-    @Query("SELECT new com.gender_healthcare_system.dtos.todo.TestingServiceListDTO" +
+    @Query("SELECT new com.gender_healthcare_system.dtos.todo.TestingServiceDTO" +
             "(ts.serviceId, ts.serviceName, tst.serviceTypeName, ts.description, ts.status) " +
             "FROM TestingService ts " +
             "JOIN ts.testingServiceType tst")
-    Page<TestingServiceListDTO> getAllTestingServices(Pageable pageable);
+    Page<TestingServiceDTO> getAllTestingServices(Pageable pageable);
 
     // Get all TestingServices (only entity)
-    @Query("SELECT new com.gender_healthcare_system.dtos.todo.CustomerTestingServiceListDTO" +
+    @Query("SELECT new com.gender_healthcare_system.dtos.todo.TestingServiceDTO" +
             "(ts.serviceId, ts.serviceName, tst.serviceTypeName, ts.description) " +
             "FROM TestingService ts " +
             "JOIN ts.testingServiceType tst")
-    Page<CustomerTestingServiceListDTO> getAllTestingServicesForCustomer(Pageable pageable);
+    Page<TestingServiceDTO> getAllTestingServicesForCustomer(Pageable pageable);
 
     // Update TestingService
     @Modifying

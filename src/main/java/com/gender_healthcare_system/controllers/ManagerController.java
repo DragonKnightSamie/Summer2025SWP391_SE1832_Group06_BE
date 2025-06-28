@@ -1,9 +1,11 @@
 package com.gender_healthcare_system.controllers;
 
 import com.cloudinary.Cloudinary;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.gender_healthcare_system.dtos.login.LoginResponse;
 import com.gender_healthcare_system.dtos.todo.*;
-import com.gender_healthcare_system.dtos.user.ConsultantDetailsDTO;
+import com.gender_healthcare_system.dtos.user.ConsultantDTO;
+import com.gender_healthcare_system.dtos.user.CustomerDTO;
 import com.gender_healthcare_system.dtos.user.StaffDTO;
 import com.gender_healthcare_system.entities.enu.AccountStatus;
 import com.gender_healthcare_system.entities.user.AccountInfoDetails;
@@ -71,7 +73,7 @@ public class ManagerController {
 
     //Manager login
     @PostMapping("/login")
-    public ResponseEntity<LoginResponse> login
+    public ResponseEntity<String> login
     (@RequestBody @Valid LoginRequest loginRequest) {
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(loginRequest.getUsername(),
@@ -96,12 +98,13 @@ public class ManagerController {
         int id = account.getId();
 
         LoginResponse loginDetails = managerService.getManagerLoginDetails(id);
-        loginDetails.setUsername(loginRequest.getUsername());
+        //loginDetails.setUsername(loginRequest.getUsername());
 
-        String jwtToken = jwtService.generateToken(loginRequest.getUsername());
-        loginDetails.setToken(jwtToken);
+        String jwtToken = jwtService.generateToken(id, loginRequest.getUsername(),
+                account.getRolename(), loginDetails.getFullname(), loginDetails.getEmail());
+        //loginDetails.setToken(jwtToken);
+        return ResponseEntity.ok(jwtToken);
 
-        return ResponseEntity.ok(loginDetails);
     }
 
 
@@ -186,10 +189,11 @@ public class ManagerController {
     //Manager get Consultant details by id
     @GetMapping("/consultants/{id}")
     @PreAuthorize("hasAuthority('ROLE_MANAGER')")
-    public ResponseEntity<ConsultantDetailsDTO>
+    public ResponseEntity<ConsultantDTO>
     getConsultantDetailsById(@PathVariable int id) {
 
-        ConsultantDetailsDTO consultantDetails = consultantService.getConsultantDetails(id);
+        ConsultantDTO consultantDetails =
+                consultantService.getConsultantDetailsForManager(id);
         if (consultantDetails != null) {
             return ResponseEntity.ok(consultantDetails);
         } else {
@@ -297,13 +301,11 @@ public class ManagerController {
     //Get customer details by id
     @GetMapping("/customers/{id}")
     @PreAuthorize("hasAuthority('ROLE_MANAGER')")
-    public ResponseEntity<ManagerCustomerDTO> getCustomerById(@PathVariable int id) {
-        ManagerCustomerDTO customerDetails = customerService.getCustomerById(id);
-        if (customerDetails != null) {
-            return ResponseEntity.ok(customerDetails);
-        } else {
-            return ResponseEntity.notFound().build();
-        }
+    public ResponseEntity<CustomerDTO> getCustomerById
+    (@PathVariable int id) throws JsonProcessingException {
+
+        return ResponseEntity.ok(customerService.getCustomerForManagerById(id));
+
     }
 
     //Manager change customer status

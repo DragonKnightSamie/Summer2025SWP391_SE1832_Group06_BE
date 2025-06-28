@@ -32,5 +32,5 @@ public class ConsultationRegisterPayload implements Serializable {
 
     @Valid
     @NotNull(message = "Consultation payment is required")
-    private ConsultationPaymentPayload payment;
+    private PaymentPayload payment;
 }

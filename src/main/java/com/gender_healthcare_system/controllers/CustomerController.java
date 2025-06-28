@@ -4,15 +4,16 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.gender_healthcare_system.dtos.login.LoginResponse;
 import com.gender_healthcare_system.dtos.todo.*;
+import com.gender_healthcare_system.dtos.user.ConsultantDTO;
 import com.gender_healthcare_system.dtos.user.CustomerPeriodDetailsDTO;
-import com.gender_healthcare_system.dtos.user.ListConsultantDTO;
+import com.gender_healthcare_system.dtos.user.CustomerDTO;
 import com.gender_healthcare_system.entities.user.AccountInfoDetails;
 import com.gender_healthcare_system.payloads.login.LoginRequest;
 import com.gender_healthcare_system.payloads.todo.EvaluatePayload;
 import com.gender_healthcare_system.payloads.todo.ConsultationRegisterPayload;
-import com.gender_healthcare_system.payloads.todo.MomoPaymentPayload;
 import com.gender_healthcare_system.payloads.todo.TestingServiceBookingRegisterPayload;
 import com.gender_healthcare_system.payloads.user.CustomerPayload;
+import com.gender_healthcare_system.payloads.user.CustomerUpdatePayload;
 import com.gender_healthcare_system.services.*;
 import io.swagger.v3.oas.annotations.Parameter;
 import jakarta.validation.Valid;
@@ -65,7 +66,7 @@ public class CustomerController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<LoginResponse> login(@RequestBody @Valid LoginRequest loginRequest) {
+    public ResponseEntity<String> login(@RequestBody @Valid LoginRequest loginRequest) {
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(loginRequest.getUsername(),
                         loginRequest.getPassword())
@@ -90,12 +91,13 @@ public class CustomerController {
         int id = account.getId();
 
         LoginResponse loginDetails = customerService.getCustomerLoginDetails(id);
-        loginDetails.setUsername(loginRequest.getUsername());
+        //loginDetails.setUsername(loginRequest.getUsername());
 
-        String jwtToken = jwtService.generateToken(loginRequest.getUsername());
-        loginDetails.setToken(jwtToken);
+        String jwtToken = jwtService.generateToken(id, loginRequest.getUsername(),
+                account.getRolename(), loginDetails.getFullname(), loginDetails.getEmail());
+        //loginDetails.setToken(jwtToken);
 
-        return ResponseEntity.ok(loginDetails);
+        return ResponseEntity.ok(jwtToken);
     }
 
     //get period details for a female customers
@@ -106,6 +108,30 @@ public class CustomerController {
     (@PathVariable int customerId) throws JsonProcessingException {
 
         return ResponseEntity.ok(customerService.getFemaleCustomerPeriodDetails(customerId));
+    }
+
+
+    /// /////////////////////////////// Manage Customer Profile /////////////////////////////////
+
+    //Customer get profile infos
+    @GetMapping("/profile/{id}")
+    @PreAuthorize("hasAuthority('ROLE_CUSTOMER')")
+    public ResponseEntity<CustomerDTO>
+    getCustomerProfile(@PathVariable int id) throws JsonProcessingException {
+
+       return ResponseEntity.ok(customerService.getCustomerById(id));
+
+    }
+
+    //Customer update profile infos
+    @PutMapping("profile/update/{id}")
+    @PreAuthorize("hasAuthority('ROLE_CUSTOMER')")
+    public ResponseEntity<?> updateConsultantProfile
+    (@PathVariable int id, @RequestBody @Valid CustomerUpdatePayload payload)
+    throws JsonProcessingException {
+
+        customerService.updateCustomerDetails(id, payload);
+        return ResponseEntity.ok("Customer profile updated successfully");
     }
 
     /// /////////////////////////////// Manage Momo Payment /////////////////////////////////
@@ -225,7 +251,7 @@ public class CustomerController {
     //lấy danh sách consltant cho customer chon và xem thông tin
     @GetMapping("/consultant-list/")
     @PreAuthorize("hasAuthority('ROLE_CUSTOMER')")
-    public ResponseEntity<List<ListConsultantDTO>> getAllConsultantForCustomer() {
+    public ResponseEntity<List<ConsultantDTO>> getAllConsultantForCustomer() {
         return ResponseEntity.ok(consultantService.getAllConsultantsForCustomer());
     }
 
@@ -255,9 +281,9 @@ public class CustomerController {
     //Get consultation by ID
     @GetMapping("/consultations/{id}")
     @PreAuthorize("hasAuthority('ROLE_CUSTOMER')")
-    public ResponseEntity<ConsultantConsultationDTO>
+    public ResponseEntity<ConsultationDTO>
     getConsultationById(@PathVariable int id) {
-        return ResponseEntity.ok(consultationService.getConsultationById(id));
+        return ResponseEntity.ok(consultationService.getConsultationByIdForCustomer(id));
     }
 
 

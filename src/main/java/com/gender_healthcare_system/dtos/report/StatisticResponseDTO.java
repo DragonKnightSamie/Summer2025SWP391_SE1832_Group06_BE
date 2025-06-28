@@ -1,7 +1,5 @@
 package com.gender_healthcare_system.dtos.report;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
-import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -11,7 +9,6 @@ import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.Date;
 
-@JsonInclude(JsonInclude.Include.NON_NULL)
 @Data
 @NoArgsConstructor
 public class StatisticResponseDTO implements Serializable {

@@ -3,10 +3,8 @@ package com.gender_healthcare_system.services;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.gender_healthcare_system.dtos.todo.StaffServiceBookingListDTO;
 import com.gender_healthcare_system.dtos.todo.TestingServiceBookingDTO;
-import com.gender_healthcare_system.dtos.todo.CustomerServiceBookingListDTO;
-import com.gender_healthcare_system.dtos.todo.TestingServiceBookingResultDTO;
+import com.gender_healthcare_system.dtos.todo.TestingServiceResultDTO;
 import com.gender_healthcare_system.entities.enu.PaymentStatus;
 import com.gender_healthcare_system.entities.enu.TestingServiceBookingStatus;
 import com.gender_healthcare_system.entities.todo.TestingService;
@@ -53,7 +51,7 @@ public class TestingServiceBookingService {
     public TestingServiceBookingDTO getTestingServiceBookingDetailsById(int id)
             throws JsonProcessingException {
         TestingServiceBookingDTO testingService = testingServiceBookingRepo
-                .getTestingServiceBookingDetailsById(id)
+                .getTestingBookingDetailsById(id)
                 .orElseThrow(() -> new AppException
                         (404, "Testing Service Booking not found with ID: " + id));
 
@@ -62,7 +60,7 @@ public class TestingServiceBookingService {
         if(!result.isEmpty()){
             ObjectMapper mapper = new ObjectMapper();
 
-            List<TestingServiceBookingResultDTO> resultList = mapper.readValue(result, new
+            List<TestingServiceResultDTO> resultList = mapper.readValue(result, new
                     TypeReference<>(){});
 
             testingService.setResults(resultList);
@@ -88,7 +86,7 @@ public class TestingServiceBookingService {
         }
 
         Pageable pageable = PageRequest.of(page, itemSize, sort);
-        Page<CustomerServiceBookingListDTO> pageResult =
+        Page<TestingServiceBookingDTO> pageResult =
                 testingServiceBookingRepo
                         .getAllTestingServiceBookingsByCustomerId(customerId, pageable);
 
@@ -96,9 +94,12 @@ public class TestingServiceBookingService {
             throw new AppException(404, "No Testing Service Bookings found");
         }
 
+        List<TestingServiceBookingDTO> bookingList = pageResult.getContent();
+        bookingList.forEach(x -> x.setCustomerName(null));
+
         Map<String, Object> response = new HashMap<>();
         response.put("totalItems", pageResult.getTotalElements());
-        response.put("testingServiceBookings", pageResult.getContent());
+        response.put("testingServiceBookings", bookingList);
         response.put("totalPages", pageResult.getTotalPages());
         response.put("currentPage", pageResult.getNumber());
 
@@ -122,7 +123,7 @@ public class TestingServiceBookingService {
         }
 
         Pageable pageable = PageRequest.of(page, itemSize, sort);
-        Page<StaffServiceBookingListDTO> pageResult =
+        Page<TestingServiceBookingDTO> pageResult =
                 testingServiceBookingRepo
                         .getAllTestingServiceBookingsByStaffId
                                 (staffId, pageable, TestingServiceBookingStatus.PENDING);
@@ -131,9 +132,12 @@ public class TestingServiceBookingService {
             throw new AppException(404, "No Testing Service Bookings found");
         }
 
+        List<TestingServiceBookingDTO> bookingList = pageResult.getContent();
+        bookingList.forEach(x -> x.setStaffName(null));
+
         Map<String, Object> response = new HashMap<>();
         response.put("totalItems", pageResult.getTotalElements());
-        response.put("testingServiceBookings", pageResult.getContent());
+        response.put("testingServiceBookings", bookingList);
         response.put("totalPages", pageResult.getTotalPages());
         response.put("currentPage", pageResult.getNumber());
 
@@ -153,7 +157,7 @@ public class TestingServiceBookingService {
 
         Pageable pageable = PageRequest.of(page, itemSize, sort);
 
-        Page<StaffServiceBookingListDTO> pageResult =
+        Page<TestingServiceBookingDTO> pageResult =
                 testingServiceBookingRepo
                         .getAllPendingTestingServiceBookings
                                 (pageable, TestingServiceBookingStatus.PENDING);
@@ -162,9 +166,12 @@ public class TestingServiceBookingService {
             throw new AppException(404, "No Pending Testing Service Bookings found");
         }
 
+        List<TestingServiceBookingDTO> pendingBookingList = pageResult.getContent();
+        pendingBookingList.forEach(x -> x.setStaffName(null));
+
         Map<String, Object> response = new HashMap<>();
         response.put("totalItems", pageResult.getTotalElements());
-        response.put("pendingServiceBookings", pageResult.getContent());
+        response.put("pendingServiceBookings", pendingBookingList);
         response.put("totalPages", pageResult.getTotalPages());
         response.put("currentPage", pageResult.getNumber());
 
@@ -222,11 +229,11 @@ public class TestingServiceBookingService {
         TestingServicePayment servicePayment = new TestingServicePayment();
 
         servicePayment.setTestingServiceBooking(serviceBooking);
-        servicePayment.setTransactionId(payload.getPaymentOrderId());
-        servicePayment.setAmount(payload.getPaymentAmount());
-        servicePayment.setMethod(payload.getPaymentMethod());
+        servicePayment.setTransactionId(payload.getPayment().getTransactionId());
+        servicePayment.setAmount(payload.getPayment().getAmount());
+        servicePayment.setMethod(payload.getPayment().getMethod());
         servicePayment.setCreatedAt(UtilFunctions.getCurrentDateTimeWithTimeZone());
-        servicePayment.setDescription(payload.getDescription());
+        servicePayment.setDescription(payload.getPayment().getDescription());
         servicePayment.setStatus(PaymentStatus.PAID);
 
         testingServicePaymentRepo.saveAndFlush(servicePayment);

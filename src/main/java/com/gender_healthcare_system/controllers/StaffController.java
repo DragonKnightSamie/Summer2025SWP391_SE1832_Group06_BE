@@ -50,7 +50,7 @@ public class StaffController {
 
     //Staff login
     @PostMapping("/login")
-    public ResponseEntity<LoginResponse> login
+    public ResponseEntity<String> login
     (@RequestBody @Valid LoginRequest loginRequest) {
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(loginRequest.getUsername(),
@@ -73,12 +73,13 @@ public class StaffController {
         int id = account.getId();
 
         LoginResponse loginDetails = staffService.getStaffLoginDetails(id);
-        loginDetails.setUsername(loginRequest.getUsername());
+        //loginDetails.setUsername(loginRequest.getUsername());
 
-        String jwtToken = jwtService.generateToken(loginRequest.getUsername());
-        loginDetails.setToken(jwtToken);
+        String jwtToken = jwtService.generateToken(id, loginRequest.getUsername(),
+                account.getRolename(), loginDetails.getFullname(), loginDetails.getEmail());
+        //loginDetails.setToken(jwtToken);
 
-        return ResponseEntity.ok(loginDetails);
+        return ResponseEntity.ok(jwtToken);
     }
 
 

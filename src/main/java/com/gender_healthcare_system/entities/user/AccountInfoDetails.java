@@ -14,6 +14,7 @@ public class AccountInfoDetails implements UserDetails {
     private final int id;
     private final String username;
     private final String password;
+    private final String rolename;
     private final Collection<? extends GrantedAuthority> authorities;
 
     public AccountInfoDetails(Account userInfo) {
@@ -22,6 +23,7 @@ public class AccountInfoDetails implements UserDetails {
         PasswordEncoder encoder = new BCryptPasswordEncoder();
         this.password = encoder.encode(userInfo.getPassword());
 
+        this.rolename = userInfo.getRole().getName();
         // đảm bảo userInfo.getRole() != null
         String roleName = "ROLE_" + userInfo.getRole().getName().toUpperCase();
 
@@ -65,5 +67,9 @@ public class AccountInfoDetails implements UserDetails {
 
     public int getId() {
         return id;
+    }
+
+    public String getRolename() {
+        return rolename;
     }
 }

@@ -1,6 +1,7 @@
 package com.gender_healthcare_system.dtos.todo;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.gender_healthcare_system.entities.enu.Rating;
 import com.gender_healthcare_system.entities.enu.TestingServiceBookingStatus;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -22,8 +23,10 @@ public class TestingServiceBookingDTO implements Serializable {
 
     private String serviceName;
 
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     private String staffName;
 
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     private String customerName;
 
     private String result;
@@ -54,7 +57,7 @@ public class TestingServiceBookingDTO implements Serializable {
 
     private TestingServiceBookingStatus status;
 
-    private List<TestingServiceBookingResultDTO> results;
+    private List<TestingServiceResultDTO> results;
 
     private TestingServiceBookingPaymentDTO payment;
 
@@ -83,4 +86,17 @@ public class TestingServiceBookingDTO implements Serializable {
         this.status = status;
         this.payment = payment;
     }
+
+    public TestingServiceBookingDTO(Integer serviceBookingId, String serviceName,
+                                    String name, LocalDateTime createdAt,
+                                    TestingServiceBookingStatus status) {
+        this.serviceBookingId = serviceBookingId;
+        this.serviceName = serviceName;
+        this.staffName = name;
+        this.customerName = name;
+        this.createdAt = createdAt;
+        this.status = status;
+    }
+
+
 }

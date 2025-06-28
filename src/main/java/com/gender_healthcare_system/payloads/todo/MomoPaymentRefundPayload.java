@@ -33,8 +33,7 @@ public class MomoPaymentRefundPayload {
     private String description;
 
     @NotNull(message = "Transaction ID is required")
-    @Min(value = 1000000000L, message = "Transaction ID must be at least 1,000,000,000")
-    @Max(value = 9999999999L, message = "Transaction ID must not exceed 9,999,999,999")
-    private Long transactionId;
+    @Length(min = 10, max = 10, message = "Transaction Id must be exactly 10 characters")
+    private String transactionId;
 
 }

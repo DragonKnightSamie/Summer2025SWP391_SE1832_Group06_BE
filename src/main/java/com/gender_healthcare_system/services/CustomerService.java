@@ -4,15 +4,18 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.gender_healthcare_system.dtos.login.LoginResponse;
-import com.gender_healthcare_system.dtos.todo.ManagerCustomerDTO;
+import com.gender_healthcare_system.dtos.user.CustomerDTO;
 
 import com.gender_healthcare_system.dtos.user.CustomerPeriodDetailsDTO;
 import com.gender_healthcare_system.entities.enu.Gender;
 import com.gender_healthcare_system.entities.user.Customer;
 import com.gender_healthcare_system.exceptions.AppException;
 import com.gender_healthcare_system.iservices.ICustomerService;
+import com.gender_healthcare_system.payloads.user.CustomerUpdatePayload;
 import com.gender_healthcare_system.repositories.CustomerRepo;
 
+import com.gender_healthcare_system.utils.UtilFunctions;
+import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -35,9 +38,56 @@ public class CustomerService implements ICustomerService {
         return customerRepo.getCustomerLoginDetails(id);
     }
 
-    public ManagerCustomerDTO getCustomerById(int id) {
-        return customerRepo.getCustomerDetailsById(id)
-                .orElseThrow(() -> new AppException(404, "Consultation not found"));
+    public CustomerDTO getCustomerById(int id) throws JsonProcessingException {
+        CustomerDTO customerDetails = customerRepo.getCustomerDetailsById(id)
+                .orElseThrow(() -> new AppException(404,
+                        "Customer not found with ID " + id));
+
+        customerDetails.setPassword(null);
+        customerDetails.setStatus(null);
+
+        ObjectMapper mapper = new ObjectMapper();
+        mapper.registerModule(new JavaTimeModule());
+
+        CustomerPeriodDetailsDTO periodDetails = null;
+
+        if(customerDetails.getGender() == Gender.FEMALE
+                && customerDetails.getGenderSpecificDetails() != null){
+
+            periodDetails = mapper.readValue
+                    (customerDetails.getGenderSpecificDetails(),
+                            CustomerPeriodDetailsDTO.class);
+        }
+
+        customerDetails.setPeriodDetails(periodDetails);
+        customerDetails.setGenderSpecificDetails(null);
+
+        return customerDetails;
+
+    }
+
+    public CustomerDTO getCustomerForManagerById(int id) throws JsonProcessingException {
+        CustomerDTO customerDetails = customerRepo.getCustomerDetailsById(id)
+                .orElseThrow(() -> new AppException(404,
+                        "Customer not found with ID " + id));
+
+        ObjectMapper mapper = new ObjectMapper();
+        mapper.registerModule(new JavaTimeModule());
+
+        CustomerPeriodDetailsDTO periodDetails = null;
+
+        if(customerDetails.getGender() == Gender.FEMALE
+                && customerDetails.getGenderSpecificDetails() != null){
+
+            periodDetails = mapper.readValue
+                    (customerDetails.getGenderSpecificDetails(),
+                            CustomerPeriodDetailsDTO.class);
+        }
+
+        customerDetails.setPeriodDetails(periodDetails);
+        customerDetails.setGenderSpecificDetails(null);
+
+        return customerDetails;
     }
 
     public CustomerPeriodDetailsDTO getFemaleCustomerPeriodDetails
@@ -73,14 +123,14 @@ public class CustomerService implements ICustomerService {
                 .of(page, itemSize, sort);
 
 
-        Page<ManagerCustomerDTO> pageResult = customerRepo.getAllCustomers(pageRequest);
+        Page<CustomerDTO> pageResult = customerRepo.getAllCustomers(pageRequest);
 
         if(!pageResult.hasContent()){
 
             throw new AppException(404, "No Customers found");
         }
 
-        List<ManagerCustomerDTO> customerList = pageResult.getContent();
+        List<CustomerDTO> customerList = pageResult.getContent();
 
         Map<String, Object> map = new HashMap<>();
 
@@ -90,5 +140,27 @@ public class CustomerService implements ICustomerService {
         map.put("currentPage", pageResult.getNumber());
 
         return map;
+    }
+
+    @Transactional
+    public void updateCustomerDetails
+            (int id, CustomerUpdatePayload payload) throws JsonProcessingException {
+        ObjectMapper mapper = new ObjectMapper();
+        mapper.registerModule(new JavaTimeModule());
+
+        Customer customer = customerRepo.getCustomerById(id)
+                .orElseThrow(() -> new AppException(404, "No Customer found with ID " + id));
+
+        UtilFunctions.validatePeriodDetails
+                (customer.getGender(), payload.getGenderSpecificDetails());
+
+        String GenderSpecificDetails = null;
+        if(customer.getGender() == Gender.FEMALE) {
+
+            GenderSpecificDetails = mapper.writeValueAsString(
+                    payload.getGenderSpecificDetails());
+        }
+
+        customerRepo.updateCustomerById(id, payload, GenderSpecificDetails);
     }
 }

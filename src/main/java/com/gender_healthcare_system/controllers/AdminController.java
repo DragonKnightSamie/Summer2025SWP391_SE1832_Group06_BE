@@ -1,7 +1,5 @@
 package com.gender_healthcare_system.controllers;
 
-import com.gender_healthcare_system.dtos.login.AdminLoginResponse;
-
 import com.gender_healthcare_system.dtos.user.ManagerDTO;
 import com.gender_healthcare_system.entities.user.AccountInfoDetails;
 import com.gender_healthcare_system.payloads.login.LoginRequest;
@@ -39,7 +37,7 @@ public class AdminController {
 
     //Admin login
     @PostMapping("/login")
-    public AdminLoginResponse login(@RequestBody @Valid LoginRequest loginRequest) {
+    public ResponseEntity<String> login(@RequestBody @Valid LoginRequest loginRequest) {
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(loginRequest.getUsername(),
                         loginRequest.getPassword())
@@ -60,19 +58,20 @@ public class AdminController {
                     ("Access denied for non-admin user");
         }
 
-        AdminLoginResponse adminLoginDetails = new AdminLoginResponse();
+        //AdminLoginResponse adminLoginDetails = new AdminLoginResponse();
 
         AccountInfoDetails account =
                 (AccountInfoDetails) authentication.getPrincipal();
         int id = account.getId();
 
-        adminLoginDetails.setId(id);
-        adminLoginDetails.setUsername(loginRequest.getUsername());
+        //adminLoginDetails.setId(id);
+        //adminLoginDetails.setUsername(loginRequest.getUsername());
 
-        String jwtToken = jwtService.generateToken(loginRequest.getUsername());
-        adminLoginDetails.setToken(jwtToken);
+        String jwtToken = jwtService.generateTokenForAdmin(id,
+                loginRequest.getUsername(), account.getRolename());
+        //adminLoginDetails.setToken(jwtToken);
 
-        return adminLoginDetails;
+        return ResponseEntity.ok(jwtToken);
     }
 
     /// //////////////////////// Manage Statistic Reports //////////////////////////////////

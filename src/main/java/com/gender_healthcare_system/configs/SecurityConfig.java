@@ -47,6 +47,7 @@ public class SecurityConfig {
 
     // Các API cần quyền CUSTOMER
     private static final String[] CUSTOMER_AUTHLIST = {
+            "/api/v1/customer/profile/**",
             "/api/v1/customer/consultations/**",
             "/api/v1/customer/testing-service-bookings/**",
             "/api/v1/customer/consultant-list/**",

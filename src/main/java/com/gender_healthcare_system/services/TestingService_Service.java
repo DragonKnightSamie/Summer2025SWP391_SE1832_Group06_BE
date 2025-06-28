@@ -1,8 +1,6 @@
 package com.gender_healthcare_system.services;
 
-import com.gender_healthcare_system.dtos.todo.CustomerTestingServiceListDTO;
 import com.gender_healthcare_system.dtos.todo.TestingServiceDTO;
-import com.gender_healthcare_system.dtos.todo.TestingServiceListDTO;
 import com.gender_healthcare_system.entities.enu.PriceListStatus;
 import com.gender_healthcare_system.entities.enu.TestingServiceStatus;
 import com.gender_healthcare_system.entities.todo.PriceList;
@@ -55,7 +53,7 @@ public class TestingService_Service {
                 .of(page, itemSize, sort);
 
 
-        Page<CustomerTestingServiceListDTO> pageResult =
+        Page<TestingServiceDTO> pageResult =
                 testingServiceRepo.getAllTestingServicesForCustomer(pageRequest);
 
         if(!pageResult.hasContent()){
@@ -63,7 +61,7 @@ public class TestingService_Service {
             throw new AppException(404, "No Testing Services found");
         }
 
-        List<CustomerTestingServiceListDTO> serviceList = pageResult.getContent();
+        List<TestingServiceDTO> serviceList = pageResult.getContent();
 
         Map<String, Object> map = new HashMap<>();
 
@@ -90,7 +88,7 @@ public class TestingService_Service {
                 .of(page, itemSize, sort);
 
 
-        Page<TestingServiceListDTO> pageResult =
+        Page<TestingServiceDTO> pageResult =
                 testingServiceRepo.getAllTestingServices(pageRequest);
 
         if(!pageResult.hasContent()){
@@ -98,7 +96,7 @@ public class TestingService_Service {
             throw new AppException(404, "No Testing Services found");
         }
 
-        List<TestingServiceListDTO> serviceList = pageResult.getContent();
+        List<TestingServiceDTO> serviceList = pageResult.getContent();
 
         Map<String, Object> map = new HashMap<>();
 
