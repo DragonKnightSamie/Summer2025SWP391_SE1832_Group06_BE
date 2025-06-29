@@ -39,7 +39,7 @@ public class TestingServiceResult implements Serializable {
     private String title;
 
     @Nationalized
-    @Column(name = "description", length = 100, nullable = false)
+    @Column(name = "description", nullable = false)
     private String description;
 
     @Column(name = "type", nullable = false, length = 15)
@@ -55,10 +55,10 @@ public class TestingServiceResult implements Serializable {
     @Enumerated(EnumType.STRING)
     private MeasureUnit measureUnit;
 
-    @Column(name = "min_value", precision = 5, scale = 3)
+    @Column(name = "min_value", precision = 5, scale = 2)
     private BigDecimal minValue;
 
-    @Column(name = "max_value", precision = 5, scale = 3)
+    @Column(name = "max_value", precision = 5, scale = 2)
     private BigDecimal maxValue;
 
 }

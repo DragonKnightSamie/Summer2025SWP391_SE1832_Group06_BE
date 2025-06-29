@@ -42,12 +42,12 @@ public class TestingServiceResultPayload implements Serializable {
     @DecimalMin(value = "0.0", message = "Min value must be equal to or greater than 0.0")
     @DecimalMax(value = "999.99", message = "Min value must be equal to or less than 999.99")
     @Digits(integer = 3, fraction = 2, message = "If provided, min test result value can " +
-            "only have 1 to 3 integer digits and 4 decimal digits at most")
+            "only have 1 to 3 integer digits and 2 decimal digits at most")
     private BigDecimal minValue;
 
     @DecimalMin(value = "0.0", message = "Min value must be equal to or greater than 0.0")
     @DecimalMax(value = "999.99", message = "Min value must be equal to or less than 999.99")
-    @Digits(integer = 3, fraction = 3, message = "If provided, max test result value can " +
-            "only have 1 to 3 integer digits and 4 decimal digits at most")
+    @Digits(integer = 3, fraction = 2, message = "If provided, max test result value can " +
+            "only have 1 to 3 integer digits and 2 decimal digits at most")
     private BigDecimal maxValue;
 }
