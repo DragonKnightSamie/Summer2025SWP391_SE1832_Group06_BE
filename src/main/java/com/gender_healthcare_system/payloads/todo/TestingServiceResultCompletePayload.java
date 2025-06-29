@@ -26,8 +26,8 @@ public class TestingServiceResultCompletePayload implements Serializable {
 
     @Nationalized
     @NotBlank(message = "Description is required")
-    @Length(min = 5, max = 100,
-            message = "Testing result description must be between 5 and 100 characters")
+    @Length(min = 5, max = 500,
+            message = "Testing result description must be between 5 and 500 characters")
     private String description;
 
     @NotNull(message = "Test result type is required")

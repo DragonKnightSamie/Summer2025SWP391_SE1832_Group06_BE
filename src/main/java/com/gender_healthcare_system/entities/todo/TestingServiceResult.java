@@ -39,10 +39,10 @@ public class TestingServiceResult implements Serializable {
     private String title;
 
     @Nationalized
-    @Column(name = "description", nullable = false)
+    @Column(name = "description", length = 500, nullable = false)
     private String description;
 
-    @Column(name = "type", nullable = false, length = 15)
+    @Column(name = "type", nullable = false, length = 20)
     @Enumerated(EnumType.STRING)
     private ResultType type;
 

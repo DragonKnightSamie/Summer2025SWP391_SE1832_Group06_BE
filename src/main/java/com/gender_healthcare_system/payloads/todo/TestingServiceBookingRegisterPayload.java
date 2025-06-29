@@ -1,14 +1,10 @@
 package com.gender_healthcare_system.payloads.todo;
 
-import com.gender_healthcare_system.entities.enu.PaymentMethod;
-import jakarta.annotation.Nullable;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.Nationalized;
-import org.hibernate.validator.constraints.Length;
 
 import java.io.Serializable;
 
@@ -21,7 +17,7 @@ public class TestingServiceBookingRegisterPayload implements Serializable {
     private Integer serviceId;
 
     @NotNull(message = "Customer ID is required")
-    private int customerId;
+    private Integer customerId;
 
     @Valid
     @NotNull(message = "Testing Booking Payment is required")

@@ -77,7 +77,7 @@ public interface TestingServiceBookingRepo extends JpaRepository<TestingServiceB
             "FROM TestingServiceBooking tsb " +
             "JOIN tsb.testingService ts " +
             "JOIN tsb.customer c " +
-            "WHERE NOT tsb.status = :status")
+            "WHERE tsb.status = :status")
     Page<TestingServiceBookingDTO> getAllPendingTestingServiceBookings
             (Pageable pageable, TestingServiceBookingStatus status);
 

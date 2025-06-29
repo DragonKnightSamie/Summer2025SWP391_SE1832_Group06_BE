@@ -30,11 +30,13 @@ public class UtilFunctions {
     public static void validateIssueDateAndExpiryDate(LocalDate issueDate,
                                                       LocalDate expiryDate){
         ZoneId zone = ZoneId.of("Asia/Bangkok");
+        LocalDate currentDate = LocalDate.now(zone);
+
         long daysCheckPoint = 365 + 182;
         long yearsCheckPoint = 2;
 
-        boolean validateIssueDate = issueDate.isEqual(LocalDate.now(zone))
-                || issueDate.isAfter(LocalDate.now(zone));
+        boolean validateIssueDate = issueDate.isEqual(currentDate)
+                || issueDate.isAfter(currentDate);
 
         if(validateIssueDate){
 
@@ -43,15 +45,15 @@ public class UtilFunctions {
 
         if(expiryDate != null) {
             
-            boolean validateExpiryDate = expiryDate.isEqual(LocalDate.now(zone))
-                    || expiryDate.isBefore(LocalDate.now(zone));
+            boolean validateExpiryDate = expiryDate.isEqual(currentDate)
+                    || expiryDate.isBefore(currentDate);
 
             if (validateExpiryDate) {
 
                 throw new AppException(400, "Expiry Date cannot be equal to or before current Date");
             }
 
-            long differenceInDays = ChronoUnit.YEARS.between(LocalDate.now(zone), expiryDate);
+            long differenceInDays = ChronoUnit.DAYS.between(currentDate, expiryDate);
 
             if (differenceInDays < daysCheckPoint) {
 
