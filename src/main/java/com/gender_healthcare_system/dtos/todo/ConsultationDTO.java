@@ -51,11 +51,14 @@ public class ConsultationDTO implements Serializable {
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private CustomerDTO customerDetails;
 
+    private ConsultationPaymentDTO payment;
+
     public ConsultationDTO(Integer consultationId, LocalDateTime createdAt,
                            LocalDateTime expectedStartTime, LocalDateTime realStartTime,
                            LocalDateTime expectedEndTime, LocalDateTime realEndTime,
                            String description, ConsultationStatus status,
-                           CustomerDTO customerDetails) {
+                           CustomerDTO customerDetails,
+                           ConsultationPaymentDTO payment) {
         this.consultationId = consultationId;
         this.createdAt = createdAt;
         this.expectedStartTime = expectedStartTime;
@@ -65,6 +68,7 @@ public class ConsultationDTO implements Serializable {
         this.description = description;
         this.status = status;
         this.customerDetails = customerDetails;
+        this.payment = payment;
     }
 
     public ConsultationDTO(Integer consultationId, LocalDateTime createdAt,
@@ -72,7 +76,8 @@ public class ConsultationDTO implements Serializable {
                            LocalDateTime realStartTime,
                            LocalDateTime expectedEndTime,
                            LocalDateTime realEndTime, String description,
-                           ConsultationStatus status) {
+                           ConsultationStatus status,
+                           ConsultationPaymentDTO payment) {
         this.consultationId = consultationId;
         this.createdAt = createdAt;
         this.expectedStartTime = expectedStartTime;
@@ -81,6 +86,7 @@ public class ConsultationDTO implements Serializable {
         this.realEndTime = realEndTime;
         this.description = description;
         this.status = status;
+        this.payment = payment;
     }
 
     public ConsultationDTO(Integer consultationId, String consultantName,

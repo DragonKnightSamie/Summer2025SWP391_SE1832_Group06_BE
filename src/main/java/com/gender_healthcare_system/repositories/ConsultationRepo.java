@@ -54,21 +54,29 @@ public interface ConsultationRepo extends JpaRepository<Consultation, Integer> {
             ".ConsultationDTO(c.consultationId, c.createdAt, " +
             "c.expectedStartTime, c.realStartTime, c.expectedEndTime, " +
             "c.realEndTime,c.description," +
-            "c.status, new com.gender_healthcare_system.dtos.user.CustomerDTO" +
+            "c.status, " +
+            "new com.gender_healthcare_system.dtos.user.CustomerDTO" +
             "(cu.customerId, cu.fullName, cu.dateOfBirth, cu.gender, " +
-            "cu.genderSpecificDetails, cu.phone, cu.email, cu.address)" +
-            ") " +
+            "cu.genderSpecificDetails, cu.phone, cu.email, cu.address), " +
+            "new com.gender_healthcare_system.dtos.todo.ConsultationPaymentDTO" +
+            "(cp.consultationPaymentId, cp.amount, cp.method, cp.description," +
+            " cp.createdAt, cp.status)) " +
             "FROM Consultation c " +
             "JOIN c.customer cu " +
+            "JOIN c.consultationPayment cp " +
             "WHERE c.consultationId = :id")
     Optional<ConsultationDTO> getConsultationDetailsById(int id);
 
     @Query("SELECT new com.gender_healthcare_system.dtos.todo" +
             ".ConsultationDTO(c.consultationId, c.createdAt, " +
             "c.expectedStartTime, c.realStartTime, c.expectedEndTime, " +
-            "c.realEndTime,c.description, c.status) " +
+            "c.realEndTime,c.description, c.status, " +
+            "new com.gender_healthcare_system.dtos.todo.ConsultationPaymentDTO" +
+            "(cp.consultationPaymentId, cp.transactionId, cp.amount, cp.method, " +
+            "cp.description, cp.createdAt, cp.status)) " +
             "FROM Consultation c " +
             "JOIN c.customer cu " +
+            "JOIN c.consultationPayment cp " +
             "WHERE c.consultationId = :id")
     Optional<ConsultationDTO> getConsultationDetailsByIdForCustomer(int id);
 
