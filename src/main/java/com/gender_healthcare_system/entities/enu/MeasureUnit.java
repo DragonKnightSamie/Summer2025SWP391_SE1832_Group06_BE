@@ -6,7 +6,8 @@ public enum MeasureUnit {
     GRAM_PER_LITER("g/L"),
     PER_MICROLITER("/μL"),
     MILIMETER_OF_MERCURY("mmHg"),
-    INTERNATIONAL_UNITS_PER_LITER("IU/L");
+    INTERNATIONAL_UNITS_PER_LITER("IU/L"),
+    NONE("None");
 
     private final String symbol;
 
