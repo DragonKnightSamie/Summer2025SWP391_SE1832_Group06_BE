@@ -33,7 +33,7 @@ public class TestingServiceResultDTO implements Serializable {
 
     private BigDecimal maxValue;
 
-    private String result;
+    private BigDecimal result;
 
     public TestingServiceResultDTO(Integer serviceResultId, String title,
                                    String description, ResultType resultType,

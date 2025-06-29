@@ -8,6 +8,7 @@ import com.gender_healthcare_system.exceptions.AppException;
 import com.gender_healthcare_system.payloads.todo.TestingServiceResultCompletePayload;
 import com.gender_healthcare_system.payloads.todo.TestingServiceResultPayload;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
@@ -116,6 +117,8 @@ public class UtilFunctions {
             ResultType testType = template.getType();
             GenderType gender = template.getGenderType();
 
+            //Check if testTemplate with resultType of TEXT or POSITIVE_NEGATIVE
+            //have measure unit or min max value
             if(testType != ResultType.NUMERIC &&
                     (template.getMeasureUnit() != null
                     || template.getMinValue() != null
@@ -126,6 +129,8 @@ public class UtilFunctions {
                                 "cannot have a measure unit, min or max value");
             }
 
+            //Check if testTemplate with resultType of NUMERIC
+            //does not have measure unit or min max value
             if(testType == ResultType.NUMERIC &&
                     (template.getMeasureUnit() == null
                             || template.getMinValue() == null
@@ -152,6 +157,14 @@ public class UtilFunctions {
             nameToGenders
                     .computeIfAbsent(title, k -> new HashSet<>())
                     .add(gender);
+
+            BigDecimal minValue = template.getMinValue();
+            BigDecimal maxValue = template.getMaxValue();
+
+            if(minValue.compareTo(maxValue) > 0){
+                throw new AppException(400,
+                        "Test with title " + title + " has min value greater than max value");
+            }
         }
 
         for (Map.Entry<String, Set<GenderType>> entry : nameToGenders.entrySet()) {
@@ -179,8 +192,18 @@ public class UtilFunctions {
 
         for(TestingServiceResultCompletePayload item: resultList){
 
-            if(item.getRealValue().compareTo(item.getMinValue()) < 0
-                    || item.getRealValue().compareTo(item.getMaxValue()) > 0 ){
+            BigDecimal realValue = item.getRealValue();
+            BigDecimal minValue = item.getMinValue();
+            BigDecimal maxValue = item.getMaxValue();
+
+            if(minValue.compareTo(maxValue) > 0){
+                throw new AppException(400,
+                        "Test with title " + item.getTitle() +
+                                " has min value greater than max value");
+            }
+
+            if(realValue.compareTo(minValue) < 0
+                    || realValue.compareTo(maxValue) > 0 ){
 
                 throw new AppException(400, "Real value for test with title "
                         + item.getTitle() + "must be within accepted range: [" +

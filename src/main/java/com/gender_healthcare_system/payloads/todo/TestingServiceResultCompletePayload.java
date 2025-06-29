@@ -3,9 +3,7 @@ package com.gender_healthcare_system.payloads.todo;
 import com.gender_healthcare_system.entities.enu.GenderType;
 import com.gender_healthcare_system.entities.enu.MeasureUnit;
 import com.gender_healthcare_system.entities.enu.ResultType;
-import jakarta.validation.constraints.Digits;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -41,15 +39,21 @@ public class TestingServiceResultCompletePayload implements Serializable {
     @Nationalized
     private MeasureUnit measureUnit;
 
-    @Digits(integer = 3, fraction = 3, message = "If provided, min test result value can " +
+    @DecimalMin(value = "0.0", message = "Min value must be equal to or greater than 0.0")
+    @DecimalMax(value = "999.99", message = "Min value must be equal to or less than 999.99")
+    @Digits(integer = 3, fraction = 2, message = "If provided, min test result value can " +
             "only have 1 to 3 integer digits and 4 decimal digits at most")
     private BigDecimal minValue;
 
-    @Digits(integer = 3, fraction = 3, message = "If provided, max test result value can " +
+    @DecimalMin(value = "0.0", message = "Min value must be equal to or greater than 0.0")
+    @DecimalMax(value = "999.99", message = "Min value must be equal to or less than 999.99")
+    @Digits(integer = 3, fraction = 2, message = "If provided, min test result value can " +
             "only have 1 to 3 integer digits and 4 decimal digits at most")
     private BigDecimal maxValue;
 
-    @Digits(integer = 3, fraction = 3, message = "If provided, real test result value can " +
+    @DecimalMin(value = "0.0", message = "Min value must be equal to or greater than 0.0")
+    @DecimalMax(value = "999.99", message = "Min value must be equal to or less than 999.99")
+    @Digits(integer = 3, fraction = 2, message = "If provided, min test result value can " +
             "only have 1 to 3 integer digits and 4 decimal digits at most")
     private BigDecimal realValue;
 }

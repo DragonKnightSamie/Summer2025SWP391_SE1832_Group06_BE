@@ -55,10 +55,10 @@ public class TestingServiceResult implements Serializable {
     @Enumerated(EnumType.STRING)
     private MeasureUnit measureUnit;
 
-    @Column(name = "min_value", precision = 3, scale = 3)
+    @Column(name = "min_value", precision = 5, scale = 3)
     private BigDecimal minValue;
 
-    @Column(name = "max_value", precision = 3, scale = 3)
+    @Column(name = "max_value", precision = 5, scale = 3)
     private BigDecimal maxValue;
 
 }
