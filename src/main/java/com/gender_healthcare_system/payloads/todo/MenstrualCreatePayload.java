@@ -1,4 +1,4 @@
-package com.gender_healthcare_system.payloads;
+package com.gender_healthcare_system.payloads.todo;
 import com.gender_healthcare_system.entities.user.Customer;
 import lombok.Data;
 import java.time.LocalDate;

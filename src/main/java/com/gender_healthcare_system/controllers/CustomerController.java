@@ -8,12 +8,8 @@ import com.gender_healthcare_system.dtos.user.ConsultantDTO;
 import com.gender_healthcare_system.dtos.user.CustomerPeriodDetailsDTO;
 import com.gender_healthcare_system.dtos.user.CustomerDTO;
 import com.gender_healthcare_system.entities.user.AccountInfoDetails;
-import com.gender_healthcare_system.payloads.MenstrualCreatePayload;
+import com.gender_healthcare_system.payloads.todo.*;
 import com.gender_healthcare_system.payloads.login.LoginRequest;
-import com.gender_healthcare_system.payloads.todo.EvaluatePayload;
-import com.gender_healthcare_system.payloads.todo.ConsultationRegisterPayload;
-import com.gender_healthcare_system.payloads.todo.MenstrualCycleUpdatePayload;
-import com.gender_healthcare_system.payloads.todo.TestingServiceBookingRegisterPayload;
 import com.gender_healthcare_system.payloads.user.CustomerPayload;
 import com.gender_healthcare_system.payloads.user.CustomerUpdatePayload;
 import com.gender_healthcare_system.services.*;
@@ -448,6 +444,42 @@ public class CustomerController {
         menstrualCycleService.updateCycleById(cycleId, payload);
         return ResponseEntity.ok("Updated menstrual cycle successfully");
     }
+
+    /// //////////////////////Symptom Management /////////////////////////
+    private final SymptomService symptomService;
+
+    @Operation(summary = "Create Symptom", description = "Record a new symptom for a customer")
+    @PostMapping("/symptoms/create")
+    @PreAuthorize("hasAuthority('ROLE_CUSTOMER')")
+    public ResponseEntity<SymptomDTO> createSymptom(@RequestBody @Valid SymptomCreatePayload payload) {
+        return ResponseEntity.ok(symptomService.createSymptom(payload));
+    }
+
+    @Operation(summary = "Get Symptoms by Customer ID", description = "Get all symptoms recorded by a customer")
+    @GetMapping("/symptoms/customer/{customerId}")
+    @PreAuthorize("hasAuthority('ROLE_CUSTOMER')")
+    public ResponseEntity<List<SymptomDTO>> getSymptomsByCustomerId(@PathVariable int customerId) {
+        return ResponseEntity.ok(symptomService.getSymptomsByCustomerId(customerId));
+    }
+
+    @Operation(summary = "Update Symptom", description = "Update a previously recorded symptom")
+    @PutMapping("/symptoms/update/{id}")
+    @PreAuthorize("hasAuthority('ROLE_CUSTOMER')")
+    public ResponseEntity<String> updateSymptom(
+            @PathVariable Long id,
+            @RequestBody @Valid SymptomUpdatePayload payload) {
+        symptomService.updateSymptom(id, payload);
+        return ResponseEntity.ok("Symptom updated successfully");
+    }
+
+    @Operation(summary = "Delete Symptom", description = "Delete a previously recorded symptom")
+    @DeleteMapping("/symptoms/delete/{id}")
+    @PreAuthorize("hasAuthority('ROLE_CUSTOMER')")
+    public ResponseEntity<String> deleteSymptom(@PathVariable Long id) {
+        symptomService.deleteSymptom(id);
+        return ResponseEntity.ok("Symptom deleted successfully");
+    }
+
 }
 
 

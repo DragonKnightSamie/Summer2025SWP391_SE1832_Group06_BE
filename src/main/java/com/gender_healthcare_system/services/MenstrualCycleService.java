@@ -4,7 +4,7 @@ import com.gender_healthcare_system.dtos.todo.MenstrualCycleDTO;
 import com.gender_healthcare_system.entities.todo.MenstrualCycle;
 import com.gender_healthcare_system.entities.user.Customer;
 import com.gender_healthcare_system.exceptions.AppException;
-import com.gender_healthcare_system.payloads.MenstrualCreatePayload;
+import com.gender_healthcare_system.payloads.todo.MenstrualCreatePayload;
 import com.gender_healthcare_system.payloads.todo.MenstrualCycleUpdatePayload;
 import com.gender_healthcare_system.repositories.CustomerRepo;
 import com.gender_healthcare_system.repositories.MenstrualCycleRepo;
