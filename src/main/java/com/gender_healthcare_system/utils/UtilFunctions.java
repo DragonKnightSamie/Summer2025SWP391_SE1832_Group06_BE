@@ -17,6 +17,7 @@ import java.util.*;
 
 public class UtilFunctions {
 
+
     public static LocalDateTime getCurrentDateTimeWithTimeZone(){
         ZoneId zone = ZoneId.of("Asia/Bangkok");
         return LocalDateTime.now(zone);

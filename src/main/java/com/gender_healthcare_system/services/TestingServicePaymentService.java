@@ -6,6 +6,7 @@ import com.gender_healthcare_system.repositories.TestingServicePaymentRepo;
 import lombok.AllArgsConstructor;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -31,6 +32,7 @@ public class TestingServicePaymentService {
     }
 
     //updatePayment
+    @Transactional
     public TestingServicePayment updatePayment(int id, TestingServicePayment testingServicePayment) {
         if (testingServicePaymentRepo.existsById(id)) {
             //testingServicePayment.setPaymentId(id);

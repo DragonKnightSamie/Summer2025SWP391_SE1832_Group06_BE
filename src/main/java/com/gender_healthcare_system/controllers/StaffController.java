@@ -12,7 +12,9 @@ import com.gender_healthcare_system.payloads.login.LoginRequest;
 import com.gender_healthcare_system.payloads.todo.TestingServiceBookingCompletePayload;
 import com.gender_healthcare_system.payloads.todo.TestingServiceBookingConfirmPayload;
 import com.gender_healthcare_system.services.*;
+import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 
@@ -29,6 +31,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 
+@Tag(name = "Staff APIs", description = "APIs for managing staff functionalities")
 @RestController
 @RequestMapping("/api/v1/staff")
 @AllArgsConstructor
@@ -48,10 +51,14 @@ public class StaffController {
 
     private final TestingServiceBookingService testingServiceBookingService;
 
+    @Operation(
+            summary = "Staff login",
+            description = "Allows a staff member to log in and receive a JWT token for authentication."
+    )
     //Staff login
     @PostMapping("/login")
     public ResponseEntity<String> login
-    (@RequestBody @Valid LoginRequest loginRequest) {
+            (@RequestBody @Valid LoginRequest loginRequest) {
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(loginRequest.getUsername(),
                         loginRequest.getPassword())
@@ -83,8 +90,12 @@ public class StaffController {
     }
 
 
-    ///////////////////////////// Manage Payments ///////////////////////////////
+    /// ////////////////////////// Manage Payments ///////////////////////////////
 
+    @Operation(
+            summary = "Manage Testing Service Payments",
+            description = "APIs for managing testing service payments including creating, updating, and retrieving payments."
+    )
     // 1. Get all payments
     @GetMapping("/payments/")
     @PreAuthorize("hasAuthority('ROLE_STAFF')")
@@ -92,6 +103,10 @@ public class StaffController {
         return ResponseEntity.ok(testingServicePaymentService.getAllPayments());
     }
 
+    @Operation(
+            summary = "Get Payment by ID",
+            description = "Retrieve a specific payment by its ID."
+    )
     // 2. Get payment by ID
     @GetMapping("/payments/{id}")
     @PreAuthorize("hasAuthority('ROLE_STAFF')")
@@ -99,6 +114,10 @@ public class StaffController {
         return ResponseEntity.ok(testingServicePaymentService.getPaymentById(id));
     }
 
+    @Operation(
+            summary = "Create a new Testing Service Payment",
+            description = "Create a new payment record for testing services."
+    )
     // 3. Create new testingServicePayment
     @PostMapping("/payments/")
     @PreAuthorize("hasAuthority('ROLE_STAFF')")
@@ -106,6 +125,10 @@ public class StaffController {
         return ResponseEntity.ok(testingServicePaymentService.createPayment(testingServicePayment));
     }
 
+    @Operation(
+            summary = "Update an existing Testing Service Payment",
+            description = "Update the details of an existing payment record."
+    )
     // 4. Update testingServicePayment
     @PutMapping("/payments/{id}")
     @PreAuthorize("hasAuthority('ROLE_STAFF')")
@@ -113,6 +136,10 @@ public class StaffController {
         return ResponseEntity.ok(testingServicePaymentService.updatePayment(id, testingServicePayment));
     }
 
+    @Operation(
+            summary = "Delete a Testing Service Payment",
+            description = "Delete a specific payment record by its ID."
+    )
     // 5. Delete payment
     @DeleteMapping("/payments/{id}")
     @PreAuthorize("hasAuthority('ROLE_STAFF')")
@@ -121,6 +148,10 @@ public class StaffController {
         return ResponseEntity.ok("Payment deleted successfully");
     }
 
+    @Operation(
+            summary = "Get Payments by User ID",
+            description = "Retrieve all payments made by a specific user."
+    )
     // 7. Get payments by status
     @GetMapping("/payments/status/{status}")
     @PreAuthorize("hasAuthority('ROLE_STAFF')")

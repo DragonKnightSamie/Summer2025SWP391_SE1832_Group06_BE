@@ -13,7 +13,9 @@ import com.gender_healthcare_system.payloads.todo.ConsultationCompletePayload;
 import com.gender_healthcare_system.payloads.todo.ConsultationConfirmPayload;
 import com.gender_healthcare_system.payloads.user.ConsultantUpdatePayload;
 import com.gender_healthcare_system.services.*;
+import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -27,6 +29,7 @@ import org.springframework.web.bind.annotation.*;
 import java.time.LocalDate;
 import java.util.Map;
 
+@Tag(name = "Consultant APIs", description = "APIs for managing consultant functionalities")
 @RestController
 @RequestMapping("/api/v1/consultant")
 @AllArgsConstructor
@@ -42,6 +45,10 @@ public class ConsultantController {
 
     private final AuthenticationManager authenticationManager;
 
+    @Operation(
+            summary = "Consultant login",
+            description = "Allows a consultant to log in and receive a JWT token for authentication."
+    )
     @PostMapping("/login")
     public ResponseEntity<LoginResponse> login
             (@RequestBody @Valid LoginRequest loginRequest) {
@@ -87,7 +94,10 @@ public class ConsultantController {
 
     ////////////////////////////////// Manage Profile ///////////////////////////////////
 
-
+    @Operation(
+            summary = "Get Consultant Profile",
+            description = "Get profile information of a consultant by their ID."
+    )
     //Consultant get profile infos
     @GetMapping("/profile/{id}")
     @PreAuthorize("hasAuthority('ROLE_CONSULTANT')")
@@ -102,6 +112,10 @@ public class ConsultantController {
         }
     }
 
+    @Operation(
+            summary = "Update consultant profile",
+            description = "Update personal information of consultant"
+    )
     //Consultant update profile personal infos
     @PutMapping("profile/update/{id}")
     @PreAuthorize("hasAuthority('ROLE_CONSULTANT')")
@@ -115,7 +129,10 @@ public class ConsultantController {
 
     ////////////////////////////////// Manage Certificates ///////////////////////////////////
 
-
+    @Operation(
+            summary = "Update consultant certificate information",
+            description = "Update certificate-related details of consultant"
+    )
     //Consultant update certificate infos
     @PutMapping("certificates/update/{id}")
     @PreAuthorize("hasAuthority('ROLE_CONSULTANT')")
@@ -129,7 +146,10 @@ public class ConsultantController {
 
     ////////////////////////////////// Manage Consultations ///////////////////////////////////
 
-
+    @Operation(
+            summary = "Get all consultations by consultant ID",
+            description = "Get paginated consultations assigned to a specific consultant"
+    )
     //Get all consultations by consultant ID
     @GetMapping("/consultations/consultantId/{id}")
     @PreAuthorize("hasAuthority('ROLE_CONSULTANT')")
@@ -143,6 +163,10 @@ public class ConsultantController {
                 .getConsultationsByConsultantId(id, page, sort, order));
     }
 
+    @Operation(
+            summary = "Get consultation details",
+            description = "Retrieve a specific consultation by ID"
+    )
     //Get consultation by ID
     @GetMapping("/consultations/{id}")
     @PreAuthorize("hasAuthority('ROLE_CONSULTANT')")
@@ -151,7 +175,6 @@ public class ConsultantController {
         ConsultationDTO dto = consultationService.getConsultationById(id);
         return ResponseEntity.ok(dto);
     }
-
 
     //Confirm consultation
     /*@PostMapping("/consultations/confirm")
@@ -173,6 +196,10 @@ public class ConsultantController {
 
     //update consultant có thể check lịch trước khi reschedule consultation.
     //Get consultant schedule in a specific date for check
+    @Operation(
+            summary = "Check consultant schedule for a specific date",
+            description = "Returns time slots or availability of the consultant on a given date"
+    )
     @GetMapping("/consultations/consultant/{consultantId}/check-schedule")
     @PreAuthorize("hasAuthority('ROLE_CONSULTANT')")
     public ResponseEntity<ConsultantScheduleDTO> getConsultantScheduleByDate
@@ -186,6 +213,10 @@ public class ConsultantController {
                 .getConsultantScheduleByDate(consultantId, date));
     }
 
+    @Operation(
+            summary = "Reschedule a consultation",
+            description = "Allows consultant to reschedule an existing consultation"
+    )
     //Reschedule consultation
     @PostMapping("/consultations/{id}/reschedule/")
     @PreAuthorize("hasAuthority('ROLE_CONSULTANT')")
@@ -196,6 +227,10 @@ public class ConsultantController {
         return ResponseEntity.ok("Consultation rescheduled successfully");
     }
 
+    @Operation(
+            summary = "Complete a consultation",
+            description = "Marks the consultation as completed and stores notes/results"
+    )
     //Complete consultation
     @PostMapping("/consultations/complete")
     @PreAuthorize("hasAuthority('ROLE_CONSULTANT')")

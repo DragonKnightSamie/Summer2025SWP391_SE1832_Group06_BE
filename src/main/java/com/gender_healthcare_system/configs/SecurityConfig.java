@@ -53,7 +53,8 @@ public class SecurityConfig {
             "/api/v1/customer/consultant-list/**",
             "/api/v1/customer/payment-transaction/**",
             "/api/v1/customer/testing-services/**",
-            "/api/v1/customer/female/**"
+            "/api/v1/customer/female/**",
+            "/api/v1/customer/menstrual-cycles/**"
 
     };
 

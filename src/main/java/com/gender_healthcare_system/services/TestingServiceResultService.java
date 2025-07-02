@@ -59,7 +59,6 @@ public class TestingServiceResultService {
 
     }*/
 
-
     public void deleteTestingServiceResult(int id) {
         boolean serviceResultExists = testingServiceResultRepo.existsById(id);
         if (!serviceResultExists) {

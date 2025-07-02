@@ -21,7 +21,7 @@ import java.util.Map;
 
 @Service
 @AllArgsConstructor
-public class StaffService {
+public class StaffService  {
 
     private final StaffRepo staffRepo;
 
@@ -31,6 +31,7 @@ public class StaffService {
         return staffRepo.getStaffLoginDetails(id);
     }
 
+    //getStaffById
     public StaffDTO getStaffById(int id) {
         return staffRepo.getStaffDetailsById(id)
                 .orElseThrow(() -> new AppException(404, "Consultation not found"));
@@ -86,7 +87,6 @@ public class StaffService {
 
             accountRepo.updateAccountStatus(staffId, payload.getStatus());
         }
-
         staffRepo.updateStaffDetails(staffId, payload);
     }
 }

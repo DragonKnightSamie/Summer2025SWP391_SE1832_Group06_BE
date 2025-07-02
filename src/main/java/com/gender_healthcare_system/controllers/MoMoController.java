@@ -2,11 +2,14 @@ package com.gender_healthcare_system.controllers;
 
 import com.gender_healthcare_system.payloads.todo.MomoPaymentPayload;
 import com.gender_healthcare_system.services.MomoPaymentService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+@Tag(name = "MoMo Payment APIs", description = "APIs for managing MoMo payment transactions")
 @RestController
 @RequestMapping("/api/v1/momo/payment-transactions")
 @RequiredArgsConstructor
@@ -14,6 +17,10 @@ public class MoMoController {
 
     private final MomoPaymentService momoPaymentService;
 
+    @Operation(
+            summary = "Create MoMo payment request",
+            description = "Creates a payment request for MoMo transactions."
+    )
     //create payment request
     @PostMapping("/create-payment-request")
     public ResponseEntity<?> createMomoPaymentRequest
@@ -35,6 +42,10 @@ public class MoMoController {
         return ResponseEntity.ok(momoPaymentService.createMomoRefundPaymentRequest(payload));
     }*/
 
+    @Operation(
+            summary = "Handle MoMo payment error",
+            description = "Handles the redirect URL for MoMo payment errors."
+    )
     //redirect URL for error handling
     @GetMapping("/check-error")
     public ResponseEntity<String> handlePaymentError(
