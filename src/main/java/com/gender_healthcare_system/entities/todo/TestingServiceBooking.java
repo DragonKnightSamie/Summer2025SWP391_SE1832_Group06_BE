@@ -50,11 +50,11 @@ public class TestingServiceBooking implements Serializable {
     private Staff staff;
 
     @Nationalized
-    @Column(name = "result", length = 255)
+    @Column(columnDefinition = "NVARCHAR(MAX)", name = "result")
     private String result;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "rating", length = 15)
+    @Column(name = "rating", length = 15, nullable = false)
     private Rating rating;
 
     @Nationalized

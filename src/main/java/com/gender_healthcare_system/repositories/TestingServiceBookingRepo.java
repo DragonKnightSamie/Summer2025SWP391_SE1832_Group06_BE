@@ -158,7 +158,6 @@ public interface TestingServiceBookingRepo extends JpaRepository<TestingServiceB
             "JOIN b.testingServicePayment p " +
             "WHERE b.status = :status " +
             "AND CAST( b.createdAt AS DATE) >= :from " +
-            "AND CAST(b.createdAt AS DATE) >= :from " +
             "GROUP BY CAST(b.createdAt AS DATE) " +
             "ORDER BY CAST(b.createdAt AS DATE)")
     List<StatisticResponseDTO> getTestingBookingsStatistics

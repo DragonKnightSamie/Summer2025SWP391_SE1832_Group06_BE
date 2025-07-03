@@ -170,6 +170,24 @@ public class AccountService implements IAccountService {
     }
 
     @Transactional
+    public void updateConsultantStatus(int consultantId, AccountStatus status){
+        boolean consultantExist = consultantRepo.existsById(consultantId);
+
+        if(!consultantExist) {
+
+            throw new AppException(404, "Consultant not found");
+        }
+
+        boolean accountStatusIdentical = accountRepo
+                .existsAccountByAccountIdAndStatus(consultantId, status);
+
+        if(!accountStatusIdentical){
+
+            accountRepo.updateAccountStatus(consultantId, status);
+        }
+    }
+
+    @Transactional
     public void deleteConsultantById(int consultantId) {
         boolean consultantExist = consultantRepo.existsById(consultantId);
 

@@ -177,7 +177,7 @@ public class AdminController {
         return ResponseEntity.ok("Manager profile updated successfully");
     }
 
-    @Operation(
+    /*@Operation(
             summary = "Delete manager account",
             description = "Allows admin to delete a manager account from the system by ID."
     )
@@ -188,5 +188,5 @@ public class AdminController {
 
         accountService.deleteConsultantById(id);
         return ResponseEntity.ok("Manager account deleted successfully");
-    }
+    }*/
 }

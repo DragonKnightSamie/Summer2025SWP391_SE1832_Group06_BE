@@ -132,8 +132,8 @@ public class ManagerController {
 //        return ResponseEntity.ok(blogService.getAllBlogs(page, sort, order));
 //    }
     @Operation(
-            summary = "Get all blogs for managers",
-            description = "Retrieve all blogs with pagination, sorting, and ordering options for managers."
+            summary = "Get blog by ID for managers",
+            description = "Retrieve a specific blog by its ID for Managers."
     )
     //move API to BlogController and rename it to getBlogByIDForManager
     //getBlogsById
@@ -156,8 +156,8 @@ public class ManagerController {
 //    }
 
     @Operation(
-            summary = "Search blogs for managers",
-            description = "Search for blogs by keyword with pagination, sorting, and ordering options for managers."
+            summary = "Create blogs for managers",
+            description = "Allows managers to create a new Blog with provided information."
     )
     //MANAGER CREATE BLOGS
     @PostMapping("/blogs/create")
@@ -247,8 +247,9 @@ public class ManagerController {
     }
 
     @Operation(
-            summary = "Update consultant account",
-            description = "Allows managers to update the details of an existing consultant account."
+            summary = "Update consultant account status",
+            description = "Allows managers to update the account status " +
+                    "of an existing consultant account."
     )
     //Manager update Consultant status
     @PostMapping("/consultants/update_status/{consultantId}")
@@ -256,12 +257,12 @@ public class ManagerController {
     public ResponseEntity<?> updateConsultantStatus
             (@PathVariable int consultantId, @RequestParam AccountStatus status) {
 
-        accountService.updateCustomerStatus(consultantId, status);
+        accountService.updateConsultantStatus(consultantId, status);
         return ResponseEntity.ok("Consultant account status updated successfully");
     }
 
-    @Operation(
-            summary = "Update consultant account details",
+    /*@Operation(
+            summary = "Delete consultant account ",
             description = "Allows managers to update the details of an existing consultant account."
     )
     //Manager delete Consultant from system
@@ -271,7 +272,7 @@ public class ManagerController {
 
         accountService.deleteConsultantById(id);
         return ResponseEntity.ok("Consultant account deleted successfully");
-    }
+    }*/
 
 
     /// //////////////////////// Manage Staffs /////////////////////////////////////

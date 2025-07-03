@@ -43,7 +43,7 @@ public class Consultation implements Serializable {
     private Customer customer;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "rating", length = 15)
+    @Column(name = "rating", length = 15, nullable = false)
     private Rating rating;
 
     @Nationalized

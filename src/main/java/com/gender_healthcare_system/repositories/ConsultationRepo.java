@@ -33,12 +33,12 @@ public interface ConsultationRepo extends JpaRepository<Consultation, Integer> {
     Page<ConsultationDTO> findByCustomerId(int customerId, Pageable pageable);
 
     @Query("SELECT new com.gender_healthcare_system.dtos.todo" +
-            ".ConsultationDTO(c.consultationId,c.consultant.fullName, c.createdAt, " +
+            ".ConsultationDTO(c.consultationId, cs.fullName, c.createdAt, " +
             "c.expectedStartTime, c.realStartTime, c.expectedEndTime, c.realEndTime, " +
             "c.description, c.status) " +
             "FROM Consultation c " +
-            "JOIN c.consultant " +
-            "WHERE c.consultant.consultantId = :consultantId")
+            "JOIN c.consultant cs " +
+            "WHERE cs.consultantId = :consultantId")
     Page<ConsultationDTO> findByConsultantId(int consultantId, Pageable pageable);
 
     @Query("SELECT new com.gender_healthcare_system.entities.todo" +
@@ -46,7 +46,6 @@ public interface ConsultationRepo extends JpaRepository<Consultation, Integer> {
             "c.expectedStartTime, c.realStartTime, c.expectedEndTime, c.realEndTime, " +
             "c.status) " +
             "FROM Consultation c " +
-            "JOIN c.consultant " +
             "WHERE c.consultationId = :id")
     Optional<Consultation> findConsultationById(int id);
 
@@ -127,8 +126,7 @@ public interface ConsultationRepo extends JpaRepository<Consultation, Integer> {
 
     //report
     @Query("SELECT new com.gender_healthcare_system.dtos.report.StatisticResponseDTO" +
-            "(CAST(c.createdAt as date), COUNT(c), " +
-            "SUM(p.amount)) " +
+            "(CAST(c.createdAt as date), COUNT(c), SUM(p.amount)) " +
             "FROM Consultation c " +
             "JOIN c.consultationPayment p " +
             "WHERE c.status = :status " +
