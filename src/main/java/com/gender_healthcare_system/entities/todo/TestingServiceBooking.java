@@ -46,7 +46,7 @@ public class TestingServiceBooking implements Serializable {
 
     // Relationship with Staff
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "staff_id")
+    @JoinColumn(name = "staff_id", nullable = false)
     private Staff staff;
 
     @Nationalized
@@ -64,13 +64,13 @@ public class TestingServiceBooking implements Serializable {
     @Column(name = "created_at", nullable = false, unique = true)
     private LocalDateTime createdAt;
 
-    @Column(name = "expected_start_time")
+    @Column(name = "expected_start_time", nullable = false)
     private LocalDateTime expectedStartTime;
 
     @Column(name = "real_start_time")
     private LocalDateTime realStartTime;
 
-    @Column(name = "expected_end_time", unique = true)
+    @Column(name = "expected_end_time", nullable = false)
     private LocalDateTime expectedEndTime;
 
     @Column(name = "real_end_time")

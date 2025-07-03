@@ -1,5 +1,6 @@
 package com.gender_healthcare_system.controllers;
 
+import com.gender_healthcare_system.dtos.report.StatisticResponseDTO;
 import com.gender_healthcare_system.dtos.user.ManagerDTO;
 import com.gender_healthcare_system.entities.user.AccountInfoDetails;
 import com.gender_healthcare_system.payloads.login.LoginRequest;
@@ -23,6 +24,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Map;
 
 @Tag(name = "Admin Management", description = "APIs for managing admin functionalities")
@@ -94,7 +96,7 @@ public class AdminController {
             description = "Get statistics about consultations within a specified number of days (default 30)."
     )
     @GetMapping("/statistic-reports/consultations")
-    public ResponseEntity<?> getConsultationsStatistics(
+    public ResponseEntity<List<StatisticResponseDTO>> getConsultationsStatistics(
             @RequestParam(defaultValue = "30") int periodByDays) {
 
         return ResponseEntity.ok(reportService.getConsultationsStatistics(periodByDays));
@@ -105,7 +107,7 @@ public class AdminController {
             description = "Get statistics about testing service bookings within a specified number of days (default 30)."
     )
     @GetMapping("/statistic-reports/testing-service-bookings")
-    public ResponseEntity<?> getTestingBookingsStatistics
+    public ResponseEntity<List<StatisticResponseDTO>> getTestingBookingsStatistics
             (@RequestParam(defaultValue = "30") int periodDays) {
 
         return ResponseEntity.ok(

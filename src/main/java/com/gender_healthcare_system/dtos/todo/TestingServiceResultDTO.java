@@ -33,6 +33,7 @@ public class TestingServiceResultDTO implements Serializable {
 
     private BigDecimal maxValue;
 
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     private BigDecimal result;
 
     public TestingServiceResultDTO(Integer serviceResultId, String title,

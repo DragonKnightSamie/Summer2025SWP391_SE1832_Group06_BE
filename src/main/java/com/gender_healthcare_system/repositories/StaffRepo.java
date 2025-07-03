@@ -11,6 +11,8 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import java.time.LocalDate;
+import java.util.List;
 import java.util.Optional;
 
 public interface StaffRepo extends JpaRepository<Staff, Integer> {
@@ -34,6 +36,18 @@ public interface StaffRepo extends JpaRepository<Staff, Integer> {
             "FROM Staff s " +
             "WHERE s.staffId = :id")
     Optional<Staff> getStaffDumpById(int id);
+
+    @Query("SELECT new com.gender_healthcare_system.entities.user.Staff" +
+            "(s.staffId, s.fullName, s.phone, s.email, s.address) " +
+            "FROM Staff s " +
+            "LEFT JOIN TestingServiceBooking tsb " +
+            "ON tsb.staff = s " +
+            "AND CAST(tsb.expectedStartTime AS DATE) = :targetDate " +
+            "GROUP BY s.staffId " +
+            "ORDER BY COUNT(tsb.serviceBookingId) ASC, s.staffId ASC")
+    List<Staff> findStaffOrderedByLeastTests(
+            @Param("targetDate") LocalDate targetDate
+    );
 
     @Query("SELECT new com.gender_healthcare_system.dtos.user" +
             ".StaffDTO(s.staffId, a.username, a.password, s.fullName, " +

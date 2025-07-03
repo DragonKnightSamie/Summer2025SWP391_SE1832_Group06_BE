@@ -34,6 +34,16 @@ public interface TestingServiceResultRepo extends JpaRepository<TestingServiceRe
     List<TestingServiceResultDTO> getAllServiceResultsByTypeIdAndGenderType
             (int id, GenderType genderType);
 
+    @Query("SELECT new com.gender_healthcare_system.dtos.todo.TestingServiceResultDTO" +
+            "(tst.serviceResultId, tst.title, tst.description, tst.type, tst.genderType, " +
+            "tst.measureUnit, tst.minValue, tst.maxValue) " +
+            "FROM TestingServiceResult tst " +
+            "WHERE tst.testingServiceType.serviceTypeId = " +
+            "(SELECT ts.testingServiceType.serviceTypeId " +
+            "FROM TestingService ts " +
+            "WHERE ts.serviceId = :serviceId)")
+    List<TestingServiceResultDTO> getAllServiceResultsByServiceId(int serviceId);
+
     @Modifying
     @Query("UPDATE TestingServiceResult tsr " +
             "SET tsr.title = :#{#payload.title}, " +

@@ -67,48 +67,50 @@ public interface TestingServiceBookingRepo extends JpaRepository<TestingServiceB
             "JOIN tsb.testingService ts " +
             "LEFT JOIN tsb.staff s " +
             "JOIN tsb.customer c " +
-            "WHERE s.staffId = :id " +
-            "AND NOT tsb.status = :status")
+            "WHERE s.staffId = :id")
     Page<TestingServiceBookingDTO> getAllTestingServiceBookingsByStaffId
-    (int id, Pageable pageable, TestingServiceBookingStatus status);
+    (int id, Pageable pageable);
 
-    @Query("SELECT new com.gender_healthcare_system.dtos.todo.TestingServiceBookingDTO" +
+   /* @Query("SELECT new com.gender_healthcare_system.dtos.todo.TestingServiceBookingDTO" +
             "(tsb.serviceBookingId, ts.serviceName, c.fullName, tsb.createdAt, tsb.status) " +
             "FROM TestingServiceBooking tsb " +
             "JOIN tsb.testingService ts " +
             "JOIN tsb.customer c " +
             "WHERE tsb.status = :status")
     Page<TestingServiceBookingDTO> getAllPendingTestingServiceBookings
-            (Pageable pageable, TestingServiceBookingStatus status);
+            (Pageable pageable, TestingServiceBookingStatus status);*/
 
     @Query("SELECT tsb.expectedStartTime " +
             "FROM TestingServiceBooking tsb " +
-            "JOIN tsb.staff st " +
-            "WHERE st.staffId = :staffId " +
-            "AND CAST(tsb.expectedStartTime AS DATE) = :date " +
-            "AND NOT tsb.status = :status1 " +
-            "AND NOT tsb.status = :status2 " +
+            "WHERE CAST(tsb.expectedStartTime AS DATE) = :date " +
+            "AND NOT tsb.status = :status " +
             "GROUP BY tsb.expectedStartTime " +
             "HAVING COUNT(tsb) = 5 " +
             "ORDER BY tsb.expectedStartTime")
-    List<LocalDateTime> getStaffScheduleInADate
-            (int staffId, LocalDate date,
-             TestingServiceBookingStatus status1,
-             TestingServiceBookingStatus status2);
+    List<LocalDateTime> getBookingScheduleInADate
+            (LocalDate date, TestingServiceBookingStatus status);
+
+    @Query("SELECT tsb.expectedStartTime " +
+            "FROM TestingServiceBooking tsb " +
+            "WHERE tsb.customer.customerId = :customerId " +
+            "AND tsb.testingService.serviceId = :serviceId " +
+            "AND CAST(tsb.expectedStartTime AS DATE) = :date " +
+            "AND NOT tsb.status = :status " +
+            "GROUP BY tsb.expectedStartTime " +
+            "ORDER BY tsb.expectedStartTime")
+    List<LocalDateTime> getCustomerBookedScheduleInADate
+            (int serviceId, int customerId, LocalDate date,
+             TestingServiceBookingStatus status);
 
     @Query("SELECT COUNT(tsb) AS numberOfBookings " +
             "FROM TestingServiceBooking tsb " +
-            "JOIN tsb.staff st " +
-            "WHERE st.staffId = :staffId " +
-            "AND tsb.expectedStartTime = :startTime " +
-            "AND NOT tsb.status = :status1 " +
-            "AND NOT tsb.status = :status2")
-    int getNumberOfBookingsAStaffHaveInATime
-            (int staffId, LocalDateTime startTime,
-             TestingServiceBookingStatus status1,
-             TestingServiceBookingStatus status2);
+            "WHERE tsb.expectedStartTime = :startTime " +
+            "AND NOT tsb.status = :status")
+    int getNumberOfBookingsInATime
+            (LocalDateTime startTime,
+             TestingServiceBookingStatus status);
 
-    @Modifying
+    /*@Modifying
     @Query("UPDATE TestingServiceBooking tsb SET " +
             "tsb.staff = :staff, " +
             "tsb.expectedStartTime = :startTime, " +
@@ -117,7 +119,7 @@ public interface TestingServiceBookingRepo extends JpaRepository<TestingServiceB
             "WHERE tsb.serviceBookingId = :id")
     void confirmTestingServiceBooking(int id, Staff staff,
                                       LocalDateTime startTime, LocalDateTime endTime,
-                                      TestingServiceBookingStatus status);
+                                      TestingServiceBookingStatus status);*/
 
     @Modifying
     @Query("UPDATE TestingServiceBooking tsb SET " +
@@ -155,11 +157,12 @@ public interface TestingServiceBookingRepo extends JpaRepository<TestingServiceB
             "FROM TestingServiceBooking b " +
             "JOIN b.testingServicePayment p " +
             "WHERE b.status = :status " +
-            "AND b.createdAt >= :from " +
+            "AND CAST( b.createdAt AS DATE) >= :from " +
             "AND CAST(b.createdAt AS DATE) >= :from " +
             "GROUP BY CAST(b.createdAt AS DATE) " +
             "ORDER BY CAST(b.createdAt AS DATE)")
     List<StatisticResponseDTO> getTestingBookingsStatistics
     (@Param("status") TestingServiceBookingStatus status, @Param("from") LocalDate from);
 
+    boolean existsByTestingService_ServiceIdAndCustomer_CustomerIdAndExpectedStartTime(int testingServiceServiceId, int customerCustomerId, LocalDateTime expectedStartTime);
 }

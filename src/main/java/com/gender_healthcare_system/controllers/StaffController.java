@@ -1,6 +1,5 @@
 package com.gender_healthcare_system.controllers;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.gender_healthcare_system.dtos.login.LoginResponse;
 import com.gender_healthcare_system.dtos.todo.TestingServiceBookingDTO;
@@ -13,7 +12,6 @@ import com.gender_healthcare_system.payloads.todo.TestingServiceBookingCompleteP
 import com.gender_healthcare_system.payloads.todo.TestingServiceBookingConfirmPayload;
 import com.gender_healthcare_system.services.*;
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
@@ -26,8 +24,6 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 
@@ -198,13 +194,13 @@ public class StaffController {
     /// ////////////////////////////////////// Manage Testing Service Bookings //////////////////////////////////////
 
     //get by id
-    @GetMapping("/testing-service-bookings/{testingBookingid}/testing-templates")
+    @GetMapping("/testing-service-bookings/{testingBookingId}/testing-templates")
     @PreAuthorize("hasAuthority('ROLE_STAFF')")
     public ResponseEntity<List<TestingServiceResultDTO>>
     getTestingBookingTestTemplatesById
-    (@PathVariable int testingBookingid) {
+    (@PathVariable int testingBookingId) {
         return ResponseEntity.ok(
-                testingServiceResultService.getAllServiceResultsByBookingId(testingBookingid));
+                testingServiceResultService.getAllServiceResultsByBookingId(testingBookingId));
     }
 
     //get by id
@@ -231,7 +227,7 @@ public class StaffController {
     }
 
     //Lấy danh sách booking có status pending (có phân trang + sắp xếp)
-    @GetMapping("/testing-service-bookings/pending-list")
+    /*@GetMapping("/testing-service-bookings/pending-list")
     @PreAuthorize("hasAuthority('ROLE_STAFF')")
     public ResponseEntity<Map<String, Object>> getAllPendingTestingServiceBookings(
             @RequestParam(defaultValue = "0") int page,
@@ -240,23 +236,9 @@ public class StaffController {
 
         return ResponseEntity.ok(testingServiceBookingService
                 .getAllPendingTestingServiceBookings(page, sortField, sortOrder));
-    }
+    }*/
 
-    //Lấy lịch xét nghiệm của staff với các expected start time đã full lịch đặt (5 người)
-    @GetMapping("/testing-service-bookings/staff/{staffId}/check-schedule")
-    @PreAuthorize("hasAuthority('ROLE_STAFF')")
-    public ResponseEntity<List<LocalDateTime>> getStaffTestingScheduleForADay
-    (@PathVariable int staffId,
-     @Parameter(example = "05/06/2025")
-     @RequestParam("date")
-     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy")
-     LocalDate date) {
-
-        return ResponseEntity.ok(testingServiceBookingService
-                .getStaffScheduleForADay(staffId, date));
-    }
-
-    // Update
+    /*// Update
     @PutMapping("/testing-service-bookings/{id}/confirm")
     @PreAuthorize("hasAuthority('ROLE_STAFF')")
     public ResponseEntity<String> confirmTestingServiceBooking(
@@ -264,7 +246,7 @@ public class StaffController {
             @RequestBody @Valid TestingServiceBookingConfirmPayload payload) {
         testingServiceBookingService.confirmTestingServiceBooking(id, payload);
         return ResponseEntity.ok("Testing Service Booking confirmed successfully");
-    }
+    }*/
 
     // Update
     @PutMapping("/testing-service-bookings/{id}/complete")

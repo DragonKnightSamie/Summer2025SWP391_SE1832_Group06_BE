@@ -6,6 +6,7 @@ import com.gender_healthcare_system.entities.enu.GenderType;
 import com.gender_healthcare_system.exceptions.AppException;
 import com.gender_healthcare_system.repositories.CustomerRepo;
 import com.gender_healthcare_system.repositories.TestingServiceBookingRepo;
+import com.gender_healthcare_system.repositories.TestingServiceRepo;
 import com.gender_healthcare_system.repositories.TestingServiceResultRepo;
 
 import lombok.AllArgsConstructor;
@@ -20,6 +21,8 @@ public class TestingServiceResultService {
     private final TestingServiceResultRepo testingServiceResultRepo;
 
     private final TestingServiceBookingRepo testingServiceBookingRepo;
+
+    private final TestingServiceRepo testingServiceRepo;
 
     private final CustomerRepo customerRepo;
 
@@ -45,6 +48,21 @@ public class TestingServiceResultService {
 
         return testingServiceResultRepo.
                 getAllServiceResultsByTypeIdAndGenderType(testingBookingId, genderType);
+
+    }
+
+    public List<TestingServiceResultDTO>
+    getAllServiceResultsByServiceId(int testingServiceId){
+
+        boolean serviceExist = testingServiceRepo.existsById(testingServiceId);
+
+        if(!serviceExist){
+            throw new AppException(404,
+                    "No Testing Service found with ID " +testingServiceId);
+        }
+
+        return testingServiceResultRepo.
+                getAllServiceResultsByServiceId(testingServiceId);
 
     }
     /*@Transactional

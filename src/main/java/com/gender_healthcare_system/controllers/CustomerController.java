@@ -28,6 +28,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 
@@ -51,13 +52,13 @@ public class CustomerController {
 
     private final TestingService_Service testingService_service;
 
+    private final TestingServiceResultService testingServiceResultService;
+
     private final PriceListService priceListService;
 
     private final ConsultantService consultantService;
 
     private final CertificateService certificateService;
-
-    private final MomoPaymentService momoPaymentService;
 
     @Operation(
             summary = "Register a new customer",
@@ -189,7 +190,8 @@ public class CustomerController {
 
     @Operation(
             summary = "Get all testing services",
-            description = "Retrieve a paginated list of all available testing services for customers."
+            description = "Retrieve a paginated list of all available " +
+                    "testing services for customers."
     )
     //get all testing services
     @GetMapping("/testing-services/list")
@@ -213,9 +215,30 @@ public class CustomerController {
     public ResponseEntity<List<PriceListDTO>> getPriceListForTestingService
             (@PathVariable int serviceId) {
 
-        return ResponseEntity.ok(priceListService.getPriceListForTestingService(serviceId));
+        return ResponseEntity.ok(
+                priceListService.getPriceListForTestingService(serviceId));
     }
 
+    //get testing templates for a testing service
+    @GetMapping("/testing-services/test-templates/{serviceId}")
+    @PreAuthorize("hasAuthority('ROLE_CUSTOMER')")
+    public ResponseEntity<List<TestingServiceResultDTO>> getTestTemplatesForTestingService
+    (@PathVariable int serviceId) {
+
+        return ResponseEntity.ok(
+                testingServiceResultService.getAllServiceResultsByServiceId(serviceId));
+    }
+
+    //Lấy lịch xét nghiệm với các expected start time đã full lịch đặt (5 người)
+    //và cả các expected start time customer đã đặt với testing service đó
+    @GetMapping("/testing-service-bookings/check-schedule")
+    @PreAuthorize("hasAuthority('ROLE_STAFF')")
+    public ResponseEntity<List<LocalDateTime>> getTestingScheduleForADay
+    (@RequestBody @Valid TestingServiceBookingSchedulePayload payload) {
+
+        return ResponseEntity.ok(testingServiceBookingService
+                .getBookingScheduleForADay(payload));
+    }
 
     @Operation(
             summary = "Get Testing Service Booking by Customer ID",
