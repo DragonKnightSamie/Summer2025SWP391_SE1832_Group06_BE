@@ -17,7 +17,7 @@ import java.io.Serializable;
 public class PaymentPayload implements Serializable {
 
     @NotBlank(message = "Transaction Id is required")
-    @Length(min = 10, max = 10, message = "Transaction ID must be exactly 10 characters")
+    @Pattern(regexp = "\\d{8}", message = "Transaction ID must be exactly 8 digits")
     private String transactionId;
 
     @NotNull

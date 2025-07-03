@@ -327,11 +327,11 @@ public class TestingServiceBookingService {
                     "completed Service Booking");
         }
 
-        if(bookingStatus == TestingServiceBookingStatus.CONFIRMED){
+        /*if(bookingStatus == TestingServiceBookingStatus.CONFIRMED){
 
             throw new AppException(400, "Cannot complete a Service Booking " +
                     "that has not started yet");
-        }
+        }*/
 
         UtilFunctions.validateRealStartAndEndTime
                 (serviceBooking.getExpectedStartTime(), serviceBooking.getExpectedEndTime(),
@@ -345,6 +345,26 @@ public class TestingServiceBookingService {
         testingServiceBookingRepo.completeTestingServiceBooking
                 (id, payload, result , TestingServiceBookingStatus.COMPLETED);
     }
+
+    //chuyen trang thai tu CONFIRMED sang IN PROGRESS
+    @Transactional
+    public void startTestingServiceBooking(int id, LocalDateTime realStartTime) {
+        TestingServiceBooking booking = testingServiceBookingRepo
+                .getTestingServiceBookingStatusById(id)
+                .orElseThrow(() -> new AppException(404, "Booking not found with ID: " + id));
+
+        if (booking.getStatus() != TestingServiceBookingStatus.CONFIRMED) {
+            throw new AppException(400, "Only bookings with status CONFIRMED can be started");
+        }
+
+        UtilFunctions.validateRealStartTime(booking.getExpectedStartTime(), realStartTime);
+
+        //update thời gian thực tế va chuyển trạng thái sang IN_PROGRESS
+        booking.setRealStartTime(realStartTime);
+        booking.setStatus(TestingServiceBookingStatus.IN_PROGRESS);
+        testingServiceBookingRepo.save(booking);
+    }
+
 
     @Transactional
     public void updateTestingServiceBookingCommentAndRating

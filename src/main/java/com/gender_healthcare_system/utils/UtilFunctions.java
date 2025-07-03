@@ -244,4 +244,17 @@ public class UtilFunctions {
             }
         }
     }
+
+    public static void validateRealStartTime(LocalDateTime expectedStartTime, LocalDateTime realStartTime) {
+        long maxDelayInMinutes = 90;
+        long minAdvanceInMinutes = -10;
+
+        long diffMinutes = ChronoUnit.MINUTES.between(expectedStartTime, realStartTime);
+
+        if (diffMinutes < minAdvanceInMinutes || diffMinutes > maxDelayInMinutes) {
+            throw new AppException(400, "Real start time must be within -10 to +90 minutes of expected start time. " +
+                    "Provided difference: " + diffMinutes + " minutes");
+        }
+    }
+
 }

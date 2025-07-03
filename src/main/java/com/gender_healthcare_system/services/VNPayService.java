@@ -33,7 +33,7 @@ public class VNPayService extends HttpServlet{
         String bankCode = "VNBANK";
         String locale = "vn";
 
-        String vnp_TxnRef = VNPayConfig.getRandomNumber(8);
+        String vnp_TxnRef = VNPayConfig.generateRandomNumber(8);
         String vnp_IpAddr = VNPayConfig.getIpAddress(request);
 
         String vnp_TmnCode = VNPayConfig.vnp_TmnCode;

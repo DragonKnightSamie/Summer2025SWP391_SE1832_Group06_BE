@@ -16,6 +16,11 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+
+import java.util.List;
 
 @Configuration
 @EnableWebSecurity
@@ -55,14 +60,13 @@ public class SecurityConfig {
             "/api/v1/customer/payment-transaction/**",
             "/api/v1/customer/testing-services/**",
             "/api/v1/customer/female/**",
-            "/api/v1/customer/menstrual-cycles/**"
-
+            "/api/v1/customer/menstrual-cycles/**",
+            "/api/v1/customer/symptoms/**"
     };
 
     // Các API cần quyền ADMIN
     private static final String[] ADMIN_AUTHLIST = {
             "/api/v1/admin/managers/**"
-
     };
 
     // Các API cần quyền MANAGER
@@ -76,8 +80,7 @@ public class SecurityConfig {
             "/api/v1/manager/testing-services/**",
             "/api/v1/manager/testing-service-forms/**",
             "/api/v1/manager/price-lists/**",
-            "/api/v1/manager/image/**",
-
+            "/api/v1/manager/image/**"
     };
 
     // Các API cần quyền STAFF
@@ -95,7 +98,9 @@ public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        return http.csrf(AbstractHttpConfigurer::disable)
+        return http
+                .cors(cors -> cors.configurationSource(corsConfigurationSource())) // cấu hình CORS
+                .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(AUTH_WHITELIST).permitAll()
                         .requestMatchers(BLOG_PUBLIC_ENDPOINTS).permitAll()
@@ -110,31 +115,39 @@ public class SecurityConfig {
                 .sessionManagement(sess -> sess
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authenticationProvider(authenticationProvider())
-                .addFilterBefore(jwtAuthFilter,
-                        UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
                 .build();
     }
 
+    // thêm phần này để cấu hình CORS cho FE
+    // Cấu hình cho phép các request CORS từ FE
+    @Bean
+    public CorsConfigurationSource corsConfigurationSource() {
+        CorsConfiguration configuration = new CorsConfiguration();
+        configuration.setAllowedOrigins(List.of("http://localhost:5173")); // hoặc FE URL của bạn
+        configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+        configuration.setAllowedHeaders(List.of("*"));
+        configuration.setAllowCredentials(true); // cho phép gửi cookie hoặc token từ FE
+
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", configuration);
+        return source;
+    }
 
     @Bean
     public BCryptPasswordEncoder bCryptPasswordEncoder() {
-
         return new BCryptPasswordEncoder();
     }
 
     @Bean
     public AuthenticationProvider authenticationProvider() {
-
-        DaoAuthenticationProvider provider = new
-                DaoAuthenticationProvider(userDetailsService);
+        DaoAuthenticationProvider provider = new DaoAuthenticationProvider(userDetailsService);
         provider.setPasswordEncoder(bCryptPasswordEncoder());
         return provider;
     }
 
     @Bean
-    public AuthenticationManager authenticationManager
-            (AuthenticationConfiguration config) throws Exception {
-
+    public AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {
         return config.getAuthenticationManager();
     }
 }

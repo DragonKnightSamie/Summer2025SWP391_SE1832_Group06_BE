@@ -11,16 +11,17 @@ import java.util.Map;
 import java.util.Random;
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
+
 import jakarta.servlet.http.HttpServletRequest;
 
 public class VNPayConfig {
 
-    public static String vnp_PayUrl = "https://sandbox.vnpayment.vn/paymentv2/vpcpay.html";
-    public static String vnp_ReturnUrl =
+    public static final String vnp_PayUrl = "https://sandbox.vnpayment.vn/paymentv2/vpcpay.html";
+    public static final String vnp_ReturnUrl =
             "http://localhost:8080/api/v1/vnpay/payment-transaction/check-payment-error";
-    public static String vnp_TmnCode = "VI6PW64E";
-    public static String secretKey = "1IEM76Q0FAYDQBBE1QNHFIFRIE88M0CY";
-    public static String vnp_ApiUrl = "https://sandbox.vnpayment.vn/merchant_webapi/api/transaction";
+    public static final String vnp_TmnCode = "VI6PW64E";
+    public static final String secretKey = "1IEM76Q0FAYDQBBE1QNHFIFRIE88M0CY";
+    public static final String vnp_ApiUrl = "https://sandbox.vnpayment.vn/merchant_webapi/api/transaction";
 
     public static String md5(String message) {
         String digest = null;
@@ -72,7 +73,7 @@ public class VNPayConfig {
                 sb.append("&");
             }
         }
-        return hmacSHA512(secretKey,sb.toString());
+        return hmacSHA512(secretKey, sb.toString());
     }
 
     public static String hmacSHA512(final String key, final String data) {
@@ -111,7 +112,7 @@ public class VNPayConfig {
         return ipAdress;
     }
 
-    public static String getRandomNumber(int len) {
+    public static String generateRandomNumber(int len) {
         Random rnd = new Random();
         String chars = "0123456789";
         StringBuilder sb = new StringBuilder(len);
@@ -120,4 +121,20 @@ public class VNPayConfig {
         }
         return sb.toString();
     }
+
+    public static String buildQueryString(Map<String, String> fields) {
+        List<String> fieldNames = new ArrayList<>(fields.keySet());
+        Collections.sort(fieldNames);
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < fieldNames.size(); i++) {
+            String fieldName = fieldNames.get(i);
+            String fieldValue = fields.get(fieldName);
+            if (fieldValue != null && !fieldValue.isEmpty()) {
+                sb.append(fieldName).append("=").append(fieldValue);
+                if (i < fieldNames.size() - 1) sb.append("&");
+            }
+        }
+        return sb.toString();
+    }
+
 }
