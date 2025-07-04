@@ -34,6 +34,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -340,14 +341,16 @@ public class ConsultationService {
                     "before or equal to Expected Start Time or after Expected End Time");
         }
 
-        boolean validateStartAndEndTime =
-                payload.getRealStartTime().isAfter(payload.getRealEndTime());
+        long startAndEndTimeDifference =
+                ChronoUnit.MINUTES.between(payload.getRealStartTime(), payload.getRealEndTime());
 
-        if(validateStartAndEndTime){
+        if(startAndEndTimeDifference < 20){
 
-            throw new AppException(400, "Real End Time cannot be " +
-                    "after real Start Time");
+            throw new AppException(400,
+                    "Real End time must be at least 20 minute later " +
+                            "compared to Real Start time");
         }
+
                 /* consultation.setRealStartTime(payload.getRealStartTime());
         consultation.setRealEndTime(payload.getRealEndTime());
         consultation.setStatus(ConsultationStatus.COMPLETED);

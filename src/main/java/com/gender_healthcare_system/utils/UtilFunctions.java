@@ -79,7 +79,7 @@ public class UtilFunctions {
         long minutesCheckPoint1 = 90 ;
         long minutesCheckPoint2 = 60 ;
 
-        long startTimeDifference = ChronoUnit.MINUTES.between(expectedEndTime, realStartTime);
+        long startTimeDifference = ChronoUnit.MINUTES.between(expectedStartTime, realStartTime);
 
         if(startTimeDifference < 0 || startTimeDifference > minutesCheckPoint1){
 

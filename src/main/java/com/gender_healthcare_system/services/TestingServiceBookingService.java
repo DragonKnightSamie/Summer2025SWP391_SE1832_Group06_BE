@@ -17,6 +17,7 @@ import com.gender_healthcare_system.payloads.todo.*;
 import com.gender_healthcare_system.repositories.*;
 import com.gender_healthcare_system.utils.UtilFunctions;
 import lombok.AllArgsConstructor;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -55,7 +56,7 @@ public class TestingServiceBookingService {
 
         String result = testingService.getResult();
 
-        if(!result.isEmpty()){
+        if(!StringUtils.isEmpty(result)){
             ObjectMapper mapper = new ObjectMapper();
 
             List<TestingServiceResultDTO> resultList = mapper.readValue(result, new
@@ -248,7 +249,7 @@ public class TestingServiceBookingService {
 
         LocalDate dateExtraction = payload.getExpectedStartTime().toLocalDate();
 
-        List<Staff> staffList = staffRepo.findStaffOrderedByLeastTests
+        List<Object[]> staffList = staffRepo.findStaffOrderedByLeastTests
                         (dateExtraction);
 
         if(staffList.isEmpty()) {
@@ -257,11 +258,16 @@ public class TestingServiceBookingService {
                     "No Staff found to assign Test to, please try again later");
         }
 
+        Object[] firstStaff = staffList.getFirst();
+
+        Staff staff = staffRepo.getStaffDumpById((Integer) firstStaff[1])
+                .orElseThrow(() -> new AppException(500, "Error when trying to get Staff info"));
+
         TestingServiceBooking serviceBooking = new TestingServiceBooking();
 
         serviceBooking.setTestingService(testingService);
         serviceBooking.setCustomer(customer);
-        serviceBooking.setStaff(staffList.getFirst());
+        serviceBooking.setStaff(staff);
         serviceBooking.setCreatedAt(UtilFunctions.getCurrentDateTimeWithTimeZone());
         serviceBooking.setExpectedStartTime(payload.getExpectedStartTime());
 

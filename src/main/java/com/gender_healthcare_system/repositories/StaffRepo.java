@@ -37,17 +37,15 @@ public interface StaffRepo extends JpaRepository<Staff, Integer> {
             "WHERE s.staffId = :id")
     Optional<Staff> getStaffDumpById(int id);
 
-    @Query("SELECT new com.gender_healthcare_system.entities.user.Staff" +
-            "(s.staffId, s.fullName, s.phone, s.email, s.address) " +
+    @Query("SELECT COUNT(tsb.serviceBookingId) AS Count, s.staffId " +
             "FROM Staff s " +
             "LEFT JOIN TestingServiceBooking tsb " +
             "ON tsb.staff = s " +
             "AND CAST(tsb.expectedStartTime AS DATE) = :targetDate " +
             "GROUP BY s.staffId " +
             "ORDER BY COUNT(tsb.serviceBookingId) ASC, s.staffId ASC")
-    List<Staff> findStaffOrderedByLeastTests(
-            @Param("targetDate") LocalDate targetDate
-    );
+    List<Object[]> findStaffOrderedByLeastTests(
+            @Param("targetDate") LocalDate targetDate);
 
     @Query("SELECT new com.gender_healthcare_system.dtos.user" +
             ".StaffDTO(s.staffId, a.username, a.password, s.fullName, " +
