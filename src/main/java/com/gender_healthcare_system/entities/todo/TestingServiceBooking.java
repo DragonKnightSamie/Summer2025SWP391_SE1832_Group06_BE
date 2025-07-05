@@ -85,12 +85,12 @@ public class TestingServiceBooking implements Serializable {
     }
 
     public TestingServiceBooking(int serviceBookingId, String result, Rating rating,
-            String comment, LocalDateTime createdAt,
-            LocalDateTime expectedStartTime,
-            LocalDateTime realStartTime,
-            LocalDateTime expectedEndTime,
-            LocalDateTime realEndTime,
-            TestingServiceBookingStatus status) {
+                                 String comment, LocalDateTime createdAt,
+                                 LocalDateTime expectedStartTime,
+                                 LocalDateTime realStartTime,
+                                 LocalDateTime expectedEndTime,
+                                 LocalDateTime realEndTime,
+                                 TestingServiceBookingStatus status) {
 
         this.serviceBookingId = serviceBookingId;
         this.result = result;

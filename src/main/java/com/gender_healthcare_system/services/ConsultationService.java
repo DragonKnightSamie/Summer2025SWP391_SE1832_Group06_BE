@@ -49,24 +49,10 @@ public class ConsultationService {
     //getConsultationById
     public ConsultationDTO getConsultationById(int id)
             throws JsonProcessingException {
-         ConsultationDTO consultation = consultationRepo.getConsultationDetailsById(id)
+
+        ConsultationDTO consultation = consultationRepo
+                .getConsultationDetailsById(id)
                 .orElseThrow(() -> new AppException(404, "Consultation not found"));
-
-        ObjectMapper mapper = new ObjectMapper();
-        mapper.registerModule(new JavaTimeModule());
-
-        CustomerPeriodDetailsDTO periodDetails = null;
-
-        if(consultation.getCustomerDetails().getGender() == Gender.FEMALE
-                && consultation.getCustomerDetails().getGenderSpecificDetails() != null){
-
-            periodDetails = mapper.readValue
-                    (consultation.getCustomerDetails().getGenderSpecificDetails(),
-                            CustomerPeriodDetailsDTO.class);
-        }
-
-        consultation.getCustomerDetails().setPeriodDetails(periodDetails);
-        consultation.getCustomerDetails().setGenderSpecificDetails(null);
 
         return consultation;
     }

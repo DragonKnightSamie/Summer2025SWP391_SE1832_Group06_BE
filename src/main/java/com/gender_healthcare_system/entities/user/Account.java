@@ -71,9 +71,6 @@ public class Account implements Serializable {
     @Enumerated(EnumType.STRING)
     private Gender gender;
 
-    @Column(name = "gender_specific_details", length = 255)
-    private String genderSpecificDetails;
-
     // Consultant specific fields
     @Column(name = "avatar_url")
     private String avatarUrl;
@@ -126,7 +123,7 @@ public class Account implements Serializable {
     // Constructor for Customer
     public Account(int accountId, String username, String password, Role role,
             String fullName, LocalDate dateOfBirth, Gender gender,
-            String genderSpecificDetails, String email, String phone, String address) {
+            String email, String phone, String address) {
         this.accountId = accountId;
         this.username = username;
         this.password = password;
@@ -134,7 +131,6 @@ public class Account implements Serializable {
         this.fullName = fullName;
         this.dateOfBirth = dateOfBirth;
         this.gender = gender;
-        this.genderSpecificDetails = genderSpecificDetails;
         this.email = email;
         this.phone = phone;
         this.address = address;

@@ -32,8 +32,6 @@ public class CustomerDTO implements Serializable {
 
     private Gender gender;
 
-    private String genderSpecificDetails;
-
     private CustomerPeriodDetailsDTO periodDetails;
 
     private String phone;
@@ -46,7 +44,7 @@ public class CustomerDTO implements Serializable {
 
     public CustomerDTO(Integer accountId, String userName, String password,
                        String fullName, LocalDate dateOfBirth, Gender gender,
-                       String genderSpecificDetails, String phone, String email,
+                       String phone, String email,
                        String address, AccountStatus status) {
         this.accountId = accountId;
         this.userName = userName;
@@ -54,7 +52,6 @@ public class CustomerDTO implements Serializable {
         this.fullName = fullName;
         this.dateOfBirth = dateOfBirth;
         this.gender = gender;
-        this.genderSpecificDetails = genderSpecificDetails;
         this.phone = phone;
         this.email = email;
         this.address = address;
@@ -62,13 +59,12 @@ public class CustomerDTO implements Serializable {
     }
 
     public CustomerDTO(Integer accountId, String fullName, LocalDate dateOfBirth,
-                       Gender gender, String genderSpecificDetails, String phone,
+                       Gender gender, String phone,
                        String email, String address) {
         this.accountId = accountId;
         this.fullName = fullName;
         this.dateOfBirth = dateOfBirth;
         this.gender = gender;
-        this.genderSpecificDetails = genderSpecificDetails;
         this.phone = phone;
         this.email = email;
         this.address = address;

@@ -117,16 +117,14 @@ public interface AccountRepo extends JpaRepository<Account, Integer> {
 
     @Query("SELECT new com.gender_healthcare_system.dtos.user.CustomerDTO" +
             "(a.accountId, a.username, a.password, " +
-            "a.fullName, a.dateOfBirth, a.gender, a.genderSpecificDetails, " +
-            "a.email, a.phone, a.address, a.status) " +
+            "a.fullName, a.dateOfBirth, a.gender, a.email, a.phone, a.address, a.status) " +
             "FROM Account a " +
             "WHERE a.accountId = :id AND a.role.name = 'CUSTOMER'")
     Optional<CustomerDTO> getCustomerDetailsById(int id);
 
     @Query("SELECT new com.gender_healthcare_system.dtos.user.CustomerDTO" +
             "(a.accountId, a.username, a.password, " +
-            "a.fullName, a.dateOfBirth, a.gender, a.genderSpecificDetails, " +
-            "a.email, a.phone, a.address, a.status) " +
+            "a.fullName, a.dateOfBirth, a.gender, a.email, a.phone, a.address, a.status) " +
             "FROM Account a " +
             "WHERE a.role.name = 'CUSTOMER'")
     Page<CustomerDTO> getAllCustomers(Pageable pageable);
@@ -165,7 +163,6 @@ public interface AccountRepo extends JpaRepository<Account, Integer> {
             "SET a.fullName = :#{#payload.fullName}, " +
             "a.dateOfBirth = :#{#payload.dateOfBirth}, " +
             "a.gender = :#{#payload.gender}, " +
-            "a.genderSpecificDetails = :#{#payload.genderSpecificDetails}, " +
             "a.email = :#{#payload.email}, " +
             "a.phone = :#{#payload.phone}, " +
             "a.address = :#{#payload.address} " +

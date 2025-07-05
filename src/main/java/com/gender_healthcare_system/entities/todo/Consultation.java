@@ -74,9 +74,9 @@ public class Consultation implements Serializable {
     private ConsultationStatus status;
 
     public Consultation(int consultationId, LocalDateTime createdAt,
-            LocalDateTime expectedStartTime, LocalDateTime realStartTime,
-            LocalDateTime expectedEndTime, LocalDateTime realEndTime,
-            ConsultationStatus status) {
+                        LocalDateTime expectedStartTime, LocalDateTime realStartTime,
+                        LocalDateTime expectedEndTime, LocalDateTime realEndTime,
+                        ConsultationStatus status) {
         this.consultationId = consultationId;
         this.createdAt = createdAt;
         this.expectedStartTime = expectedStartTime;

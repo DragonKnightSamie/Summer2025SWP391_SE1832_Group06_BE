@@ -46,46 +46,13 @@ public class CustomerService implements ICustomerService {
         customerDetails.setPassword(null);
         customerDetails.setStatus(null);
 
-        ObjectMapper mapper = new ObjectMapper();
-        mapper.registerModule(new JavaTimeModule());
-
-        CustomerPeriodDetailsDTO periodDetails = null;
-
-        if(customerDetails.getGender() == Gender.FEMALE
-                && customerDetails.getGenderSpecificDetails() != null){
-
-            periodDetails = mapper.readValue
-                    (customerDetails.getGenderSpecificDetails(),
-                            CustomerPeriodDetailsDTO.class);
-        }
-
-        customerDetails.setPeriodDetails(periodDetails);
-        customerDetails.setGenderSpecificDetails(null);
-
         return customerDetails;
-
     }
 
     public CustomerDTO getCustomerForManagerById(int id) throws JsonProcessingException {
         CustomerDTO customerDetails = accountRepo.getCustomerDetailsById(id)
                 .orElseThrow(() -> new AppException(404,
                         "Customer not found with ID " + id));
-
-        ObjectMapper mapper = new ObjectMapper();
-        mapper.registerModule(new JavaTimeModule());
-
-        CustomerPeriodDetailsDTO periodDetails = null;
-
-        if(customerDetails.getGender() == Gender.FEMALE
-                && customerDetails.getGenderSpecificDetails() != null){
-
-            periodDetails = mapper.readValue
-                    (customerDetails.getGenderSpecificDetails(),
-                            CustomerPeriodDetailsDTO.class);
-        }
-
-        customerDetails.setPeriodDetails(periodDetails);
-        customerDetails.setGenderSpecificDetails(null);
 
         return customerDetails;
     }
@@ -102,11 +69,8 @@ public class CustomerService implements ICustomerService {
             throw new AppException(400, "Cannot get period details for MALE customer");
         }
 
-        ObjectMapper mapper = new ObjectMapper();
-        mapper.registerModule(new JavaTimeModule());
-
-        return mapper.readValue
-                (account.getGenderSpecificDetails(), CustomerPeriodDetailsDTO.class);
+        // Return null since genderSpecificDetails has been removed
+        return null;
     }
 
     public Map<String, Object> getAllCustomers(int page, String sortField, String sortOrder) {
@@ -145,21 +109,8 @@ public class CustomerService implements ICustomerService {
     @Transactional
     public void updateCustomerDetails
             (int id, CustomerUpdatePayload payload) throws JsonProcessingException {
-        ObjectMapper mapper = new ObjectMapper();
-        mapper.registerModule(new JavaTimeModule());
-
         Account account = accountRepo.findById(id)
                 .orElseThrow(() -> new AppException(404, "No Customer found with ID " + id));
-
-        UtilFunctions.validatePeriodDetails
-                (account.getGender(), payload.getGenderSpecificDetails());
-
-        String GenderSpecificDetails = null;
-        if(account.getGender() == Gender.FEMALE) {
-
-            GenderSpecificDetails = mapper.writeValueAsString(
-                    payload.getGenderSpecificDetails());
-        }
 
         accountRepo.updateCustomerById(id, payload);
     }

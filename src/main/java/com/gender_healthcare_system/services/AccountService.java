@@ -64,16 +64,6 @@ public class AccountService implements IAccountService {
         account.setFullName(payload.getFullName());
         account.setGender(payload.getGender());
 
-        UtilFunctions.validatePeriodDetails
-                (payload.getGender(), payload.getGenderSpecificDetails());
-
-        String genderSpecificDetails = null;
-        if(payload.getGender() == Gender.FEMALE) {
-            genderSpecificDetails = mapper.writeValueAsString(
-                    payload.getGenderSpecificDetails());
-        }
-        account.setGenderSpecificDetails(genderSpecificDetails);
-
         account.setDateOfBirth(payload.getDateOfBirth());
         account.setPhone(payload.getPhone());
         account.setEmail(payload.getEmail());
@@ -176,20 +166,7 @@ public class AccountService implements IAccountService {
     //createManagerAccount by Admin
     @Transactional
     public void createManagerAccount(ManagerRegisterPayload payload) {
-        Account account = new Account();
-
-        account.setUsername(payload.getUsername());
-        account.setPassword(payload.getPassword());
-        account.setStatus(AccountStatus.ACTIVE);
-        Role role = roleRepo.findByRoleId(2); // MANAGER role
-        account.setRole(role);
-
-        account.setFullName(payload.getFullName());
-        account.setPhone(payload.getPhone());
-        account.setEmail(payload.getEmail());
-        account.setAddress(payload.getAddress());
-
-        accountRepo.saveAndFlush(account);
+        createStaffOrManagerAccount(payload, 2); // MANAGER role
     }
 
     @Transactional
@@ -206,20 +183,7 @@ public class AccountService implements IAccountService {
     //createStaffAccount by Manager
     @Transactional
     public void createStaffAccount(StaffRegisterPayload payload) {
-        Account account = new Account();
-
-        account.setUsername(payload.getUsername());
-        account.setPassword(payload.getPassword());
-        account.setStatus(AccountStatus.ACTIVE);
-        Role role = roleRepo.findByRoleId(3); // STAFF role
-        account.setRole(role);
-
-        account.setFullName(payload.getFullName());
-        account.setPhone(payload.getPhone());
-        account.setEmail(payload.getEmail());
-        account.setAddress(payload.getAddress());
-
-        accountRepo.saveAndFlush(account);
+        createStaffOrManagerAccount(payload, 3); // STAFF role
     }
 
     @Transactional
@@ -231,5 +195,77 @@ public class AccountService implements IAccountService {
         }
 
         accountRepo.deleteAccountById(staffId);
+    }
+
+    // Common method for creating Staff or Manager accounts
+    private void createStaffOrManagerAccount(Object payload, int roleId) {
+        Account account = new Account();
+        Role role = roleRepo.findByRoleId(roleId);
+        
+        account.setUsername(getUsernameFromPayload(payload));
+        account.setPassword(getPasswordFromPayload(payload));
+        account.setStatus(AccountStatus.ACTIVE);
+        account.setRole(role);
+        account.setFullName(getFullNameFromPayload(payload));
+        account.setPhone(getPhoneFromPayload(payload));
+        account.setEmail(getEmailFromPayload(payload));
+        account.setAddress(getAddressFromPayload(payload));
+
+        accountRepo.saveAndFlush(account);
+    }
+
+    // Helper methods to extract data from different payload types
+    private String getUsernameFromPayload(Object payload) {
+        if (payload instanceof ManagerRegisterPayload) {
+            return ((ManagerRegisterPayload) payload).getUsername();
+        } else if (payload instanceof StaffRegisterPayload) {
+            return ((StaffRegisterPayload) payload).getUsername();
+        }
+        throw new AppException(400, "Invalid payload type");
+    }
+
+    private String getPasswordFromPayload(Object payload) {
+        if (payload instanceof ManagerRegisterPayload) {
+            return ((ManagerRegisterPayload) payload).getPassword();
+        } else if (payload instanceof StaffRegisterPayload) {
+            return ((StaffRegisterPayload) payload).getPassword();
+        }
+        throw new AppException(400, "Invalid payload type");
+    }
+
+    private String getFullNameFromPayload(Object payload) {
+        if (payload instanceof ManagerRegisterPayload) {
+            return ((ManagerRegisterPayload) payload).getFullName();
+        } else if (payload instanceof StaffRegisterPayload) {
+            return ((StaffRegisterPayload) payload).getFullName();
+        }
+        throw new AppException(400, "Invalid payload type");
+    }
+
+    private String getPhoneFromPayload(Object payload) {
+        if (payload instanceof ManagerRegisterPayload) {
+            return ((ManagerRegisterPayload) payload).getPhone();
+        } else if (payload instanceof StaffRegisterPayload) {
+            return ((StaffRegisterPayload) payload).getPhone();
+        }
+        throw new AppException(400, "Invalid payload type");
+    }
+
+    private String getEmailFromPayload(Object payload) {
+        if (payload instanceof ManagerRegisterPayload) {
+            return ((ManagerRegisterPayload) payload).getEmail();
+        } else if (payload instanceof StaffRegisterPayload) {
+            return ((StaffRegisterPayload) payload).getEmail();
+        }
+        throw new AppException(400, "Invalid payload type");
+    }
+
+    private String getAddressFromPayload(Object payload) {
+        if (payload instanceof ManagerRegisterPayload) {
+            return ((ManagerRegisterPayload) payload).getAddress();
+        } else if (payload instanceof StaffRegisterPayload) {
+            return ((StaffRegisterPayload) payload).getAddress();
+        }
+        throw new AppException(400, "Invalid payload type");
     }
 }

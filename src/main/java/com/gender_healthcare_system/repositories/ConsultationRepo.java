@@ -56,7 +56,7 @@ public interface ConsultationRepo extends JpaRepository<Consultation, Integer> {
             "c.status, " +
             "new com.gender_healthcare_system.dtos.user.CustomerDTO" +
             "(cu.accountId, cu.fullName, cu.dateOfBirth, cu.gender, " +
-            "cu.genderSpecificDetails, cu.phone, cu.email, cu.address), " +
+            "cu.phone, cu.email, cu.address), " +
             "new com.gender_healthcare_system.dtos.todo.ConsultationPaymentDTO" +
             "(cp.consultationPaymentId, cp.amount, cp.method, cp.description," +
             " cp.createdAt, cp.status)) " +
