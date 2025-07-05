@@ -6,7 +6,9 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.gender_healthcare_system.entities.enu.AccountStatus;
 import com.gender_healthcare_system.entities.enu.Gender;
 import com.gender_healthcare_system.entities.todo.Certificate;
-import com.gender_healthcare_system.entities.user.*;
+import com.gender_healthcare_system.entities.user.Account;
+import com.gender_healthcare_system.entities.user.AccountInfoDetails;
+import com.gender_healthcare_system.entities.user.Role;
 import com.gender_healthcare_system.exceptions.AppException;
 import com.gender_healthcare_system.iservices.IAccountService;
 import com.gender_healthcare_system.payloads.todo.CertificateRegisterPayload;
@@ -14,7 +16,9 @@ import com.gender_healthcare_system.payloads.user.ConsultantRegisterPayload;
 import com.gender_healthcare_system.payloads.user.CustomerPayload;
 import com.gender_healthcare_system.payloads.user.ManagerRegisterPayload;
 import com.gender_healthcare_system.payloads.user.StaffRegisterPayload;
-import com.gender_healthcare_system.repositories.*;
+import com.gender_healthcare_system.repositories.AccountRepo;
+import com.gender_healthcare_system.repositories.CertificateRepo;
+import com.gender_healthcare_system.repositories.RoleRepo;
 import com.gender_healthcare_system.utils.UtilFunctions;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
@@ -30,17 +34,7 @@ import java.util.Optional;
 public class AccountService implements IAccountService {
 
     private final AccountRepo accountRepo;
-
-    private final CustomerRepo customerRepo;
-
     private final RoleRepo roleRepo;
-
-    private final StaffRepo staffRepo;
-
-    private final ManagerRepo managerRepo;
-
-    private final ConsultantRepo consultantRepo;
-
     private final CertificateRepo certificateRepo;
 
     @Override
@@ -59,47 +53,40 @@ public class AccountService implements IAccountService {
         mapper.registerModule(new JavaTimeModule());
 
         Account account = new Account();
-        Customer customer = new Customer();
 
         account.setUsername(payload.getUsername());
         account.setPassword(payload.getPassword());
         account.setStatus(AccountStatus.ACTIVE);
 
-        Role role = roleRepo.findByRoleId(5);
+        Role role = roleRepo.findByRoleId(5); // CUSTOMER role
         account.setRole(role);
 
-        accountRepo.saveAndFlush(account);
-
-        customer.setAccount(account);
-
-        customer.setFullName(payload.getFullName());
-        customer.setGender(payload.getGender());
+        account.setFullName(payload.getFullName());
+        account.setGender(payload.getGender());
 
         UtilFunctions.validatePeriodDetails
                 (payload.getGender(), payload.getGenderSpecificDetails());
 
-        String GenderSpecificDetails = null;
+        String genderSpecificDetails = null;
         if(payload.getGender() == Gender.FEMALE) {
-
-            GenderSpecificDetails = mapper.writeValueAsString(
+            genderSpecificDetails = mapper.writeValueAsString(
                     payload.getGenderSpecificDetails());
         }
-        customer.setGenderSpecificDetails(GenderSpecificDetails);
+        account.setGenderSpecificDetails(genderSpecificDetails);
 
-        customer.setDateOfBirth(payload.getDateOfBirth());
-        customer.setPhone(payload.getPhone());
-        customer.setEmail(payload.getEmail());
-        customer.setAddress(payload.getAddress());
+        account.setDateOfBirth(payload.getDateOfBirth());
+        account.setPhone(payload.getPhone());
+        account.setEmail(payload.getEmail());
+        account.setAddress(payload.getAddress());
         
-        customerRepo.saveAndFlush(customer);
+        accountRepo.saveAndFlush(account);
     }
 
     @Transactional
     public void updateCustomerStatus(int customerId, AccountStatus status){
-        boolean customerExist = customerRepo.existsById(customerId);
+        boolean customerExist = accountRepo.existsById(customerId);
 
         if(!customerExist) {
-
             throw new AppException(404, "Customer not found");
         }
 
@@ -107,56 +94,46 @@ public class AccountService implements IAccountService {
                 .existsAccountByAccountIdAndStatus(customerId, status);
 
         if(!accountStatusIdentical){
-
             accountRepo.updateAccountStatus(customerId, status);
         }
     }
 
     @Transactional
     public void deleteCustomerById(int customerId) {
-        boolean customerExist = customerRepo.existsById(customerId);
+        boolean customerExist = accountRepo.existsById(customerId);
 
         if(!customerExist) {
-
             throw new AppException(404, "Customer not found");
         }
 
-        customerRepo.deleteCustomerById(customerId);
         accountRepo.deleteAccountById(customerId);
     }
 
-
     public void createConsultantAccount(ConsultantRegisterPayload payload){
         Account account = new Account();
-        Consultant consultant = new Consultant();
         Certificate certificate;
 
         account.setUsername(payload.getUsername());
         account.setPassword(payload.getPassword());
         account.setStatus(AccountStatus.ACTIVE);
 
-        Role role = roleRepo.findByRoleId(4);
+        Role role = roleRepo.findByRoleId(4); // CONSULTANT role
         account.setRole(role);
+
+        account.setFullName(payload.getFullName());
+        account.setAvatarUrl(payload.getAvatarUrl());
+        account.setPhone(payload.getPhone());
+        account.setEmail(payload.getEmail());
+        account.setAddress(payload.getAddress());
 
         accountRepo.saveAndFlush(account);
 
-        consultant.setAccount(account);
-
-        consultant.setFullName(payload.getFullName());
-        consultant.setAvatarUrl(payload.getAvatarUrl());
-        consultant.setPhone(payload.getPhone());
-        consultant.setEmail(payload.getEmail());
-        consultant.setAddress(payload.getAddress());
-
-        consultantRepo.save(consultant);
-
         for(CertificateRegisterPayload item: payload.getCertificates()) {
-
             UtilFunctions.validateIssueDateAndExpiryDate
                     (item.getIssueDate(), item.getExpiryDate());
 
             certificate = new Certificate();
-            certificate.setConsultant(consultant);
+            certificate.setConsultant(account);
 
             certificate.setCertificateName(item.getCertificateName());
             certificate.setIssuedBy(item.getIssuedBy());
@@ -171,10 +148,9 @@ public class AccountService implements IAccountService {
 
     @Transactional
     public void updateConsultantStatus(int consultantId, AccountStatus status){
-        boolean consultantExist = consultantRepo.existsById(consultantId);
+        boolean consultantExist = accountRepo.existsById(consultantId);
 
         if(!consultantExist) {
-
             throw new AppException(404, "Consultant not found");
         }
 
@@ -182,21 +158,18 @@ public class AccountService implements IAccountService {
                 .existsAccountByAccountIdAndStatus(consultantId, status);
 
         if(!accountStatusIdentical){
-
             accountRepo.updateAccountStatus(consultantId, status);
         }
     }
 
     @Transactional
     public void deleteConsultantById(int consultantId) {
-        boolean consultantExist = consultantRepo.existsById(consultantId);
+        boolean consultantExist = accountRepo.existsById(consultantId);
 
         if(!consultantExist) {
-
             throw new AppException(404, "Consultant not found");
         }
 
-        consultantRepo.deleteConsultantById(consultantId);
         accountRepo.deleteAccountById(consultantId);
     }
 
@@ -204,36 +177,29 @@ public class AccountService implements IAccountService {
     @Transactional
     public void createManagerAccount(ManagerRegisterPayload payload) {
         Account account = new Account();
-        Manager manager = new Manager();
 
         account.setUsername(payload.getUsername());
         account.setPassword(payload.getPassword());
         account.setStatus(AccountStatus.ACTIVE);
-        Role role = roleRepo.findByRoleId(2); // Assuming 2 is the role ID for manager
+        Role role = roleRepo.findByRoleId(2); // MANAGER role
         account.setRole(role);
 
+        account.setFullName(payload.getFullName());
+        account.setPhone(payload.getPhone());
+        account.setEmail(payload.getEmail());
+        account.setAddress(payload.getAddress());
+
         accountRepo.saveAndFlush(account);
-
-        manager.setAccount(account);
-        manager.setFullName(payload.getFullName());
-        manager.setPhone(payload.getPhone());
-        manager.setEmail(payload.getEmail());
-        manager.setAddress(payload.getAddress());
-
-        // Save the manager entity
-        managerRepo.saveAndFlush(manager);
     }
 
     @Transactional
     public void deleteManagerById(int managerId) {
-        boolean managerExist = managerRepo.existsById(managerId);
+        boolean managerExist = accountRepo.existsById(managerId);
 
         if(!managerExist) {
-
             throw new AppException(404, "Manager not found");
         }
 
-        managerRepo.deleteManagerById(managerId);
         accountRepo.deleteAccountById(managerId);
     }
 
@@ -241,43 +207,29 @@ public class AccountService implements IAccountService {
     @Transactional
     public void createStaffAccount(StaffRegisterPayload payload) {
         Account account = new Account();
-        Staff staff = new Staff();
 
         account.setUsername(payload.getUsername());
         account.setPassword(payload.getPassword());
         account.setStatus(AccountStatus.ACTIVE);
-        Role role = roleRepo.findByRoleId(3); // Assuming 3 is the role ID for staff
+        Role role = roleRepo.findByRoleId(3); // STAFF role
         account.setRole(role);
 
+        account.setFullName(payload.getFullName());
+        account.setPhone(payload.getPhone());
+        account.setEmail(payload.getEmail());
+        account.setAddress(payload.getAddress());
+
         accountRepo.saveAndFlush(account);
-
-        staff.setAccount(account);
-        staff.setFullName(payload.getFullName());
-        staff.setPhone(payload.getPhone());
-        staff.setEmail(payload.getEmail());
-        staff.setAddress(payload.getAddress());
-
-        staffRepo.saveAndFlush(staff);
     }
 
     @Transactional
     public void deleteStaffById(int staffId) {
-        boolean staffExist = staffRepo.existsById(staffId);
+        boolean staffExist = accountRepo.existsById(staffId);
 
         if(!staffExist) {
-
             throw new AppException(404, "Staff not found");
         }
 
-        staffRepo.deleteStaffById(staffId);
         accountRepo.deleteAccountById(staffId);
     }
-
-
-
-
-
-
-
-
 }

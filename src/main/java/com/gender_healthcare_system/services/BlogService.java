@@ -3,12 +3,12 @@ package com.gender_healthcare_system.services;
 import com.gender_healthcare_system.dtos.todo.BlogDTO;
 import com.gender_healthcare_system.entities.enu.BlogStatus;
 import com.gender_healthcare_system.entities.todo.Blog;
-import com.gender_healthcare_system.entities.user.Manager;
+import com.gender_healthcare_system.entities.user.Account;
 import com.gender_healthcare_system.exceptions.AppException;
 import com.gender_healthcare_system.payloads.todo.BlogRegisterPayload;
 import com.gender_healthcare_system.payloads.todo.BlogUpdatePayload;
+import com.gender_healthcare_system.repositories.AccountRepo;
 import com.gender_healthcare_system.repositories.BlogRepo;
-import com.gender_healthcare_system.repositories.ManagerRepo;
 import com.gender_healthcare_system.utils.UtilFunctions;
 import lombok.AllArgsConstructor;
 
@@ -28,8 +28,7 @@ import java.util.Map;
 public class BlogService {
 
     private final BlogRepo blogRepo;
-
-    private final ManagerRepo managerRepo;
+    private final AccountRepo accountRepo;
 
     ////////////////////////////// Get all blogs //////////////////////////////
     public Map<String, Object> getAllBlogs(int page, String sortField, String sortOrder) {
@@ -110,7 +109,7 @@ public class BlogService {
 
     ////////////////////////////// Create blog //////////////////////////////
     public void createBlog(BlogRegisterPayload payload) {
-        Manager manager = managerRepo.getManagerById(payload.getManagerId())
+        Account manager = accountRepo.findById(payload.getManagerId())
                 .orElseThrow(() -> new AppException(404, "Manager not found with ID " + payload.getManagerId()));
 
         Blog blog = new Blog();

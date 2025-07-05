@@ -17,7 +17,7 @@ public interface CertificateRepo extends JpaRepository<Certificate, Integer> {
             "c.expiryDate, c.description, c.imageUrl)" +
             "FROM Certificate c " +
             "JOIN c.consultant " +
-            "WHERE c.consultant.consultantId = :id")
+            "WHERE c.consultant.accountId = :id")
     List<CertificateDTO> getCertificatesByConsultantId(int id);
 
     @Modifying

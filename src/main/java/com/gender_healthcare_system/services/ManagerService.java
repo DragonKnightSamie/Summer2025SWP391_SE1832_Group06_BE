@@ -5,7 +5,7 @@ import com.gender_healthcare_system.dtos.user.ManagerDTO;
 import com.gender_healthcare_system.exceptions.AppException;
 import com.gender_healthcare_system.payloads.user.ManagerUpdatePayload;
 import com.gender_healthcare_system.repositories.AccountRepo;
-import com.gender_healthcare_system.repositories.ManagerRepo;
+
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -22,16 +22,14 @@ import java.util.Map;
 @AllArgsConstructor
 public class ManagerService {
 
-    private final ManagerRepo managerRepo;
-
     private final AccountRepo accountRepo;
 
     public LoginResponse getManagerLoginDetails(int id){
-        return managerRepo.getManagerLoginDetails(id);
+        return accountRepo.getManagerLoginDetails(id);
     }
 
     public ManagerDTO getManagerDetails(int id){
-        return managerRepo.getManagerDetailsById(id)
+        return accountRepo.getManagerDetailsById(id)
                 .orElseThrow(() -> new AppException
                         (404, "Manager not found with ID "+ id));
     }
@@ -50,7 +48,7 @@ public class ManagerService {
                 .of(page, itemSize, sort);
 
 
-        Page<ManagerDTO> pageResult = managerRepo.getAllManagers(pageRequest);
+        Page<ManagerDTO> pageResult = accountRepo.getAllManagers(pageRequest);
 
         if(!pageResult.hasContent()){
 
@@ -71,7 +69,7 @@ public class ManagerService {
 
     @Transactional
     public void updateManagerDetails(int id, ManagerUpdatePayload payload){
-        boolean managerExist = managerRepo.existsById(id);
+        boolean managerExist = accountRepo.existsById(id);
 
         if(!managerExist){
 
@@ -86,6 +84,6 @@ public class ManagerService {
             accountRepo.updateAccountStatus(id, payload.getStatus());
         }
 
-        managerRepo.updateManagerById(id, payload);
+        accountRepo.updateManagerById(id, payload);
     }
 }

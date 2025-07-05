@@ -1,6 +1,6 @@
 package com.gender_healthcare_system.services;
 
-import com.gender_healthcare_system.repositories.ManagerRepo;
+import com.gender_healthcare_system.repositories.AccountRepo;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -8,6 +8,6 @@ import org.springframework.stereotype.Service;
 @AllArgsConstructor
 public class AdminService {
 
-    private final ManagerRepo managerRepo;
+    private final AccountRepo accountRepo;
 
 }

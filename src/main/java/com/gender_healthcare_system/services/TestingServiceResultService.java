@@ -4,7 +4,7 @@ import com.gender_healthcare_system.dtos.todo.TestingServiceResultDTO;
 import com.gender_healthcare_system.entities.enu.Gender;
 import com.gender_healthcare_system.entities.enu.GenderType;
 import com.gender_healthcare_system.exceptions.AppException;
-import com.gender_healthcare_system.repositories.CustomerRepo;
+import com.gender_healthcare_system.repositories.AccountRepo;
 import com.gender_healthcare_system.repositories.TestingServiceBookingRepo;
 import com.gender_healthcare_system.repositories.TestingServiceRepo;
 import com.gender_healthcare_system.repositories.TestingServiceResultRepo;
@@ -24,7 +24,7 @@ public class TestingServiceResultService {
 
     private final TestingServiceRepo testingServiceRepo;
 
-    private final CustomerRepo customerRepo;
+    private final AccountRepo accountRepo;
 
     public List<TestingServiceResultDTO>
             getAllServiceResultsByBookingId(int testingBookingId){
@@ -37,7 +37,7 @@ public class TestingServiceResultService {
         }
 
         Gender customerGender =
-                customerRepo.getCustomerGenderByBookingId(testingBookingId);
+                accountRepo.getCustomerGenderByBookingId(testingBookingId);
 
         GenderType genderType = GenderType.MALE;
 

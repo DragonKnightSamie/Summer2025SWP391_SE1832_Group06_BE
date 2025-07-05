@@ -4,7 +4,6 @@ import com.gender_healthcare_system.dtos.report.StatisticResponseDTO;
 import com.gender_healthcare_system.dtos.todo.TestingServiceBookingDTO;
 import com.gender_healthcare_system.entities.enu.TestingServiceBookingStatus;
 import com.gender_healthcare_system.entities.todo.TestingServiceBooking;
-import com.gender_healthcare_system.entities.user.Staff;
 import com.gender_healthcare_system.payloads.todo.EvaluatePayload;
 import com.gender_healthcare_system.payloads.todo.TestingServiceBookingCompletePayload;
 
@@ -48,7 +47,6 @@ public interface TestingServiceBookingRepo extends JpaRepository<TestingServiceB
             "WHERE tsb.serviceBookingId = :id")
     Optional<TestingServiceBooking> getTestingServiceBookingStatusById(@Param("id") int id);
 
-
     //get all TestingServiceBooking (only entity)
     @Query("SELECT new com.gender_healthcare_system.dtos.todo.TestingServiceBookingDTO" +
             "(tsb.serviceBookingId, ts.serviceName, s.fullName, tsb.createdAt, tsb.status) " +
@@ -56,7 +54,7 @@ public interface TestingServiceBookingRepo extends JpaRepository<TestingServiceB
             "JOIN tsb.testingService ts " +
             "LEFT JOIN tsb.staff s " +
             "JOIN tsb.customer c " +
-            "WHERE c.customerId = :id")
+            "WHERE c.accountId = :id")
     Page<TestingServiceBookingDTO> getAllTestingServiceBookingsByCustomerId
     (int id, Pageable pageable);
 
@@ -67,18 +65,9 @@ public interface TestingServiceBookingRepo extends JpaRepository<TestingServiceB
             "JOIN tsb.testingService ts " +
             "LEFT JOIN tsb.staff s " +
             "JOIN tsb.customer c " +
-            "WHERE s.staffId = :id")
+            "WHERE s.accountId = :id")
     Page<TestingServiceBookingDTO> getAllTestingServiceBookingsByStaffId
     (int id, Pageable pageable);
-
-   /* @Query("SELECT new com.gender_healthcare_system.dtos.todo.TestingServiceBookingDTO" +
-            "(tsb.serviceBookingId, ts.serviceName, c.fullName, tsb.createdAt, tsb.status) " +
-            "FROM TestingServiceBooking tsb " +
-            "JOIN tsb.testingService ts " +
-            "JOIN tsb.customer c " +
-            "WHERE tsb.status = :status")
-    Page<TestingServiceBookingDTO> getAllPendingTestingServiceBookings
-            (Pageable pageable, TestingServiceBookingStatus status);*/
 
     @Query("SELECT tsb.expectedStartTime " +
             "FROM TestingServiceBooking tsb " +
@@ -92,7 +81,7 @@ public interface TestingServiceBookingRepo extends JpaRepository<TestingServiceB
 
     @Query("SELECT tsb.expectedStartTime " +
             "FROM TestingServiceBooking tsb " +
-            "WHERE tsb.customer.customerId = :customerId " +
+            "WHERE tsb.customer.accountId = :customerId " +
             "AND tsb.testingService.serviceId = :serviceId " +
             "AND CAST(tsb.expectedStartTime AS DATE) = :date " +
             "AND NOT tsb.status = :status " +
@@ -110,27 +99,24 @@ public interface TestingServiceBookingRepo extends JpaRepository<TestingServiceB
             (LocalDateTime startTime,
              TestingServiceBookingStatus status);
 
-    /*@Modifying
-    @Query("UPDATE TestingServiceBooking tsb SET " +
-            "tsb.staff = :staff, " +
-            "tsb.expectedStartTime = :startTime, " +
-            "tsb.expectedEndTime = :endTime, " +
-            "tsb.status = :status " +
-            "WHERE tsb.serviceBookingId = :id")
-    void confirmTestingServiceBooking(int id, Staff staff,
-                                      LocalDateTime startTime, LocalDateTime endTime,
-                                      TestingServiceBookingStatus status);*/
-
     @Modifying
     @Query("UPDATE TestingServiceBooking tsb SET " +
             "tsb.result = :result, " +
-            "tsb.realStartTime = :#{#payload.realStartTime}, " +
-            "tsb.realEndTime = :#{#payload.realEndTime}, " +
+            "tsb.realStartTime = :realStartTime, " +
+            "tsb.realEndTime = :realEndTime, " +
             "tsb.status = :status " +
             "WHERE tsb.serviceBookingId = :id")
-    void completeTestingServiceBooking(@Param("id") int id, @Param("payload")
-                        TestingServiceBookingCompletePayload payload, String result,
-                        TestingServiceBookingStatus status);
+    void completeTestingServiceBooking(@Param("id") int id, 
+                                      @Param("realStartTime") LocalDateTime realStartTime,
+                                      @Param("realEndTime") LocalDateTime realEndTime,
+                                      String result,
+                                      TestingServiceBookingStatus status);
+
+    @Modifying
+    @Query("UPDATE TestingServiceBooking tsb SET " +
+            "tsb.realStartTime = :realStartTime " +
+            "WHERE tsb.serviceBookingId = :id")
+    void startTestingServiceBooking(@Param("id") int id, @Param("realStartTime") LocalDateTime realStartTime);
 
     @Modifying
     @Query("UPDATE TestingServiceBooking tsb SET " +
@@ -163,5 +149,5 @@ public interface TestingServiceBookingRepo extends JpaRepository<TestingServiceB
     List<StatisticResponseDTO> getTestingBookingsStatistics
     (@Param("status") TestingServiceBookingStatus status, @Param("from") LocalDate from);
 
-    boolean existsByTestingService_ServiceIdAndCustomer_CustomerIdAndExpectedStartTime(int testingServiceServiceId, int customerCustomerId, LocalDateTime expectedStartTime);
+    boolean existsByTestingService_ServiceIdAndCustomer_AccountIdAndExpectedStartTime(int testingServiceServiceId, int customerAccountId, LocalDateTime expectedStartTime);
 }

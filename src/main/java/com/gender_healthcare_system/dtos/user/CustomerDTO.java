@@ -18,7 +18,7 @@ import java.time.LocalDate;
 @NoArgsConstructor
 public class CustomerDTO implements Serializable {
 
-    private Integer customerId;
+    private Integer accountId;
 
     private String userName;
 
@@ -44,11 +44,11 @@ public class CustomerDTO implements Serializable {
 
     private AccountStatus status;
 
-    public CustomerDTO(Integer customerId, String userName, String password,
+    public CustomerDTO(Integer accountId, String userName, String password,
                        String fullName, LocalDate dateOfBirth, Gender gender,
                        String genderSpecificDetails, String phone, String email,
                        String address, AccountStatus status) {
-        this.customerId = customerId;
+        this.accountId = accountId;
         this.userName = userName;
         this.password = password;
         this.fullName = fullName;
@@ -61,10 +61,10 @@ public class CustomerDTO implements Serializable {
         this.status = status;
     }
 
-    public CustomerDTO(Integer customerId, String fullName, LocalDate dateOfBirth,
+    public CustomerDTO(Integer accountId, String fullName, LocalDate dateOfBirth,
                        Gender gender, String genderSpecificDetails, String phone,
                        String email, String address) {
-        this.customerId = customerId;
+        this.accountId = accountId;
         this.fullName = fullName;
         this.dateOfBirth = dateOfBirth;
         this.gender = gender;
@@ -74,9 +74,9 @@ public class CustomerDTO implements Serializable {
         this.address = address;
     }
 
-    public CustomerDTO(Integer customerId, String userName, String fullName,
+    public CustomerDTO(Integer accountId, String userName, String fullName,
                        Gender gender, AccountStatus status) {
-        this.customerId = customerId;
+        this.accountId = accountId;
         this.userName = userName;
         this.fullName = fullName;
         this.gender = gender;

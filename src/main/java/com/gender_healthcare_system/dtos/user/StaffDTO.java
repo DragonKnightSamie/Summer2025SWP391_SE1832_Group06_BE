@@ -12,7 +12,7 @@ import java.io.Serializable;
 @NoArgsConstructor
 public class StaffDTO implements Serializable {
 
-    private Integer staffId;
+    private Integer accountId;
     private String userName;
     private String password;
     private String fullName;
@@ -21,8 +21,8 @@ public class StaffDTO implements Serializable {
     private String address;
     private AccountStatus status;
 
-    public StaffDTO(Integer staffId, String fullName, String phone, String email, String address) {
-        this.staffId = staffId;
+    public StaffDTO(Integer accountId, String fullName, String phone, String email, String address) {
+        this.accountId = accountId;
         this.fullName = fullName;
         this.phone = phone;
         this.email = email;

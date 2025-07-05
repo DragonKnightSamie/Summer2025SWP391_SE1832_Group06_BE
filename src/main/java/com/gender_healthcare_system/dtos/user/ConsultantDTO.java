@@ -16,7 +16,7 @@ import java.util.List;
 @NoArgsConstructor
 public class ConsultantDTO implements Serializable {
 
-    private Integer consultantId;
+    private Integer accountId;
     private String userName;
     private String password;
     private String fullName;
@@ -27,10 +27,10 @@ public class ConsultantDTO implements Serializable {
     private AccountStatus status;
     private List<CertificateDTO> certificateList;
 
-    public ConsultantDTO(Integer consultantId, String userName, String password,
+    public ConsultantDTO(Integer accountId, String userName, String password,
                          String fullName, String avatarUrl, String phone,
                          String email, String address, AccountStatus status) {
-        this.consultantId = consultantId;
+        this.accountId = accountId;
         this.userName = userName;
         this.password = password;
         this.fullName = fullName;
@@ -41,18 +41,18 @@ public class ConsultantDTO implements Serializable {
         this.status = status;
     }
 
-    public ConsultantDTO(Integer consultantId, String userName,
+    public ConsultantDTO(Integer accountId, String userName,
                          String fullName, String avatarUrl, AccountStatus status) {
-        this.consultantId = consultantId;
+        this.accountId = accountId;
         this.userName = userName;
         this.fullName = fullName;
         this.avatarUrl = avatarUrl;
         this.status = status;
     }
 
-    public ConsultantDTO(Integer consultantId, String fullName, String avatarUrl,
+    public ConsultantDTO(Integer accountId, String fullName, String avatarUrl,
                          String phone, String email) {
-        this.consultantId = consultantId;
+        this.accountId = accountId;
         this.fullName = fullName;
         this.avatarUrl = avatarUrl;
         this.phone = phone;

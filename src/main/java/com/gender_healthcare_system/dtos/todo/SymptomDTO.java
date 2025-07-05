@@ -1,6 +1,6 @@
 package com.gender_healthcare_system.dtos.todo;
 
-import com.gender_healthcare_system.entities.user.Customer;
+import com.gender_healthcare_system.entities.user.Account;
 import lombok.*;
 
 import java.time.LocalDateTime;
@@ -13,5 +13,5 @@ public class SymptomDTO {
     private String name;
     private String description;
     private LocalDateTime recordedAt;
-    private Customer customer;
+    private Account customer;
 }

@@ -2,11 +2,11 @@ package com.gender_healthcare_system.services;
 
 import com.gender_healthcare_system.dtos.todo.MenstrualCycleDTO;
 import com.gender_healthcare_system.entities.todo.MenstrualCycle;
-import com.gender_healthcare_system.entities.user.Customer;
+import com.gender_healthcare_system.entities.user.Account;
 import com.gender_healthcare_system.exceptions.AppException;
 import com.gender_healthcare_system.payloads.todo.MenstrualCreatePayload;
 import com.gender_healthcare_system.payloads.todo.MenstrualCycleUpdatePayload;
-import com.gender_healthcare_system.repositories.CustomerRepo;
+import com.gender_healthcare_system.repositories.AccountRepo;
 import com.gender_healthcare_system.repositories.MenstrualCycleRepo;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -20,10 +20,10 @@ import java.util.List;
 public class MenstrualCycleService {
 
     private final MenstrualCycleRepo menstrualCycleRepo;
-    private final CustomerRepo customerRepo;
+    private final AccountRepo accountRepo;
 
     public MenstrualCycleDTO createCycle(MenstrualCreatePayload payload) {
-        Customer customer = customerRepo.findById(payload.getCustomer().getCustomerId())
+        Account customer = accountRepo.findById(payload.getCustomer().getAccountId())
                 .orElseThrow(() -> new AppException(404, "Customer not found"));
 
         MenstrualCycle cycle = new MenstrualCycle();
@@ -54,7 +54,6 @@ public class MenstrualCycleService {
         }
         return cycles;
     }
-
 
     @Transactional
     public void updateCycleById(Long cycleId, MenstrualCycleUpdatePayload payload) {

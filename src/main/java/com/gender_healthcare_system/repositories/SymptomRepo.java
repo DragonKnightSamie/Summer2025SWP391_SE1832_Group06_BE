@@ -13,6 +13,6 @@ public interface SymptomRepo extends JpaRepository<Symptom, Long> {
 
     @Query("SELECT new com.gender_healthcare_system.dtos.todo.SymptomDTO(" +
             "s.symptomId, s.name, s.description, s.recordedAt, s.customer) " +
-            "FROM Symptom s WHERE s.customer.customerId = :customerId")
+            "FROM Symptom s WHERE s.customer.accountId = :customerId")
     List<SymptomDTO> getSymptomsByCustomerId(@Param("customerId") int customerId);
 }

@@ -6,12 +6,12 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.gender_healthcare_system.dtos.todo.TestingServiceBookingDTO;
 import com.gender_healthcare_system.dtos.todo.TestingServiceResultDTO;
 import com.gender_healthcare_system.entities.enu.PaymentStatus;
+import com.gender_healthcare_system.entities.enu.Rating;
 import com.gender_healthcare_system.entities.enu.TestingServiceBookingStatus;
 import com.gender_healthcare_system.entities.todo.TestingService;
 import com.gender_healthcare_system.entities.todo.TestingServiceBooking;
 import com.gender_healthcare_system.entities.todo.TestingServicePayment;
-import com.gender_healthcare_system.entities.user.Customer;
-import com.gender_healthcare_system.entities.user.Staff;
+import com.gender_healthcare_system.entities.user.Account;
 import com.gender_healthcare_system.exceptions.AppException;
 import com.gender_healthcare_system.payloads.todo.*;
 import com.gender_healthcare_system.repositories.*;
@@ -36,14 +36,9 @@ import java.util.stream.Stream;
 @AllArgsConstructor
 public class TestingServiceBookingService {
 
-    private final CustomerRepo customerRepo;
-
-    private final StaffRepo staffRepo;
-
+    private final AccountRepo accountRepo;
     private final TestingServiceRepo testingServiceRepo;
-
     private final TestingServiceBookingRepo testingServiceBookingRepo;
-
     private final TestingServicePaymentRepo testingServicePaymentRepo;
 
     // Get TestingServiceBooking entity by id
@@ -72,7 +67,7 @@ public class TestingServiceBookingService {
     public Map<String, Object> getAllTestingServiceBookingsByCustomerId
     (int customerId, int page, String sortField, String sortOrder) {
 
-        boolean customerExist = customerRepo.existsById(customerId);
+        boolean customerExist = accountRepo.existsById(customerId);
         if (!customerExist) {
             throw new AppException(404, "Customer not found with ID: " + customerId);
         }
@@ -109,7 +104,7 @@ public class TestingServiceBookingService {
     public Map<String, Object> getAllTestingServiceBookingsByStaffId
             (int staffId, int page, String sortField, String sortOrder) {
 
-        boolean staffExist = staffRepo.existsById(staffId);
+        boolean staffExist = accountRepo.existsById(staffId);
         if (!staffExist) {
             throw new AppException(404, "Staff not found with ID: " + staffId);
         }
@@ -143,50 +138,8 @@ public class TestingServiceBookingService {
         return response;
     }
 
-    // Get all TestingServiceBookings by Staff ID with pagination
-    /*public Map<String, Object> getAllPendingTestingServiceBookings
-    (int page, String sortField, String sortOrder) {
-
-        final int itemSize = 10;
-
-        Sort sort = Sort.by(Sort.Direction.ASC, sortField);
-        if (sortOrder.equalsIgnoreCase("desc")) {
-            sort = Sort.by(Sort.Direction.DESC, sortField);
-        }
-
-        Pageable pageable = PageRequest.of(page, itemSize, sort);
-
-        Page<TestingServiceBookingDTO> pageResult =
-                testingServiceBookingRepo
-                        .getAllPendingTestingServiceBookings
-                                (pageable, TestingServiceBookingStatus.PENDING);
-
-        if (!pageResult.hasContent()) {
-            throw new AppException(404, "No Pending Testing Service Bookings found");
-        }
-
-        List<TestingServiceBookingDTO> pendingBookingList = pageResult.getContent();
-        pendingBookingList.forEach(x -> x.setStaffName(null));
-
-        Map<String, Object> response = new HashMap<>();
-        response.put("totalItems", pageResult.getTotalElements());
-        response.put("pendingServiceBookings", pendingBookingList);
-        response.put("totalPages", pageResult.getTotalPages());
-        response.put("currentPage", pageResult.getNumber());
-
-        return response;
-    }*/
-
     public List<LocalDateTime> getBookingScheduleForADay
             (TestingServiceBookingSchedulePayload payload){
-
-        /*boolean staffExist = staffRepo
-                .existsById(staffId);
-
-        if(!staffExist){
-            throw new AppException(400,
-                    "No Staff found with ID " + staffId);
-        }*/
 
         List<LocalDateTime> bookingSchedule =
                 testingServiceBookingRepo.getBookingScheduleInADate
@@ -199,225 +152,131 @@ public class TestingServiceBookingService {
                                         payload.getCheckDate(),
                                         TestingServiceBookingStatus.CANCELLED);
 
-        List<LocalDateTime> combinedSchedule = Stream.concat
-                (bookingSchedule.stream(), customerBookedSchedule.stream())
-                .distinct().sorted().toList();
-
-        if (combinedSchedule.isEmpty() ) {
-            throw new AppException(404, "No Booking Schedule found with provided Date ");
-        }
-
-        return combinedSchedule;
+        return Stream.concat(bookingSchedule.stream(), customerBookedSchedule.stream())
+                .distinct()
+                .sorted()
+                .toList();
     }
 
-
+    // Create new TestingServiceBooking with payment
+    @Transactional
     public void createTestingServiceBooking
             (TestingServiceBookingRegisterPayload payload) {
 
-        boolean alreadyBooked = testingServiceBookingRepo
-                .existsByTestingService_ServiceIdAndCustomer_CustomerIdAndExpectedStartTime
-                        (payload.getServiceId(), payload.getCustomerId(),
-                                payload.getExpectedStartTime());
+        boolean bookingExist = testingServiceBookingRepo
+                .existsByTestingService_ServiceIdAndCustomer_AccountIdAndExpectedStartTime
+                        (payload.getServiceId(), payload.getCustomerId(), payload.getExpectedStartTime());
 
-        if(alreadyBooked){
-
-            throw new AppException(400, "Customer with ID " + payload.getCustomerId()
-                    + " has already booked this testing service with provided start time");
+        if (bookingExist) {
+            throw new AppException(409, "Testing Service has already been booked");
         }
 
-        int numberOfBookingsInATime =
-                testingServiceBookingRepo.getNumberOfBookingsInATime
-                        (payload.getExpectedStartTime(),
-                                TestingServiceBookingStatus.CANCELLED);
-
-        if(numberOfBookingsInATime == 5) {
-
-            throw new AppException(400,
-                    "A Service Booking with provided expected Start time " +
-                            " has been fully booked");
-        }
-
-        TestingService testingService = testingServiceRepo
-                .getTestingService(payload.getServiceId())
-                .orElseThrow(() -> new AppException(400,
-                        "Testing Service not found with ID " + payload.getServiceId()));
-
-        Customer customer = customerRepo
-                .getCustomerById(payload.getCustomerId())
-                .orElseThrow(() -> new AppException(400,
+        Account customer = accountRepo.findById(payload.getCustomerId())
+                .orElseThrow(() -> new AppException(404,
                         "Customer not found with ID " + payload.getCustomerId()));
 
+        TestingService testingService = testingServiceRepo.findById(payload.getServiceId())
+                .orElseThrow(() -> new AppException(404,
+                        "Testing Service not found with ID " + payload.getServiceId()));
+
+        // Auto-assign staff based on availability
         LocalDate dateExtraction = payload.getExpectedStartTime().toLocalDate();
-
-        List<Object[]> staffList = staffRepo.findStaffOrderedByLeastTests
-                        (dateExtraction);
-
+        List<Object[]> staffList = accountRepo.findStaffOrderedByLeastTests(dateExtraction);
+        
         if(staffList.isEmpty()) {
-
-                throw new AppException(500,
-                    "No Staff found to assign Test to, please try again later");
+            throw new AppException(500, "No Staff found to assign Test to, please try again later");
         }
 
         Object[] firstStaff = staffList.getFirst();
-
-        Staff staff = staffRepo.getStaffDumpById((Integer) firstStaff[1])
+        Account staff = accountRepo.findById((Integer) firstStaff[1])
                 .orElseThrow(() -> new AppException(500, "Error when trying to get Staff info"));
 
-        TestingServiceBooking serviceBooking = new TestingServiceBooking();
+        TestingServiceBooking testingServiceBooking = new TestingServiceBooking();
 
-        serviceBooking.setTestingService(testingService);
-        serviceBooking.setCustomer(customer);
-        serviceBooking.setStaff(staff);
-        serviceBooking.setCreatedAt(UtilFunctions.getCurrentDateTimeWithTimeZone());
-        serviceBooking.setExpectedStartTime(payload.getExpectedStartTime());
-
+        testingServiceBooking.setCreatedAt(UtilFunctions.getCurrentDateTimeWithTimeZone());
+        testingServiceBooking.setExpectedStartTime(payload.getExpectedStartTime());
         LocalDateTime expectedEndTime = payload.getExpectedStartTime().plusHours(1);
-        serviceBooking.setExpectedEndTime(expectedEndTime);
+        testingServiceBooking.setExpectedEndTime(expectedEndTime);
+        testingServiceBooking.setStatus(TestingServiceBookingStatus.CONFIRMED);
+        testingServiceBooking.setRating(Rating.AVERAGE);
+        testingServiceBooking.setCustomer(customer);
+        testingServiceBooking.setStaff(staff);
+        testingServiceBooking.setTestingService(testingService);
 
-        serviceBooking.setStatus(TestingServiceBookingStatus.CONFIRMED);
+        testingServiceBookingRepo.saveAndFlush(testingServiceBooking);
 
-        testingServiceBookingRepo.saveAndFlush(serviceBooking);
+        TestingServicePayment testingServicePayment = new TestingServicePayment();
 
-        TestingServicePayment servicePayment = new TestingServicePayment();
+        testingServicePayment.setTestingServiceBooking(testingServiceBooking);
+        testingServicePayment.setTransactionId(payload.getPayment().getTransactionId());
+        testingServicePayment.setAmount(payload.getPayment().getAmount());
+        testingServicePayment.setMethod(payload.getPayment().getMethod());
+        testingServicePayment.setCreatedAt(UtilFunctions.getCurrentDateTimeWithTimeZone());
+        testingServicePayment.setDescription(payload.getPayment().getDescription());
+        testingServicePayment.setStatus(PaymentStatus.PAID);
 
-        servicePayment.setTestingServiceBooking(serviceBooking);
-        servicePayment.setTransactionId(payload.getPayment().getTransactionId());
-        servicePayment.setAmount(payload.getPayment().getAmount());
-        servicePayment.setMethod(payload.getPayment().getMethod());
-        servicePayment.setCreatedAt(UtilFunctions.getCurrentDateTimeWithTimeZone());
-        servicePayment.setDescription(payload.getPayment().getDescription());
-        servicePayment.setStatus(PaymentStatus.PAID);
-
-        testingServicePaymentRepo.saveAndFlush(servicePayment);
+        testingServicePaymentRepo.saveAndFlush(testingServicePayment);
     }
 
-    /*@Transactional
-    public void confirmTestingServiceBooking
-            (int id, TestingServiceBookingConfirmPayload payload) {
-
-        boolean serviceBookingExist = testingServiceBookingRepo.existsById(id);
-
-        if(!serviceBookingExist) {
-
-            throw new AppException(400,
-                    "Testing Service not found with ID " + id);
-        }
-
-        Staff staff = staffRepo.getStaffDumpById(payload.getStaffId())
-                .orElseThrow(() -> new AppException(404,
-                        "No Staff found with ID "+ payload.getStaffId()));
-
-        LocalDateTime endTime = payload.getExpectedStartTime().plusHours(1);
-
-        *//*testingServiceBookingRepo.confirmTestingServiceBooking
-                (id, staff, payload.getExpectedStartTime(), endTime,
-                        TestingServiceBookingStatus.CONFIRMED);*//*
-    }*/
-
-    // Update
     @Transactional
     public void completeTestingServiceBooking
     (int id, TestingServiceBookingCompletePayload payload) throws JsonProcessingException {
+        boolean bookingExist = testingServiceBookingRepo.existsById(id);
 
-        TestingServiceBooking serviceBooking =
-                testingServiceBookingRepo.getTestingServiceBookingStatusById(id)
-                        .orElseThrow(() ->new AppException(404,
-                                "Testing Service Booking not found with ID: " + id));
-
-        TestingServiceBookingStatus bookingStatus = serviceBooking.getStatus();
-
-        if(bookingStatus == TestingServiceBookingStatus.CANCELLED
-                || bookingStatus == TestingServiceBookingStatus.COMPLETED ){
-
-            throw new AppException(400, "Cannot complete an already cancelled or " +
-                    "completed Service Booking");
+        if (!bookingExist) {
+            throw new AppException(404, "Testing Service Booking not found");
         }
-
-        /*if(bookingStatus == TestingServiceBookingStatus.CONFIRMED){
-
-            throw new AppException(400, "Cannot complete a Service Booking " +
-                    "that has not started yet");
-        }*/
-
-        UtilFunctions.validateRealStartAndEndTime
-                (serviceBooking.getExpectedStartTime(), serviceBooking.getExpectedEndTime(),
-                        payload.getRealStartTime(), payload.getRealEndTime());
-
-        UtilFunctions.validateRealTestResult(payload.getResultList());
 
         ObjectMapper mapper = new ObjectMapper();
         String result = mapper.writeValueAsString(payload.getResultList());
 
         testingServiceBookingRepo.completeTestingServiceBooking
-                (id, payload, result , TestingServiceBookingStatus.COMPLETED);
+                (id, payload.getRealStartTime(), payload.getRealEndTime(), result,
+                        TestingServiceBookingStatus.COMPLETED);
     }
 
-    //chuyen trang thai tu CONFIRMED sang IN PROGRESS
     @Transactional
     public void startTestingServiceBooking(int id, LocalDateTime realStartTime) {
-        TestingServiceBooking booking = testingServiceBookingRepo
-                .getTestingServiceBookingStatusById(id)
-                .orElseThrow(() -> new AppException(404, "Booking not found with ID: " + id));
+        boolean bookingExist = testingServiceBookingRepo.existsById(id);
 
-        if (booking.getStatus() != TestingServiceBookingStatus.CONFIRMED) {
-            throw new AppException(400, "Only bookings with status CONFIRMED can be started");
+        if (!bookingExist) {
+            throw new AppException(404, "Testing Service Booking not found");
         }
 
-        UtilFunctions.validateRealStartTime(booking.getExpectedStartTime(), realStartTime);
-
-        //update thời gian thực tế va chuyển trạng thái sang IN_PROGRESS
-        booking.setRealStartTime(realStartTime);
-        booking.setStatus(TestingServiceBookingStatus.IN_PROGRESS);
-        testingServiceBookingRepo.save(booking);
+        testingServiceBookingRepo.startTestingServiceBooking(id, realStartTime);
     }
-
 
     @Transactional
     public void updateTestingServiceBookingCommentAndRating
             (int id, EvaluatePayload payload) {
+        boolean bookingExist = testingServiceBookingRepo.existsById(id);
 
-        boolean serviceBookingExist = testingServiceBookingRepo.existsById(id);
-
-        if(!serviceBookingExist){
-
-            throw new AppException(404,
-                    "Testing Service not found with ID " + id);
+        if (!bookingExist) {
+            throw new AppException(404, "Testing Service Booking not found");
         }
 
         testingServiceBookingRepo.updateServiceBookingCommentAndRatingById(id, payload);
     }
 
-    // Delete
     @Transactional
     public void cancelTestingServiceBooking(int id) {
-        TestingServiceBooking
-                serviceBooking = testingServiceBookingRepo
-                .getTestingServiceBookingStatusById(id)
-                .orElseThrow(() -> new AppException
-                        (404, "Testing Service Booking not found with ID: " + id));
+        boolean bookingExist = testingServiceBookingRepo.existsById(id);
 
-        TestingServiceBookingStatus bookingStatus = serviceBooking.getStatus();
-
-        if(bookingStatus == TestingServiceBookingStatus.CANCELLED
-        || bookingStatus == TestingServiceBookingStatus.COMPLETED ){
-
-            throw new AppException(400, "Cannot cancel an already cancelled or " +
-                    "completed Service Booking");
+        if (!bookingExist) {
+            throw new AppException(404, "Testing Service Booking not found");
         }
 
-        testingServiceBookingRepo.cancelTestingServiceBooking
-                (id, TestingServiceBookingStatus.CANCELLED);
+        testingServiceBookingRepo.cancelTestingServiceBooking(id, TestingServiceBookingStatus.CANCELLED);
     }
 
-    // Delete
     @Transactional
     public void deleteTestingServiceBooking(int id) {
-        boolean serviceBookingExist = testingServiceBookingRepo.existsById(id);
-        if (!serviceBookingExist) {
-            throw new AppException(404, "Testing Service History not found with ID: " + id);
+        boolean bookingExist = testingServiceBookingRepo.existsById(id);
+
+        if (!bookingExist) {
+            throw new AppException(404, "Testing Service Booking not found");
         }
 
-        testingServicePaymentRepo.deleteServicePaymentById(id);
         testingServiceBookingRepo.deleteTestingServiceBooking(id);
     }
 }

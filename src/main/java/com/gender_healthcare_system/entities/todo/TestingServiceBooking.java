@@ -1,9 +1,8 @@
 package com.gender_healthcare_system.entities.todo;
 
-import com.gender_healthcare_system.entities.user.Customer;
+import com.gender_healthcare_system.entities.user.Account;
 import com.gender_healthcare_system.entities.enu.Rating;
 import com.gender_healthcare_system.entities.enu.TestingServiceBookingStatus;
-import com.gender_healthcare_system.entities.user.Staff;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -16,7 +15,7 @@ import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "TestingServiceBooking")
-@ToString(exclude = {"testingService", "customer", "staff"})
+@ToString(exclude = { "testingService", "customer", "staff" })
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -24,13 +23,14 @@ public class TestingServiceBooking implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    //@SequenceGenerator(name = "testing_service_booking_seq",
-    //        sequenceName = "testing_service_booking_seq", allocationSize = 1)
-    //@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "testing_service_booking_seq")
+    // @SequenceGenerator(name = "testing_service_booking_seq",
+    // sequenceName = "testing_service_booking_seq", allocationSize = 1)
+    // @GeneratedValue(strategy = GenerationType.SEQUENCE, generator =
+    // "testing_service_booking_seq")
     @Column(name = "service_booking_id")
     private int serviceBookingId;
 
-    //One-to-One relationship with TestingServicePayment
+    // One-to-One relationship with TestingServicePayment
     @OneToOne(mappedBy = "testingServiceBooking")
     private TestingServicePayment testingServicePayment;
 
@@ -39,15 +39,15 @@ public class TestingServiceBooking implements Serializable {
     @JoinColumn(name = "service_id", nullable = false)
     private TestingService testingService;
 
-    // Relationship with Customer
+    // Relationship with Customer (Account)
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "customer_id", nullable = false)
-    private Customer customer;
+    private Account customer;
 
-    // Relationship with Staff
+    // Relationship with Staff (Account)
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "staff_id", nullable = false)
-    private Staff staff;
+    private Account staff;
 
     @Nationalized
     @Column(columnDefinition = "NVARCHAR(MAX)", name = "result")
@@ -85,12 +85,12 @@ public class TestingServiceBooking implements Serializable {
     }
 
     public TestingServiceBooking(int serviceBookingId, String result, Rating rating,
-                                 String comment, LocalDateTime createdAt,
-                                 LocalDateTime expectedStartTime,
-                                 LocalDateTime realStartTime,
-                                 LocalDateTime expectedEndTime,
-                                 LocalDateTime realEndTime,
-                                 TestingServiceBookingStatus status) {
+            String comment, LocalDateTime createdAt,
+            LocalDateTime expectedStartTime,
+            LocalDateTime realStartTime,
+            LocalDateTime expectedEndTime,
+            LocalDateTime realEndTime,
+            TestingServiceBookingStatus status) {
 
         this.serviceBookingId = serviceBookingId;
         this.result = result;

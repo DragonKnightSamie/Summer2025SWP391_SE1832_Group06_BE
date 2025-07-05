@@ -1,9 +1,7 @@
 package com.gender_healthcare_system.entities.todo;
 
-
 import com.gender_healthcare_system.entities.enu.Rating;
-import com.gender_healthcare_system.entities.user.Consultant;
-import com.gender_healthcare_system.entities.user.Customer;
+import com.gender_healthcare_system.entities.user.Account;
 import com.gender_healthcare_system.entities.enu.ConsultationStatus;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -14,7 +12,6 @@ import org.hibernate.annotations.Nationalized;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 
-
 @Entity
 @Table(name = "Consultation")
 @Data
@@ -24,23 +21,25 @@ public class Consultation implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    //@SequenceGenerator(name = "consultation_sequence", sequenceName = "consultation_sequence", allocationSize = 1)
-    //@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "consultation_sequence")
+    // @SequenceGenerator(name = "consultation_sequence", sequenceName =
+    // "consultation_sequence", allocationSize = 1)
+    // @GeneratedValue(strategy = GenerationType.SEQUENCE, generator =
+    // "consultation_sequence")
     @Column(name = "consultation_id")
     private int consultationId;
 
     @OneToOne(mappedBy = "consultation", cascade = CascadeType.ALL)
-    private ConsultationPayment consultationPayment ;
+    private ConsultationPayment consultationPayment;
 
-    // Many to one relationship with Consultant
+    // Many to one relationship with Consultant (Account)
     @ManyToOne
     @JoinColumn(name = "consultant_id", nullable = false)
-    private Consultant consultant;
+    private Account consultant;
 
-    // Many to one relationship with Customer
+    // Many to one relationship with Customer (Account)
     @ManyToOne
     @JoinColumn(name = "customer_id", nullable = false)
-    private Customer customer;
+    private Account customer;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "rating", length = 15, nullable = false)
@@ -69,15 +68,15 @@ public class Consultation implements Serializable {
     @Nationalized
     private String description;
 
-    //Enum
+    // Enum
     @Column(name = "status", nullable = false, length = 15)
     @Enumerated(EnumType.STRING)
     private ConsultationStatus status;
 
     public Consultation(int consultationId, LocalDateTime createdAt,
-                        LocalDateTime expectedStartTime, LocalDateTime realStartTime,
-                        LocalDateTime expectedEndTime, LocalDateTime realEndTime,
-                        ConsultationStatus status) {
+            LocalDateTime expectedStartTime, LocalDateTime realStartTime,
+            LocalDateTime expectedEndTime, LocalDateTime realEndTime,
+            ConsultationStatus status) {
         this.consultationId = consultationId;
         this.createdAt = createdAt;
         this.expectedStartTime = expectedStartTime;

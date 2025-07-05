@@ -29,7 +29,7 @@ public interface ConsultationRepo extends JpaRepository<Consultation, Integer> {
             " c.description, c.status) " +
             "FROM Consultation c " +
             "JOIN c.customer " +
-            "WHERE c.customer.customerId = :customerId")
+            "WHERE c.customer.accountId = :customerId")
     Page<ConsultationDTO> findByCustomerId(int customerId, Pageable pageable);
 
     @Query("SELECT new com.gender_healthcare_system.dtos.todo" +
@@ -38,7 +38,7 @@ public interface ConsultationRepo extends JpaRepository<Consultation, Integer> {
             "c.description, c.status) " +
             "FROM Consultation c " +
             "JOIN c.consultant cs " +
-            "WHERE cs.consultantId = :consultantId")
+            "WHERE cs.accountId = :consultantId")
     Page<ConsultationDTO> findByConsultantId(int consultantId, Pageable pageable);
 
     @Query("SELECT new com.gender_healthcare_system.entities.todo" +
@@ -55,7 +55,7 @@ public interface ConsultationRepo extends JpaRepository<Consultation, Integer> {
             "c.realEndTime,c.description," +
             "c.status, " +
             "new com.gender_healthcare_system.dtos.user.CustomerDTO" +
-            "(cu.customerId, cu.fullName, cu.dateOfBirth, cu.gender, " +
+            "(cu.accountId, cu.fullName, cu.dateOfBirth, cu.gender, " +
             "cu.genderSpecificDetails, cu.phone, cu.email, cu.address), " +
             "new com.gender_healthcare_system.dtos.todo.ConsultationPaymentDTO" +
             "(cp.consultationPaymentId, cp.amount, cp.method, cp.description," +
@@ -81,7 +81,7 @@ public interface ConsultationRepo extends JpaRepository<Consultation, Integer> {
 
     @Query("SELECT c.expectedStartTime " +
             "FROM Consultation c " +
-            "WHERE c.consultant.consultantId = :id " +
+            "WHERE c.consultant.accountId = :id " +
             "AND CAST(c.expectedStartTime as date) = :date " +
             "AND c.status <> com.gender_healthcare_system.entities.enu.ConsultationStatus.CANCELLED")
     List<LocalDateTime> getConsultantScheduleByDate(int id, LocalDate date);
@@ -121,8 +121,8 @@ public interface ConsultationRepo extends JpaRepository<Consultation, Integer> {
             "WHERE c.consultationId = :id")
     void cancelConsultation(int id);
 
-    boolean existsConsultationByConsultantConsultantIdAndExpectedStartTime
-            (int consultantConsultantId, LocalDateTime expectedStartTime);
+    boolean existsConsultationByConsultantAccountIdAndExpectedStartTime
+            (int consultantAccountId, LocalDateTime expectedStartTime);
 
     //report
     @Query("SELECT new com.gender_healthcare_system.dtos.report.StatisticResponseDTO" +

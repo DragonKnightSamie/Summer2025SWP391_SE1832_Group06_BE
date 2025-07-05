@@ -8,11 +8,11 @@ import com.gender_healthcare_system.dtos.user.CustomerDTO;
 
 import com.gender_healthcare_system.dtos.user.CustomerPeriodDetailsDTO;
 import com.gender_healthcare_system.entities.enu.Gender;
-import com.gender_healthcare_system.entities.user.Customer;
+import com.gender_healthcare_system.entities.user.Account;
 import com.gender_healthcare_system.exceptions.AppException;
 import com.gender_healthcare_system.iservices.ICustomerService;
 import com.gender_healthcare_system.payloads.user.CustomerUpdatePayload;
-import com.gender_healthcare_system.repositories.CustomerRepo;
+import com.gender_healthcare_system.repositories.AccountRepo;
 
 import com.gender_healthcare_system.utils.UtilFunctions;
 import jakarta.transaction.Transactional;
@@ -31,15 +31,15 @@ import java.util.Map;
 @AllArgsConstructor
 public class CustomerService implements ICustomerService {
 
-    private final CustomerRepo customerRepo;
+    private final AccountRepo accountRepo;
 
     @Override
     public LoginResponse getCustomerLoginDetails(int id) {
-        return customerRepo.getCustomerLoginDetails(id);
+        return accountRepo.getCustomerLoginDetails(id);
     }
 
     public CustomerDTO getCustomerById(int id) throws JsonProcessingException {
-        CustomerDTO customerDetails = customerRepo.getCustomerDetailsById(id)
+        CustomerDTO customerDetails = accountRepo.getCustomerDetailsById(id)
                 .orElseThrow(() -> new AppException(404,
                         "Customer not found with ID " + id));
 
@@ -67,7 +67,7 @@ public class CustomerService implements ICustomerService {
     }
 
     public CustomerDTO getCustomerForManagerById(int id) throws JsonProcessingException {
-        CustomerDTO customerDetails = customerRepo.getCustomerDetailsById(id)
+        CustomerDTO customerDetails = accountRepo.getCustomerDetailsById(id)
                 .orElseThrow(() -> new AppException(404,
                         "Customer not found with ID " + id));
 
@@ -93,11 +93,11 @@ public class CustomerService implements ICustomerService {
     public CustomerPeriodDetailsDTO getFemaleCustomerPeriodDetails
             (int customerId) throws JsonProcessingException {
 
-        Customer customer = customerRepo.getCustomerById(customerId)
+        Account account = accountRepo.findById(customerId)
                 .orElseThrow(() -> new AppException(400,
                         "No customer found with ID " + customerId));
 
-        if (customer.getGender() == Gender.MALE){
+        if (account.getGender() == Gender.MALE){
 
             throw new AppException(400, "Cannot get period details for MALE customer");
         }
@@ -106,7 +106,7 @@ public class CustomerService implements ICustomerService {
         mapper.registerModule(new JavaTimeModule());
 
         return mapper.readValue
-                (customer.getGenderSpecificDetails(), CustomerPeriodDetailsDTO.class);
+                (account.getGenderSpecificDetails(), CustomerPeriodDetailsDTO.class);
     }
 
     public Map<String, Object> getAllCustomers(int page, String sortField, String sortOrder) {
@@ -123,7 +123,7 @@ public class CustomerService implements ICustomerService {
                 .of(page, itemSize, sort);
 
 
-        Page<CustomerDTO> pageResult = customerRepo.getAllCustomers(pageRequest);
+        Page<CustomerDTO> pageResult = accountRepo.getAllCustomers(pageRequest);
 
         if(!pageResult.hasContent()){
 
@@ -148,19 +148,19 @@ public class CustomerService implements ICustomerService {
         ObjectMapper mapper = new ObjectMapper();
         mapper.registerModule(new JavaTimeModule());
 
-        Customer customer = customerRepo.getCustomerById(id)
+        Account account = accountRepo.findById(id)
                 .orElseThrow(() -> new AppException(404, "No Customer found with ID " + id));
 
         UtilFunctions.validatePeriodDetails
-                (customer.getGender(), payload.getGenderSpecificDetails());
+                (account.getGender(), payload.getGenderSpecificDetails());
 
         String GenderSpecificDetails = null;
-        if(customer.getGender() == Gender.FEMALE) {
+        if(account.getGender() == Gender.FEMALE) {
 
             GenderSpecificDetails = mapper.writeValueAsString(
                     payload.getGenderSpecificDetails());
         }
 
-        customerRepo.updateCustomerById(id, payload, GenderSpecificDetails);
+        accountRepo.updateCustomerById(id, payload);
     }
 }

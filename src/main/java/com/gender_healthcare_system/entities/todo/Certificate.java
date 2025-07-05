@@ -1,6 +1,6 @@
 package com.gender_healthcare_system.entities.todo;
 
-import com.gender_healthcare_system.entities.user.Consultant;
+import com.gender_healthcare_system.entities.user.Account;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -24,7 +24,7 @@ public class Certificate implements Serializable {
 
     @ManyToOne
     @JoinColumn(name = "consultant_id", nullable = false)
-    private Consultant consultant;
+    private Account consultant;
 
     @Nationalized
     @Column(name = "certificate_name", nullable = false, length = 100)
@@ -46,6 +46,5 @@ public class Certificate implements Serializable {
     @Nationalized
     @Column(name = "description", length = 255)
     private String description;
-
 
 }

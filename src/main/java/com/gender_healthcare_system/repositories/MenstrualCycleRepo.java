@@ -18,7 +18,7 @@ public interface MenstrualCycleRepo extends JpaRepository<MenstrualCycle, Long> 
             "m.cycleId, m.startDate, m.cycleLength, m.isTrackingEnabled, " +
             "m.createdAt, m.updatedAt, m.customer) " +
             "FROM MenstrualCycle m " +
-            "WHERE m.customer.customerId = :customerId")
+            "WHERE m.customer.accountId = :customerId")
     List<MenstrualCycleDTO> getCyclesByCustomerId(@Param("customerId") int customerId);
 
     // UPDATE cycle using payload

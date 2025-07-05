@@ -1,14 +1,13 @@
 package com.gender_healthcare_system.entities.todo;
 
 import com.gender_healthcare_system.entities.enu.BlogStatus;
-import com.gender_healthcare_system.entities.user.Manager;
+import com.gender_healthcare_system.entities.user.Account;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.Nationalized;
 import com.fasterxml.jackson.annotation.JsonBackReference;
-
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
@@ -23,16 +22,18 @@ public class Blog implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    //@SequenceGenerator(name = "blog_sequence", sequenceName = "blog_sequence", allocationSize = 1)
-    //@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "blog_sequence")
+    // @SequenceGenerator(name = "blog_sequence", sequenceName = "blog_sequence",
+    // allocationSize = 1)
+    // @GeneratedValue(strategy = GenerationType.SEQUENCE, generator =
+    // "blog_sequence")
     @Column(name = "blog_id")
     private int blogId;
 
-    // Relationship with Manager
+    // Relationship with Account (Manager)
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "manager_id", nullable = false)
-    @JsonBackReference  // Thêm dòng này để tránh vòng lặp vô hạn khi serialize JSON
-    private Manager manager;
+    @JsonBackReference // Thêm dòng này để tránh vòng lặp vô hạn khi serialize JSON
+    private Account manager;
 
     @Nationalized
     @Column(name = "author", nullable = false, length = 50)

@@ -1,6 +1,6 @@
 package com.gender_healthcare_system.entities.todo;
 
-import com.gender_healthcare_system.entities.user.Customer;
+import com.gender_healthcare_system.entities.user.Account;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -29,5 +29,5 @@ public class Symptom {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "customer_id", nullable = false)
-    private Customer customer;
+    private Account customer;
 }

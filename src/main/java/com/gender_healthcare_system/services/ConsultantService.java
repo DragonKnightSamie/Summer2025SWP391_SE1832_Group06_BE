@@ -6,8 +6,8 @@ import com.gender_healthcare_system.dtos.user.ConsultantDTO;
 import com.gender_healthcare_system.entities.enu.AccountStatus;
 import com.gender_healthcare_system.exceptions.AppException;
 import com.gender_healthcare_system.payloads.user.ConsultantUpdatePayload;
+import com.gender_healthcare_system.repositories.AccountRepo;
 import com.gender_healthcare_system.repositories.CertificateRepo;
-import com.gender_healthcare_system.repositories.ConsultantRepo;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 
@@ -25,17 +25,17 @@ import java.util.Map;
 @AllArgsConstructor
 public class ConsultantService {
 
-    private final ConsultantRepo consultantRepo;
+    private final AccountRepo accountRepo;
 
     private final CertificateRepo certificateRepo;
 
     public LoginResponse getConsultantLoginDetails(int id) {
-        return consultantRepo.getConsultantLoginDetails(id);
+        return accountRepo.getConsultantLoginDetails(id);
     }
 
     //get all consultant
     public List<ConsultantDTO> getAllConsultantsForCustomer() {
-        List<ConsultantDTO> consultants = consultantRepo
+        List<ConsultantDTO> consultants = accountRepo
                 .getAllConsultantsForCustomer(AccountStatus.ACTIVE);
         if (consultants.isEmpty()) {
             throw new AppException(404, "No Consultants found");
@@ -57,7 +57,7 @@ public class ConsultantService {
                 .of(page, itemSize, sort);
 
 
-        Page<ConsultantDTO> pageResult = consultantRepo.getAllConsultants(pageRequest);
+        Page<ConsultantDTO> pageResult = accountRepo.getAllConsultants(pageRequest);
 
         if (!pageResult.hasContent()) {
 
@@ -77,7 +77,7 @@ public class ConsultantService {
 
     public ConsultantDTO getConsultantDetails(int consultantId) {
         ConsultantDTO consultantDetail =
-                consultantRepo.getConsultantDetails(consultantId)
+                accountRepo.getConsultantDetailsById(consultantId)
                         .orElseThrow(() -> new AppException(404, "Consultant not found"));
 
         List<CertificateDTO> certificateList =
@@ -91,7 +91,7 @@ public class ConsultantService {
 
     public ConsultantDTO getConsultantDetailsForManager(int consultantId) {
         ConsultantDTO consultantDetail =
-                consultantRepo.getConsultantDetails(consultantId)
+                accountRepo.getConsultantDetailsById(consultantId)
                         .orElseThrow(() -> new AppException(404, "Consultant not found"));
 
         List<CertificateDTO> certificateList =
@@ -105,13 +105,13 @@ public class ConsultantService {
     @Transactional
     public void updateConsultantDetails(int consultantId, ConsultantUpdatePayload payload) {
         boolean consultantExist =
-                consultantRepo.existsById(consultantId);
+                accountRepo.existsById(consultantId);
 
         if (!consultantExist) {
 
             throw new AppException(404, "Consultant not found");
         }
 
-        consultantRepo.updateConsultant(consultantId, payload);
+        accountRepo.updateConsultantById(consultantId, payload);
     }
 }

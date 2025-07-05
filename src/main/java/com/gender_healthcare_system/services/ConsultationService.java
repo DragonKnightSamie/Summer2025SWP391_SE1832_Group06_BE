@@ -9,19 +9,18 @@ import com.gender_healthcare_system.dtos.user.CustomerPeriodDetailsDTO;
 import com.gender_healthcare_system.entities.enu.ConsultationStatus;
 import com.gender_healthcare_system.entities.enu.Gender;
 import com.gender_healthcare_system.entities.enu.PaymentStatus;
+import com.gender_healthcare_system.entities.enu.Rating;
 import com.gender_healthcare_system.entities.todo.Consultation;
 import com.gender_healthcare_system.entities.todo.ConsultationPayment;
-import com.gender_healthcare_system.entities.user.Consultant;
-import com.gender_healthcare_system.entities.user.Customer;
+import com.gender_healthcare_system.entities.user.Account;
 import com.gender_healthcare_system.exceptions.AppException;
 import com.gender_healthcare_system.payloads.todo.ConsultationCompletePayload;
 import com.gender_healthcare_system.payloads.todo.ConsultationConfirmPayload;
 import com.gender_healthcare_system.payloads.todo.EvaluatePayload;
 import com.gender_healthcare_system.payloads.todo.ConsultationRegisterPayload;
-import com.gender_healthcare_system.repositories.ConsultantRepo;
+import com.gender_healthcare_system.repositories.AccountRepo;
 import com.gender_healthcare_system.repositories.ConsultationPaymentRepo;
 import com.gender_healthcare_system.repositories.ConsultationRepo;
-import com.gender_healthcare_system.repositories.CustomerRepo;
 import com.gender_healthcare_system.utils.UtilFunctions;
 import lombok.AllArgsConstructor;
 
@@ -43,12 +42,8 @@ import java.util.Map;
 @AllArgsConstructor
 public class ConsultationService {
 
-    private final CustomerRepo customerRepo;
-
-    private final ConsultantRepo consultantRepo;
-
+    private final AccountRepo accountRepo;
     private final ConsultationRepo consultationRepo;
-
     private final ConsultationPaymentRepo consultationPaymentRepo;
 
     //getConsultationById
@@ -157,7 +152,7 @@ public class ConsultationService {
     public ConsultantScheduleDTO getConsultantScheduleByDate
             (int consultantId, LocalDate date) {
 
-        boolean consultantExist = consultantRepo.existsById(consultantId);
+        boolean consultantExist = accountRepo.existsById(consultantId);
 
         if(!consultantExist){
 
@@ -174,7 +169,7 @@ public class ConsultationService {
     public void registerConsultation(ConsultationRegisterPayload payload) {
 
         boolean consultationExist = consultationRepo
-                .existsConsultationByConsultantConsultantIdAndExpectedStartTime
+                .existsConsultationByConsultantAccountIdAndExpectedStartTime
                         (payload.getConsultantId(), payload.getExpectedStartTime());
 
         if(consultationExist){
@@ -182,11 +177,11 @@ public class ConsultationService {
             throw new AppException(409, "Consultation has already been booked");
         }
 
-        Customer customer = customerRepo.getCustomerById(payload.getCustomerId())
+        Account customer = accountRepo.findById(payload.getCustomerId())
                 .orElseThrow(() -> new AppException(404,
                         "Customer not found with ID " + payload.getCustomerId()));
 
-        Consultant consultant = consultantRepo.getConsultantById(payload.getConsultantId())
+        Account consultant = accountRepo.findById(payload.getConsultantId())
                 .orElseThrow(() -> new AppException(404,
                         "Consultant not found with ID "+ payload.getConsultantId()));
 
@@ -198,90 +193,54 @@ public class ConsultationService {
         consultation.setExpectedEndTime(expectedEndTime);
         consultation.setDescription(payload.getDescription()); //thêm description
         consultation.setStatus(ConsultationStatus.CONFIRMED);
+        consultation.setRating(Rating.AVERAGE);
         consultation.setCustomer(customer);
         consultation.setConsultant(consultant);
 
-        consultationRepo.save(consultation);
+        consultationRepo.saveAndFlush(consultation);
 
-        ConsultationPayment payment = new ConsultationPayment();
+        ConsultationPayment consultationPayment = new ConsultationPayment();
 
-        payment.setConsultation(consultation);
-        payment.setTransactionId(payload.getPayment().getTransactionId());
-        payment.setAmount(payload.getPayment().getAmount());
-        payment.setCreatedAt(UtilFunctions.getCurrentDateTimeWithTimeZone());
-        payment.setMethod(payload.getPayment().getMethod());
-        payment.setDescription(payload.getDescription());
-        payment.setStatus(PaymentStatus.PAID);
+        consultationPayment.setConsultation(consultation);
+        consultationPayment.setAmount(payload.getPayment().getAmount());
+        consultationPayment.setMethod(payload.getPayment().getMethod());
+        consultationPayment.setStatus(PaymentStatus.PAID);
 
-        consultationPaymentRepo.saveAndFlush(payment);
+        consultationPaymentRepo.saveAndFlush(consultationPayment);
     }
-
-    //confirm consultation : consultant xác nhận lịch hẹn
-    /*@Transactional
-    public void confirmConsultation(ConsultationConfirmPayload payload) {
-        Consultation consultation = consultationRepo
-                .findConsultationById(payload.getConsultationId())
-                .orElseThrow(() -> new AppException(404, "Consultation not found"));
-
-        if (consultation.getStatus() != ConsultationStatus.PENDING) {
-            throw new AppException(400, "Only pending consultations can be approved");
-        }
-
-        *//*consultation.setStatus(ConsultationStatus.CONFIRMED);
-        consultation.setExpectedStartTime(payload.getExpectedStartTime());
-        consultation.setExpectedEndTime(payload.getExpectedEndTime());
-
-        consultationRepo.save(consultation);*//*
-        consultationRepo.updateConsultation(payload, ConsultationStatus.CONFIRMED);
-    }*/
 
     @Transactional
     public void cancelConsultation(int id) {
-        Consultation consultation = consultationRepo.findConsultationById(id)
-                .orElseThrow(() -> new AppException(404, "Consultation not found"));
+        boolean consultationExist = consultationRepo.existsById(id);
 
-        if (consultation.getStatus() == ConsultationStatus.COMPLETED
-                || consultation.getStatus() == ConsultationStatus.CANCELLED ) {
-            throw new AppException(400,
-                    "Cannot cancel an already cancelled or completed consultation");
+        if(!consultationExist){
+
+            throw new AppException(404, "Consultation not found");
         }
 
-        /*consultation.setStatus(ConsultationStatus.CANCELLED);
-        consultationRepo.save(consultation);*/
         consultationRepo.cancelConsultation(id);
     }
 
     @Transactional
     public void reScheduleConsultation(int consultationId, ConsultationConfirmPayload payload) {
+        boolean consultationExist = consultationRepo.existsById(consultationId);
 
-        boolean consultationExist = consultationRepo
-                .existsConsultationByConsultantConsultantIdAndExpectedStartTime
-                        (payload.getConsultantId(), payload.getExpectedStartTime());
+        if(!consultationExist){
 
-        if(consultationExist){
-
-            throw new AppException(409,
-                    "This Consultant already has a Consultation " +
-                            "with provided expected start time");
+            throw new AppException(404, "Consultation not found");
         }
 
-        Consultation consultation = consultationRepo
-                .findConsultationById(consultationId)
-                .orElseThrow(() -> new AppException(404, "Consultation not found"));
+        boolean consultationTimeConflict = consultationRepo
+                .existsConsultationByConsultantAccountIdAndExpectedStartTime
+                        (payload.getConsultantId(), payload.getExpectedStartTime());
 
-        if (consultation.getStatus() == ConsultationStatus.COMPLETED
-                || consultation.getStatus() == ConsultationStatus.CANCELLED) {
+        if(consultationTimeConflict){
 
-            throw new AppException
-                    (400, "Cannot reschedule a completed or cancelled consultation");
+            throw new AppException(409, "Consultation time conflict");
         }
 
         LocalDateTime expectedEndTime = payload.getExpectedStartTime().plusHours(1);
-        /*consultation.setExpectedStartTime(payload.getExpectedStartTime());
-        consultation.setExpectedEndTime(payload.getExpectedEndTime());
-        consultation.setStatus(ConsultationStatus.RESCHEDULED);
 
-        consultationRepo.save(consultation);*/
         consultationRepo.updateConsultation
                 (consultationId, payload, expectedEndTime, ConsultationStatus.RESCHEDULED);
     }
@@ -289,75 +248,25 @@ public class ConsultationService {
     @Transactional
     public void updateConsultationCommentAndRating
             (int id, EvaluatePayload payload) {
-
         boolean consultationExist = consultationRepo.existsById(id);
 
         if(!consultationExist){
 
-            throw new AppException(404,
-                    "Consultation not found");
+            throw new AppException(404, "Consultation not found");
         }
 
-        consultationRepo.updateConsultationCommentAndRatingById
-                (id, payload);
+        consultationRepo.updateConsultationCommentAndRatingById(id, payload);
     }
 
     @Transactional
     public void completeConsultation(ConsultationCompletePayload payload) {
+        boolean consultationExist = consultationRepo.existsById(payload.getConsultationId());
 
-        Consultation consultation = consultationRepo
-                .findConsultationById(payload.getConsultationId())
-                .orElseThrow(() -> new AppException(404, "Consultation not found"));
+        if(!consultationExist){
 
-        ConsultationStatus consultationStatus = consultation.getStatus();
-
-        if (consultationStatus == ConsultationStatus.COMPLETED
-                || consultationStatus == ConsultationStatus.CANCELLED) {
-
-            throw new AppException
-                    (400, "Cannot mark an already completed " +
-                            "or cancelled consultation as completed");
+            throw new AppException(404, "Consultation not found");
         }
 
-        boolean validateRealStartTime =
-                payload.getRealStartTime().isBefore(consultation.getExpectedStartTime())
-                || payload.getRealStartTime().isAfter(consultation.getExpectedEndTime())
-                || payload.getRealStartTime().isEqual(consultation.getExpectedEndTime()) ;
-
-        if(validateRealStartTime){
-
-            throw new AppException(400, "Real Start Time cannot be " +
-                    "before Expected Start Time or equal to or after Expected End Time");
-        }
-
-        boolean validateRealEndTime =
-                payload.getRealEndTime().isBefore(consultation.getExpectedStartTime())
-                        || payload.getRealEndTime().isAfter(consultation.getExpectedEndTime())
-                || payload.getRealEndTime().isEqual(consultation.getExpectedStartTime()) ;
-
-        if(validateRealEndTime){
-
-            throw new AppException(400, "Real End Time cannot be " +
-                    "before or equal to Expected Start Time or after Expected End Time");
-        }
-
-        long startAndEndTimeDifference =
-                ChronoUnit.MINUTES.between(payload.getRealStartTime(), payload.getRealEndTime());
-
-        if(startAndEndTimeDifference < 20){
-
-            throw new AppException(400,
-                    "Real End time must be at least 20 minute later " +
-                            "compared to Real Start time");
-        }
-
-                /* consultation.setRealStartTime(payload.getRealStartTime());
-        consultation.setRealEndTime(payload.getRealEndTime());
-        consultation.setStatus(ConsultationStatus.COMPLETED);
-
-        consultationRepo.save(consultation);*/
         consultationRepo.completeConsultation(payload, ConsultationStatus.COMPLETED);
     }
-
-
 }

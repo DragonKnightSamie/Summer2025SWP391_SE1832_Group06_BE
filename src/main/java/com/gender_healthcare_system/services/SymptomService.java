@@ -2,11 +2,11 @@ package com.gender_healthcare_system.services;
 
 import com.gender_healthcare_system.dtos.todo.SymptomDTO;
 import com.gender_healthcare_system.entities.todo.Symptom;
-import com.gender_healthcare_system.entities.user.Customer;
+import com.gender_healthcare_system.entities.user.Account;
 import com.gender_healthcare_system.exceptions.AppException;
 import com.gender_healthcare_system.payloads.todo.SymptomCreatePayload;
 import com.gender_healthcare_system.payloads.todo.SymptomUpdatePayload;
-import com.gender_healthcare_system.repositories.CustomerRepo;
+import com.gender_healthcare_system.repositories.AccountRepo;
 import com.gender_healthcare_system.repositories.SymptomRepo;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -19,10 +19,10 @@ import java.util.List;
 public class SymptomService {
 
     private final SymptomRepo symptomRepo;
-    private final CustomerRepo customerRepo;
+    private final AccountRepo accountRepo;
 
     public SymptomDTO createSymptom(SymptomCreatePayload payload) {
-        Customer customer = customerRepo.findById(payload.getCustomerId())
+        Account customer = accountRepo.findById(payload.getCustomerId())
                 .orElseThrow(() -> new AppException(404, "Customer not found"));
 
         Symptom symptom = new Symptom();
