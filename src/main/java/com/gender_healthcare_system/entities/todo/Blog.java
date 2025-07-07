@@ -12,6 +12,7 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.util.List;
 
 @Entity
 @Table(name = "Blog")
@@ -35,9 +36,9 @@ public class Blog implements Serializable {
     @JsonBackReference // Thêm dòng này để tránh vòng lặp vô hạn khi serialize JSON
     private Account manager;
 
-    @Nationalized
+    /*@Nationalized
     @Column(name = "author", nullable = false, length = 50)
-    private String author;
+    private String author;*/
 
     @Nationalized
     @Column(name = "title", nullable = false, length = 100)
@@ -53,4 +54,16 @@ public class Blog implements Serializable {
     @Column(name = "status", nullable = false, length = 15)
     @Enumerated(EnumType.STRING)
     private BlogStatus status;
+
+    @OneToMany(mappedBy = "blog", cascade = CascadeType.ALL)
+    private List<Comment> comments;
+
+    public Blog(int blogId, String title, String content,
+                LocalDateTime createdAt, BlogStatus status) {
+        this.blogId = blogId;
+        this.title = title;
+        this.content = content;
+        this.createdAt = createdAt;
+        this.status = status;
+    }
 }

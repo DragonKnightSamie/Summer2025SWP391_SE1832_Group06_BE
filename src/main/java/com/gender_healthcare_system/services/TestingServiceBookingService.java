@@ -221,11 +221,26 @@ public class TestingServiceBookingService {
     @Transactional
     public void completeTestingServiceBooking
     (int id, TestingServiceBookingCompletePayload payload) throws JsonProcessingException {
-        boolean bookingExist = testingServiceBookingRepo.existsById(id);
 
-        if (!bookingExist) {
-            throw new AppException(404, "Testing Service Booking not found");
+        TestingServiceBooking serviceBooking =
+                testingServiceBookingRepo.getTestingServiceBookingById(id)
+                        .orElseThrow(() ->new AppException(404,
+                                "Testing Service Booking not found with ID: " + id));
+
+        TestingServiceBookingStatus bookingStatus = serviceBooking.getStatus();
+
+        if(bookingStatus == TestingServiceBookingStatus.CANCELLED
+                || bookingStatus == TestingServiceBookingStatus.COMPLETED ){
+
+            throw new AppException(400, "Cannot complete an already cancelled or " +
+                    "completed Service Booking");
         }
+
+        UtilFunctions.validateRealStartAndEndTime
+                (serviceBooking.getExpectedStartTime(), serviceBooking.getExpectedEndTime(),
+                        payload.getRealStartTime(), payload.getRealEndTime());
+
+        UtilFunctions.validateRealTestResult(payload.getResultList());
 
         ObjectMapper mapper = new ObjectMapper();
         String result = mapper.writeValueAsString(payload.getResultList());

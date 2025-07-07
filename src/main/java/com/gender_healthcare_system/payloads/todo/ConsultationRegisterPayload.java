@@ -1,6 +1,7 @@
 package com.gender_healthcare_system.payloads.todo;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.gender_healthcare_system.entities.enu.ConsultationType;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
@@ -27,8 +28,8 @@ public class ConsultationRegisterPayload implements Serializable {
     @NotNull(message = "Consultant ID is required")
     private Integer consultantId;
 
-    @Schema(type = "string", example = "Tư vấn sức khỏe sinh sản tổng quát")
-    private String description;
+    @NotNull(message = "Consultation Type is required")
+    private ConsultationType consultationType;
 
     @Valid
     @NotNull(message = "Consultation payment is required")

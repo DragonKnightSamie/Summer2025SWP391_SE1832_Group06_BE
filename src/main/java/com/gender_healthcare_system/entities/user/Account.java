@@ -2,14 +2,12 @@ package com.gender_healthcare_system.entities.user;
 
 import com.gender_healthcare_system.entities.enu.AccountStatus;
 import com.gender_healthcare_system.entities.enu.Gender;
-import com.gender_healthcare_system.entities.todo.Blog;
-import com.gender_healthcare_system.entities.todo.Certificate;
-import com.gender_healthcare_system.entities.todo.Consultation;
-import com.gender_healthcare_system.entities.todo.TestingServiceBooking;
+import com.gender_healthcare_system.entities.todo.*;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 import org.hibernate.annotations.Nationalized;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 
@@ -20,6 +18,7 @@ import java.util.List;
 @Entity
 @Table(name = "Account")
 @Data
+@ToString(exclude = "comments")
 @NoArgsConstructor
 @AllArgsConstructor
 public class Account implements Serializable {
@@ -49,17 +48,17 @@ public class Account implements Serializable {
     private AccountStatus status;
 
     // Common fields from all entities
-    @Column(name = "full_name", length = 70)
+    @Column(name = "full_name", nullable = false, length = 70)
     @Nationalized
     private String fullName;
 
     @Column(name = "email", nullable = false, unique = true, length = 100)
     private String email;
 
-    @Column(name = "phone", length = 15)
+    @Column(name = "phone", nullable = false, unique = true, length = 15)
     private String phone;
 
-    @Column(name = "address", length = 255)
+    @Column(name = "address", nullable = false, length = 255)
     @Nationalized
     private String address;
 
@@ -81,6 +80,9 @@ public class Account implements Serializable {
     @JoinColumn(name = "manager_id")
     @JsonManagedReference
     private List<Blog> blogs;
+
+    @OneToMany(mappedBy = "account", cascade = CascadeType.ALL)
+    private List<Comment> comments;
 
     // Consultant relationships
     @OneToMany(mappedBy = "consultant", cascade = CascadeType.ALL)
@@ -148,5 +150,23 @@ public class Account implements Serializable {
         this.phone = phone;
         this.email = email;
         this.address = address;
+    }
+
+    public Account(int accountId, Role role, String username, String password,
+                   AccountStatus status, String fullName, String email,
+                   String phone, String address, LocalDate dateOfBirth,
+                   Gender gender, String avatarUrl) {
+        this.accountId = accountId;
+        this.role = role;
+        this.username = username;
+        this.password = password;
+        this.status = status;
+        this.fullName = fullName;
+        this.email = email;
+        this.phone = phone;
+        this.address = address;
+        this.dateOfBirth = dateOfBirth;
+        this.gender = gender;
+        this.avatarUrl = avatarUrl;
     }
 }

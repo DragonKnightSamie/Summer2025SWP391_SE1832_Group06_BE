@@ -1,18 +1,16 @@
 package com.gender_healthcare_system.services;
 
 import com.gender_healthcare_system.dtos.todo.TestingServiceDTO;
-import com.gender_healthcare_system.entities.enu.PriceListStatus;
 import com.gender_healthcare_system.entities.enu.TestingServiceStatus;
-import com.gender_healthcare_system.entities.todo.PriceList;
 import com.gender_healthcare_system.entities.todo.TestingService;
 import com.gender_healthcare_system.entities.todo.TestingServiceType;
 import com.gender_healthcare_system.exceptions.AppException;
-import com.gender_healthcare_system.payloads.todo.PriceListRegisterPayload;
 import com.gender_healthcare_system.payloads.todo.TestingServiceRegisterPayload;
 import com.gender_healthcare_system.payloads.todo.TestingServiceUpdatePayload;
 import com.gender_healthcare_system.repositories.TestingServiceRepo;
 import com.gender_healthcare_system.repositories.TestingServiceTypeRepo;
 import lombok.AllArgsConstructor;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -122,9 +120,13 @@ public class TestingService_Service {
         newService.setTestingServiceType(service);
         newService.setServiceName(payload.getServiceName());
         newService.setDescription(payload.getDescription());
+
+        newService.setPriceAmount(payload.getPriceAmount());
+        newService.setPriceDescription(payload.getPriceDescription());
+
         newService.setStatus(TestingServiceStatus.AVAILABLE);
 
-        for(PriceListRegisterPayload item: payload.getPriceList()) {
+        /*for(PriceListRegisterPayload item: payload.getPriceList()) {
             PriceList priceItem = new PriceList();
 
             priceItem.setDescription(item.getDescription());
@@ -133,7 +135,7 @@ public class TestingService_Service {
 
             newService.addPriceItem(priceItem);
 
-        }
+        }*/
 
         /*if (testingService == null) {
             throw new IllegalArgumentException("Testing Service cannot be null");

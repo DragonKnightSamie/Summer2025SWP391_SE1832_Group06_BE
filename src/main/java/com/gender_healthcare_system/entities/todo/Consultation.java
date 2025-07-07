@@ -1,5 +1,6 @@
 package com.gender_healthcare_system.entities.todo;
 
+import com.gender_healthcare_system.entities.enu.ConsultationType;
 import com.gender_healthcare_system.entities.enu.Rating;
 import com.gender_healthcare_system.entities.user.Account;
 import com.gender_healthcare_system.entities.enu.ConsultationStatus;
@@ -42,12 +43,16 @@ public class Consultation implements Serializable {
     private Account customer;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "rating", length = 15, nullable = false)
+    @Column(name = "rating", length = 15)
     private Rating rating;
 
     @Nationalized
     @Column(name = "comment", length = 255)
     private String comment;
+
+    @Column(name = "consultation_type", nullable = false, length = 15)
+    @Enumerated(EnumType.STRING)
+    private ConsultationType consultationType;
 
     @Column(name = "created_at", nullable = false, unique = true)
     private LocalDateTime createdAt;
@@ -64,7 +69,7 @@ public class Consultation implements Serializable {
     @Column(name = "real_end_time")
     private LocalDateTime realEndTime;
 
-    @Column(name = "description", length = 255)
+    @Column(name = "description")
     @Nationalized
     private String description;
 

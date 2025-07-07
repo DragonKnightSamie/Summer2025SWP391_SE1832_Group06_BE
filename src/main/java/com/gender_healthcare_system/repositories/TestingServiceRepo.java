@@ -20,13 +20,11 @@ public interface TestingServiceRepo extends JpaRepository<TestingService, Intege
     // Get a single TestingServiceDTO by ID
     @Query("SELECT new com.gender_healthcare_system.dtos.todo.TestingServiceDTO(" +
             "ts.serviceId, ts.serviceName, ts.description, ts.status, " +
+            "ts.priceAmount, ts.priceDescription, " +
             "new com.gender_healthcare_system.dtos.todo.TestingServiceTypeDTO" +
-            "(tst.serviceTypeId, tst.serviceTypeName, tst.title, tst.content, tst.createdAt), " +
-            "new com.gender_healthcare_system.dtos.todo.PriceListDTO" +
-            "(p.priceId, p.price, p.description, p.status)) " +
+            "(tst.serviceTypeId, tst.serviceTypeName, tst.title, tst.content, tst.createdAt)) " +
             "FROM TestingService ts " +
             "LEFT JOIN ts.testingServiceType tst " +
-            "LEFT JOIN ts.priceLists p " +
             "WHERE ts.serviceId = :id")
     Optional<TestingServiceDTO> getTestingServiceById(@Param("id") int id);
 
@@ -46,7 +44,8 @@ public interface TestingServiceRepo extends JpaRepository<TestingService, Intege
 
     // Get all TestingServices (only entity)
     @Query("SELECT new com.gender_healthcare_system.dtos.todo.TestingServiceDTO" +
-            "(ts.serviceId, ts.serviceName, tst.serviceTypeName, ts.description) " +
+            "(ts.serviceId, ts.serviceName, tst.serviceTypeName, ts.description, " +
+            "ts.priceAmount, ts.priceDescription) " +
             "FROM TestingService ts " +
             "JOIN ts.testingServiceType tst")
     Page<TestingServiceDTO> getAllTestingServicesForCustomer(Pageable pageable);
@@ -56,6 +55,8 @@ public interface TestingServiceRepo extends JpaRepository<TestingService, Intege
     //@Transactional
     @Query("UPDATE TestingService ts SET ts.serviceName = :#{#payload.serviceName}, " +
             "ts.description = :#{#payload.description}, " +
+            "ts.priceAmount = :#{#payload.priceAmount}, " +
+            "ts.priceDescription = :#{#payload.priceDescription}, " +
             "ts.status = :#{#payload.status} " +
             "WHERE ts.serviceId = :id")
     void updateTestingService(@Param("id") int id,

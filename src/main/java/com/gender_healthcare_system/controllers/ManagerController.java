@@ -62,8 +62,6 @@ public class ManagerController {
 
     private final TestingService_Service testingService_Service;
 
-    private final PriceListService priceListService;
-
     @Operation(
             summary = "Manager registration",
             description = "Allows a manager to register a new account with the system."
@@ -538,7 +536,7 @@ public class ManagerController {
         return ResponseEntity.ok("Testing Service created successfully");
     }
 
-    @Operation(
+    /*@Operation(
             summary = "Create new price list for existing testing service",
             description = "Allows managers to create a new price list for an existing testing service."
     )
@@ -549,7 +547,7 @@ public class ManagerController {
             @PathVariable int id,
             @RequestBody @Valid PriceListRegisterPayload payload) {
         priceListService.createNewPriceListForExistingService(id, payload);
-    }
+    }*/
 
     @Operation(
             summary = "Update testing service",
@@ -580,7 +578,7 @@ public class ManagerController {
 
     /// //////////////////////////// Price List Operations ///////////////////////////////
 
-    @Operation(
+    /*@Operation(
             summary = "Get price list by ID",
             description = "Retrieve a specific price list by its ID for managers."
     )
@@ -590,9 +588,9 @@ public class ManagerController {
     public void updatePriceList(@PathVariable int id,
                                 @RequestBody @Valid PriceListUpdatePayload payload) {
         priceListService.updatePriceList(id, payload);
-    }
+    }*/
 
-    @Operation(
+    /*@Operation(
             summary = "Get all price lists for a testing service",
             description = "Retrieve all price lists for a specific testing service with pagination, sorting, and ordering options."
     )
@@ -602,7 +600,7 @@ public class ManagerController {
 
     public void deletePriceList(@PathVariable int id) {
         priceListService.deletePriceList(id);
-    }
+    }*/
 
 
     /// //////////////////////// API UPLOAD IMAGE /////////////////////////////////////

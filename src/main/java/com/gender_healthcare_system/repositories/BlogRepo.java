@@ -17,20 +17,26 @@ import java.util.Optional;
 public interface BlogRepo extends JpaRepository<Blog, Integer> {
 
     @Query("SELECT new com.gender_healthcare_system.dtos.todo.BlogDTO" +
-            "(b.blogId, b.author, b.title, b.content, b.createdAt, b.status) " +
+            "(b.blogId, b.title, b.content, b.createdAt, b.status) " +
             "FROM Blog b " +
             "WHERE b.blogId = :id")
     Optional<BlogDTO> getBlogDetailsById(int id);
 
+    @Query("SELECT new com.gender_healthcare_system.entities.todo.Blog" +
+            "(b.blogId, b.title, b.content, b.createdAt, b.status) " +
+            "FROM Blog b " +
+            "WHERE b.blogId = :id")
+    Optional<Blog> getBlogDumpById(int id);
+
     @Query("SELECT new com.gender_healthcare_system.dtos.todo.BlogDTO" +
-            "(b.blogId, b.author, b.title, b.content, b.createdAt, b.status) " +
+            "(b.blogId, b.title, b.content, b.createdAt, b.status) " +
             "FROM Blog b " +
             "WHERE b.blogId = :id " +
             "AND b.status = com.gender_healthcare_system.entities.enu.BlogStatus.ACTIVE")
     Optional<BlogDTO> getBlogDetailsActiveById(int id);
 
     @Query("SELECT new com.gender_healthcare_system.dtos.todo.BlogDTO" +
-            "(b.blogId, b.author, b.title, b.content, b.createdAt, b.status) " +
+            "(b.blogId, b.title, b.content, b.createdAt, b.status) " +
             "FROM Blog b")
     Page<BlogDTO> getAllBlogs(Pageable pageable);
 

@@ -50,11 +50,10 @@ public class CustomerService implements ICustomerService {
     }
 
     public CustomerDTO getCustomerForManagerById(int id) throws JsonProcessingException {
-        CustomerDTO customerDetails = accountRepo.getCustomerDetailsById(id)
+
+        return accountRepo.getCustomerDetailsById(id)
                 .orElseThrow(() -> new AppException(404,
                         "Customer not found with ID " + id));
-
-        return customerDetails;
     }
 
     public CustomerPeriodDetailsDTO getFemaleCustomerPeriodDetails

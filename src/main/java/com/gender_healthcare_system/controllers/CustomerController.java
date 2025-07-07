@@ -29,6 +29,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -54,8 +55,6 @@ public class CustomerController {
 
     private final TestingServiceResultService testingServiceResultService;
 
-    private final PriceListService priceListService;
-
     private final ConsultantService consultantService;
 
     private final CertificateService certificateService;
@@ -76,7 +75,7 @@ public class CustomerController {
             description = "Allows a customer to log in and receive a JWT token for authentication."
     )
     @PostMapping("/login")
-    public ResponseEntity<String> login(@RequestBody @Valid LoginRequest loginRequest) {
+    public ResponseEntity<Map<String, Object>> login(@RequestBody @Valid LoginRequest loginRequest) {
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(loginRequest.getUsername(),
                         loginRequest.getPassword())
@@ -103,11 +102,16 @@ public class CustomerController {
         LoginResponse loginDetails = customerService.getCustomerLoginDetails(id);
         //loginDetails.setUsername(loginRequest.getUsername());
 
+        Map<String, Object> responseMap = new HashMap<>();
+
         String jwtToken = jwtService.generateToken(id, loginRequest.getUsername(),
                 account.getRolename(), loginDetails.getFullname(), loginDetails.getEmail());
         //loginDetails.setToken(jwtToken);
+        responseMap.put("Customer ID", id);
+        responseMap.put("JWT token", jwtToken);
 
-        return ResponseEntity.ok(jwtToken);
+        //return ResponseEntity.ok(jwtToken);
+        return ResponseEntity.ok(responseMap);
     }
 
     @Operation(
@@ -205,7 +209,7 @@ public class CustomerController {
                 .getAllTestingServicesForCustomer(page, sort, order));
     }
 
-    @Operation(
+    /*@Operation(
             summary = "Get Testing Service by ID",
             description = "Retrieve details of a specific testing service by its ID."
     )
@@ -217,7 +221,7 @@ public class CustomerController {
 
         return ResponseEntity.ok(
                 priceListService.getPriceListForTestingService(serviceId));
-    }
+    }*/
 
     //get testing templates for a testing service
     @GetMapping("/testing-services/test-templates/{serviceId}")
@@ -338,6 +342,20 @@ public class CustomerController {
     public ResponseEntity<List<CertificateDTO>> getConsultantCertificates
             (@PathVariable int consultantId) {
         return ResponseEntity.ok(certificateService.getConsultantCertificates(consultantId));
+    }
+
+    @Operation(
+            summary = "Get Consultation Types for Customer",
+            description = "Retrieve all consultation types a customer " +
+                    "can choose from when booking consultation."
+    )
+    //Get consultations by customer ID
+    @GetMapping("/consultations/consultation-types")
+    @PreAuthorize("hasAuthority('ROLE_CUSTOMER')")
+    public ResponseEntity<List<String>> getAllConsultationTypesForCustomer() {
+
+        return ResponseEntity.ok
+                (consultationService.getAllConsultationTypesForCustomer());
     }
 
     @Operation(

@@ -51,6 +51,19 @@ public class SecurityConfig {
             "/api/v1/blogs/public/**"
     };
 
+    private static final String[] BLOG_COMMENT_3_ROLES_ENDPOINTS = {
+            "/api/v1/blogs/comments/blogId/{blogId}",
+            "/api/v1/blogs/comments/commentId/{commentId}/subComments",
+
+    };
+
+    private static final String[] BLOG_COMMENT_2_ROLES_ENDPOINTS = {
+            "/api/v1/blogs/comments/blogId/{blogId}/create",
+            "/api/v1/blogs/comments/commentId/{commentId}/create-subComment",
+            "/api/v1/blogs/comments/commentId/{commentId}/edit",
+
+    };
+
     // Các API cần quyền CUSTOMER
     private static final String[] CUSTOMER_AUTHLIST = {
             "/api/v1/customer/profile/**",
@@ -80,7 +93,9 @@ public class SecurityConfig {
             "/api/v1/manager/testing-services/**",
             "/api/v1/manager/testing-service-forms/**",
             "/api/v1/manager/price-lists/**",
-            "/api/v1/manager/image/**"
+            "/api/v1/manager/image/**",
+            "/api/v1/blogs/comments/commentId/{commentId}/remove"
+
     };
 
     // Các API cần quyền STAFF
@@ -109,7 +124,11 @@ public class SecurityConfig {
                         .requestMatchers(STAFF_AUTHLIST).hasAuthority("ROLE_STAFF")
                         .requestMatchers(CONSULTANT_AUTHLIST).hasAuthority("ROLE_CONSULTANT")
                         .requestMatchers(CUSTOMER_AUTHLIST).hasAuthority("ROLE_CUSTOMER")
-                        //.requestMatchers(CONSULTATION_AUTHLIST).hasAnyAuthority("ROLE_CUSTOMER", "ROLE_CONSULTANT") //Consultation API accessible by both CUSTOMER and CONSULTANT
+                        .requestMatchers(BLOG_COMMENT_3_ROLES_ENDPOINTS)
+                        .hasAnyAuthority("ROLE_MANAGER", "ROLE_CUSTOMER",
+                                "ROLE_CONSULTANT")
+                        .requestMatchers(BLOG_COMMENT_2_ROLES_ENDPOINTS)
+                        .hasAnyAuthority("ROLE_CUSTOMER", "ROLE_CONSULTANT")
                         .anyRequest().authenticated()
                 )
                 .sessionManagement(sess -> sess

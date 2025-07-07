@@ -95,6 +95,7 @@ public class AdminController {
             summary = "Get statistics of consultations",
             description = "Get statistics about consultations within a specified number of days (default 30)."
     )
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     @GetMapping("/statistic-reports/consultations")
     public ResponseEntity<List<StatisticResponseDTO>> getConsultationsStatistics(
             @RequestParam(defaultValue = "30") int periodByDays) {
@@ -106,6 +107,7 @@ public class AdminController {
             summary = "Get statistics of testing service bookings",
             description = "Get statistics about testing service bookings within a specified number of days (default 30)."
     )
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     @GetMapping("/statistic-reports/testing-service-bookings")
     public ResponseEntity<List<StatisticResponseDTO>> getTestingBookingsStatistics
             (@RequestParam(defaultValue = "30") int periodDays) {
@@ -118,6 +120,7 @@ public class AdminController {
             summary = "Get total number of users",
             description = "Returns the total count of users in the system."
     )
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     @GetMapping("/statistic-reports/users/count")
     public ResponseEntity<?> getTotalUserCount() {
         long count = reportService.getTotalUserCount();

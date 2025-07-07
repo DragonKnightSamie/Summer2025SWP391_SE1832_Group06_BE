@@ -45,7 +45,7 @@ public interface TestingServiceBookingRepo extends JpaRepository<TestingServiceB
             "tsb.realEndTime, tsb.status) " +
             "FROM TestingServiceBooking tsb " +
             "WHERE tsb.serviceBookingId = :id")
-    Optional<TestingServiceBooking> getTestingServiceBookingStatusById(@Param("id") int id);
+    Optional<TestingServiceBooking> getTestingServiceBookingById(@Param("id") int id);
 
     //get all TestingServiceBooking (only entity)
     @Query("SELECT new com.gender_healthcare_system.dtos.todo.TestingServiceBookingDTO" +

@@ -6,10 +6,7 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.gender_healthcare_system.dtos.todo.ConsultationDTO;
 import com.gender_healthcare_system.dtos.todo.ConsultantScheduleDTO;
 import com.gender_healthcare_system.dtos.user.CustomerPeriodDetailsDTO;
-import com.gender_healthcare_system.entities.enu.ConsultationStatus;
-import com.gender_healthcare_system.entities.enu.Gender;
-import com.gender_healthcare_system.entities.enu.PaymentStatus;
-import com.gender_healthcare_system.entities.enu.Rating;
+import com.gender_healthcare_system.entities.enu.*;
 import com.gender_healthcare_system.entities.todo.Consultation;
 import com.gender_healthcare_system.entities.todo.ConsultationPayment;
 import com.gender_healthcare_system.entities.user.Account;
@@ -34,9 +31,8 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
@@ -50,11 +46,9 @@ public class ConsultationService {
     public ConsultationDTO getConsultationById(int id)
             throws JsonProcessingException {
 
-        ConsultationDTO consultation = consultationRepo
+        return consultationRepo
                 .getConsultationDetailsById(id)
                 .orElseThrow(() -> new AppException(404, "Consultation not found"));
-
-        return consultation;
     }
 
     public ConsultationDTO getConsultationByIdForCustomer(int id) {
@@ -62,6 +56,12 @@ public class ConsultationService {
         return consultationRepo
                 .getConsultationDetailsByIdForCustomer(id)
                 .orElseThrow(() -> new AppException(404, "Consultation not found"));
+    }
+
+    public List<String> getAllConsultationTypesForCustomer(){
+        return Arrays.stream(ConsultationType.values())
+                .map(Enum::name)
+                .collect(Collectors.toList());
     }
 
     //getConsultationByCustomerId
@@ -177,9 +177,8 @@ public class ConsultationService {
         consultation.setExpectedStartTime(payload.getExpectedStartTime());
         LocalDateTime expectedEndTime = payload.getExpectedStartTime().plusHours(1);
         consultation.setExpectedEndTime(expectedEndTime);
-        consultation.setDescription(payload.getDescription()); //thêm description
+        consultation.setConsultationType(payload.getConsultationType());
         consultation.setStatus(ConsultationStatus.CONFIRMED);
-        consultation.setRating(Rating.AVERAGE);
         consultation.setCustomer(customer);
         consultation.setConsultant(consultant);
 
@@ -209,11 +208,16 @@ public class ConsultationService {
 
     @Transactional
     public void reScheduleConsultation(int consultationId, ConsultationConfirmPayload payload) {
-        boolean consultationExist = consultationRepo.existsById(consultationId);
 
-        if(!consultationExist){
+        Consultation consultation = consultationRepo
+                .findConsultationById(consultationId)
+                .orElseThrow(() -> new AppException(404, "Consultation not found"));
 
-            throw new AppException(404, "Consultation not found");
+        if (consultation.getStatus() == ConsultationStatus.COMPLETED
+                || consultation.getStatus() == ConsultationStatus.CANCELLED) {
+
+            throw new AppException
+                    (400, "Cannot reschedule a completed or cancelled consultation");
         }
 
         boolean consultationTimeConflict = consultationRepo
@@ -246,11 +250,52 @@ public class ConsultationService {
 
     @Transactional
     public void completeConsultation(ConsultationCompletePayload payload) {
-        boolean consultationExist = consultationRepo.existsById(payload.getConsultationId());
 
-        if(!consultationExist){
+        Consultation consultation = consultationRepo
+                .findConsultationById(payload.getConsultationId())
+                .orElseThrow(() -> new AppException(404, "Consultation not found with ID " +
+                        payload.getConsultationId()));
 
-            throw new AppException(404, "Consultation not found");
+        ConsultationStatus consultationStatus = consultation.getStatus();
+
+        if (consultationStatus == ConsultationStatus.COMPLETED
+                || consultationStatus == ConsultationStatus.CANCELLED) {
+
+            throw new AppException
+                    (400, "Consultation is already completed " +
+                            "or has been cancelled");
+        }
+
+        boolean validateRealStartTime =
+                payload.getRealStartTime().isBefore(consultation.getExpectedStartTime())
+                        || payload.getRealStartTime().isAfter(consultation.getExpectedEndTime())
+                        || payload.getRealStartTime().isEqual(consultation.getExpectedEndTime()) ;
+
+        if(validateRealStartTime){
+
+            throw new AppException(400, "Real Start Time cannot be " +
+                    "before Expected Start Time or equal to or after Expected End Time");
+        }
+
+        boolean validateRealEndTime =
+                payload.getRealEndTime().isBefore(consultation.getExpectedStartTime())
+                        || payload.getRealEndTime().isAfter(consultation.getExpectedEndTime())
+                        || payload.getRealEndTime().isEqual(consultation.getExpectedStartTime()) ;
+
+        if(validateRealEndTime){
+
+            throw new AppException(400, "Real End Time cannot be " +
+                    "before or equal to Expected Start Time or after Expected End Time");
+        }
+
+        long startAndEndTimeDifference =
+                ChronoUnit.MINUTES.between(payload.getRealStartTime(), payload.getRealEndTime());
+
+        if(startAndEndTimeDifference < 20){
+
+            throw new AppException(400,
+                    "Real End time must be at least 20 minute later " +
+                            "compared to Real Start time");
         }
 
         consultationRepo.completeConsultation(payload, ConsultationStatus.COMPLETED);

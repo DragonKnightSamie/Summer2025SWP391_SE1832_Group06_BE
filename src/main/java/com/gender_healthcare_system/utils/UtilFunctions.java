@@ -228,4 +228,33 @@ public class UtilFunctions {
         }
     }
 
+    /*public static void validatePeriodDetails(Gender gender, GenderSpecificDetails details){
+
+        if(gender == Gender.MALE && details != null){
+            throw new AppException(400, "Gender MALE cannot have period details");
+        }
+
+        if(gender == Gender.FEMALE && details == null){
+            throw new AppException(400, "Gender FEMALE must have period details");
+        }
+
+        if(details != null){
+
+            if(Boolean.TRUE.equals(details.getHasMenstrualCycle()) &&
+                    (details.getCycleLengthDays() == null ||
+                            details.getLastCycleStart() == null)){
+
+                throw new AppException(400,
+                        "Cycle details are required when hasMenstrualCycle is true");
+            }
+
+            if(Boolean.FALSE.equals(details.getHasMenstrualCycle()) &&
+                    (details.getCycleLengthDays() != null ||
+                            details.getLastCycleStart() != null)){
+
+                throw new AppException(400,
+                        "Cycle details are not required when hasMenstrualCycle is false");
+            }
+        }
+    }*/
 }

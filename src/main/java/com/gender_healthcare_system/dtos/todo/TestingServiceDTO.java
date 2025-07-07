@@ -22,21 +22,25 @@ public class TestingServiceDTO implements Serializable {
 
     private String description;
 
+    private Long priceAmount;
+
+    private String priceDescription;
+
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private TestingServiceStatus status;
 
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private TestingServiceTypeDTO testingServiceType;
 
-    @JsonInclude(JsonInclude.Include.NON_NULL)
-    private PriceListDTO priceList;
-
     public TestingServiceDTO(Integer serviceId, String serviceName,
-                             String serviceTypeName, String description) {
+                             String serviceTypeName, String description,
+                             Long priceAmount, String priceDescription) {
         this.serviceId = serviceId;
         this.serviceName = serviceName;
         this.serviceTypeName = serviceTypeName;
         this.description = description;
+        this.priceAmount = priceAmount;
+        this.priceDescription = priceDescription;
     }
 
     public TestingServiceDTO(Integer serviceId, String serviceName, String serviceTypeName,
@@ -50,13 +54,14 @@ public class TestingServiceDTO implements Serializable {
 
     public TestingServiceDTO(Integer serviceId, String serviceName, String description,
                              TestingServiceStatus status,
-                             TestingServiceTypeDTO testingServiceType,
-                             PriceListDTO priceList) {
+                             Long priceAmount, String priceDescription,
+                             TestingServiceTypeDTO testingServiceType) {
         this.serviceId = serviceId;
         this.serviceName = serviceName;
         this.description = description;
         this.status = status;
         this.testingServiceType = testingServiceType;
-        this.priceList = priceList;
+        this.priceAmount = priceAmount;
+        this.priceDescription = priceDescription;
     }
 }

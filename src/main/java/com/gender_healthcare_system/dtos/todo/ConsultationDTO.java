@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.gender_healthcare_system.dtos.user.CustomerDTO;
 import com.gender_healthcare_system.entities.enu.ConsultationStatus;
+import com.gender_healthcare_system.entities.enu.ConsultationType;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -22,6 +23,8 @@ public class ConsultationDTO implements Serializable {
     @JsonInclude(JsonInclude.Include.NON_NULL)
     @Schema(type = "string", example = "Phan Hoang S")
     private String consultantName;
+
+    private ConsultationType consultationType;
 
     @Schema(type = "string", example = "05/06/2025 07:00")
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy HH:mm")
@@ -53,13 +56,15 @@ public class ConsultationDTO implements Serializable {
 
     private ConsultationPaymentDTO payment;
 
-    public ConsultationDTO(Integer consultationId, LocalDateTime createdAt,
+    public ConsultationDTO(Integer consultationId, ConsultationType consultationType,
+                           LocalDateTime createdAt,
                            LocalDateTime expectedStartTime, LocalDateTime realStartTime,
                            LocalDateTime expectedEndTime, LocalDateTime realEndTime,
                            String description, ConsultationStatus status,
                            CustomerDTO customerDetails,
                            ConsultationPaymentDTO payment) {
         this.consultationId = consultationId;
+        this.consultationType = consultationType;
         this.createdAt = createdAt;
         this.expectedStartTime = expectedStartTime;
         this.realStartTime = realStartTime;
@@ -71,7 +76,8 @@ public class ConsultationDTO implements Serializable {
         this.payment = payment;
     }
 
-    public ConsultationDTO(Integer consultationId, LocalDateTime createdAt,
+    public ConsultationDTO(Integer consultationId, ConsultationType consultationType,
+                           LocalDateTime createdAt,
                            LocalDateTime expectedStartTime,
                            LocalDateTime realStartTime,
                            LocalDateTime expectedEndTime,
@@ -79,6 +85,7 @@ public class ConsultationDTO implements Serializable {
                            ConsultationStatus status,
                            ConsultationPaymentDTO payment) {
         this.consultationId = consultationId;
+        this.consultationType = consultationType;
         this.createdAt = createdAt;
         this.expectedStartTime = expectedStartTime;
         this.realStartTime = realStartTime;
@@ -90,12 +97,14 @@ public class ConsultationDTO implements Serializable {
     }
 
     public ConsultationDTO(Integer consultationId, String consultantName,
+                           ConsultationType consultationType,
                            LocalDateTime createdAt, LocalDateTime expectedStartTime,
                            LocalDateTime realStartTime, LocalDateTime expectedEndTime,
                            LocalDateTime realEndTime, String description,
                            ConsultationStatus status) {
         this.consultationId = consultationId;
         this.consultantName = consultantName;
+        this.consultationType = consultationType;
         this.createdAt = createdAt;
         this.expectedStartTime = expectedStartTime;
         this.realStartTime = realStartTime;

@@ -25,8 +25,8 @@ public class TestingService implements Serializable {
     @Column(name = "service_id")
     private int serviceId;
 
-    @OneToMany(mappedBy = "testingService", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private List<PriceList> priceLists;
+    /*@OneToMany(mappedBy = "testingService", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<PriceList> priceLists;*/
 
     //Relationship with TestingServiceType
     @ManyToOne(fetch = FetchType.LAZY)
@@ -38,8 +38,15 @@ public class TestingService implements Serializable {
     private String serviceName;
 
     @Nationalized
-    @Column(name = "description", length = 255)
+    @Column(name = "description")
     private String description;
+
+    @Column(name = "price_amount", nullable = false)
+    private long priceAmount;
+
+    @Nationalized
+    @Column(name = "price_description")
+    private String priceDescription;
 
     @Column(name = "status", nullable = false, length = 15)
     @Enumerated(EnumType.STRING)
@@ -65,7 +72,7 @@ public class TestingService implements Serializable {
         this.status = status;
     }
 
-    public void addPriceItem(PriceList item){
+    /*public void addPriceItem(PriceList item){
         item.setTestingService(this);
 
         if(this.priceLists == null){
@@ -73,5 +80,5 @@ public class TestingService implements Serializable {
         }
 
         this.priceLists.add(item);
-    }
+    }*/
 }

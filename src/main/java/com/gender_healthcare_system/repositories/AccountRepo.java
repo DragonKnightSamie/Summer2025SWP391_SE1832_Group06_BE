@@ -35,6 +35,17 @@ public interface AccountRepo extends JpaRepository<Account, Integer> {
             "com.gender_healthcare_system.entities.enu.AccountStatus.ACTIVE")
     Optional<Account> findActiveAccountByUsername(String username);
 
+    @Query("SELECT new com.gender_healthcare_system.entities.user.Account(" +
+            "a.accountId, r, a.username, a.password, a.status, a.fullName, " +
+            "a.email, a.phone, a.address, a.dateOfBirth, a.gender, a.avatarUrl ) " +
+            "FROM Account AS a " +
+            "JOIN a.role AS r " +
+            "WHERE a.accountId = :accountID " +
+            "AND a.status = :status " +
+            "AND r.name IN ('Consultant', 'Customer')")
+    Optional<Account> getActiveConsultantOrCustomerAccountById
+            (int accountID, AccountStatus status);
+
     // Find accounts by role
     @Query("SELECT a FROM Account a WHERE a.role.name = :roleName")
     List<Account> findAccountsByRole(String roleName);

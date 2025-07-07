@@ -17,9 +17,6 @@ public class BlogDTO implements Serializable {
     private Integer blogId;
 
     @Nationalized
-    private String author;
-
-    @Nationalized
     private String title;
 
     @Nationalized
@@ -31,14 +28,9 @@ public class BlogDTO implements Serializable {
 
     private BlogStatus status;
 
-    public BlogDTO(Integer blogId,
-                   String author,
-                   String title,
-                   String content,
-                   LocalDateTime createdAt,
+    public BlogDTO(Integer blogId, String title, String content, LocalDateTime createdAt,
                    BlogStatus status) {
         this.blogId = blogId;
-        this.author = author;
         this.title = title;
         this.content = content;
         this.createdAt = createdAt;
