@@ -67,7 +67,7 @@ public class TestingServiceBookingService {
     public Map<String, Object> getAllTestingServiceBookingsByCustomerId
     (int customerId, int page, String sortField, String sortOrder) {
 
-        boolean customerExist = accountRepo.existsByAccountIdAndRole_Name(customerId, "CUSTOMER");
+        boolean customerExist = accountRepo.existsByAccountIdAndRole_RoleName(customerId, "CUSTOMER");
         if (!customerExist) {
             throw new AppException(404, "Customer not found with ID: " + customerId);
         }
@@ -104,7 +104,7 @@ public class TestingServiceBookingService {
     public Map<String, Object> getAllTestingServiceBookingsByStaffId
             (int staffId, int page, String sortField, String sortOrder) {
 
-        boolean staffExist = accountRepo.existsByAccountIdAndRole_Name(staffId, "STAFF");
+        boolean staffExist = accountRepo.existsByAccountIdAndRole_RoleName(staffId, "STAFF");
         if (!staffExist) {
             throw new AppException(404, "Staff not found with ID: " + staffId);
         }

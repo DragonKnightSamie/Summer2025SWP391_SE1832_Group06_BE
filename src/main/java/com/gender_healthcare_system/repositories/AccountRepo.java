@@ -1,10 +1,10 @@
 package com.gender_healthcare_system.repositories;
 
 import com.gender_healthcare_system.dtos.login.LoginResponse;
-import com.gender_healthcare_system.dtos.user.ConsultantDTO;
-import com.gender_healthcare_system.dtos.user.CustomerDTO;
 import com.gender_healthcare_system.dtos.user.ManagerDTO;
 import com.gender_healthcare_system.dtos.user.StaffDTO;
+import com.gender_healthcare_system.dtos.user.ConsultantDTO;
+import com.gender_healthcare_system.dtos.user.CustomerDTO;
 import com.gender_healthcare_system.entities.enu.AccountStatus;
 import com.gender_healthcare_system.entities.enu.Gender;
 import com.gender_healthcare_system.entities.user.Account;
@@ -42,102 +42,102 @@ public interface AccountRepo extends JpaRepository<Account, Integer> {
             "JOIN a.role AS r " +
             "WHERE a.accountId = :accountID " +
             "AND a.status = :status " +
-            "AND r.name IN ('Consultant', 'Customer')")
+            "AND r.roleName IN ('Consultant', 'Customer')")
     Optional<Account> getActiveConsultantOrCustomerAccountById
             (int accountID, AccountStatus status);
 
     // Find accounts by role
-    @Query("SELECT a FROM Account a WHERE a.role.name = :roleName")
+    @Query("SELECT a FROM Account a WHERE a.role.roleName = :roleName")
     List<Account> findAccountsByRole(String roleName);
 
-    @Query("SELECT a FROM Account a WHERE a.role.name = :roleName")
+    @Query("SELECT a FROM Account a WHERE a.role.roleName = :roleName")
     Page<Account> findAccountsByRole(String roleName, Pageable pageable);
 
     // Manager specific queries
     @Query("SELECT new com.gender_healthcare_system.dtos.login.LoginResponse(" +
             "a.accountId, a.fullName, a.email) FROM Account a " +
-            "WHERE a.accountId = :id AND a.role.name = 'MANAGER'")
+            "WHERE a.accountId = :id AND a.role.roleName = 'MANAGER'")
     LoginResponse getManagerLoginDetails(int id);
 
     @Query("SELECT new com.gender_healthcare_system.dtos.user.ManagerDTO" +
             "(a.accountId, a.username, a.password, " +
             "a.fullName, a.phone, a.email, a.address, a.status) " +
             "FROM Account a " +
-            "WHERE a.accountId = :id AND a.role.name = 'MANAGER'")
+            "WHERE a.accountId = :id AND a.role.roleName = 'MANAGER'")
     Optional<ManagerDTO> getManagerDetailsById(int id);
 
     @Query("SELECT new com.gender_healthcare_system.dtos.user.ManagerDTO" +
             "(a.accountId, a.username, a.password, " +
             "a.fullName, a.phone, a.email, a.address, a.status) " +
             "FROM Account a " +
-            "WHERE a.role.name = 'MANAGER'")
+            "WHERE a.role.roleName = 'MANAGER'")
     Page<ManagerDTO> getAllManagers(Pageable pageable);
 
     // Staff specific queries
     @Query("SELECT new com.gender_healthcare_system.dtos.login.LoginResponse(" +
             "a.accountId, a.fullName, a.email) FROM Account a " +
-            "WHERE a.accountId = :id AND a.role.name = 'STAFF'")
+            "WHERE a.accountId = :id AND a.role.roleName = 'STAFF'")
     LoginResponse getStaffLoginDetails(int id);
 
     @Query("SELECT new com.gender_healthcare_system.dtos.user.StaffDTO" +
             "(a.accountId, a.username, a.password, " +
             "a.fullName, a.phone, a.email, a.address, a.status) " +
             "FROM Account a " +
-            "WHERE a.accountId = :id AND a.role.name = 'STAFF'")
+            "WHERE a.accountId = :id AND a.role.roleName = 'STAFF'")
     Optional<StaffDTO> getStaffDetailsById(int id);
 
     @Query("SELECT new com.gender_healthcare_system.dtos.user.StaffDTO" +
             "(a.accountId, a.username, a.password, " +
             "a.fullName, a.phone, a.email, a.address, a.status) " +
             "FROM Account a " +
-            "WHERE a.role.name = 'STAFF'")
+            "WHERE a.role.roleName = 'STAFF'")
     Page<StaffDTO> getAllStaff(Pageable pageable);
 
     // Consultant specific queries
     @Query("SELECT new com.gender_healthcare_system.dtos.login.LoginResponse(" +
             "a.accountId, a.fullName, a.email) FROM Account a " +
-            "WHERE a.accountId = :id AND a.role.name = 'CONSULTANT'")
+            "WHERE a.accountId = :id AND a.role.roleName = 'CONSULTANT'")
     LoginResponse getConsultantLoginDetails(int id);
 
     @Query("SELECT new com.gender_healthcare_system.dtos.user.ConsultantDTO" +
             "(a.accountId, a.username, a.password, " +
             "a.fullName, a.avatarUrl, a.phone, a.email, a.address, a.status) " +
             "FROM Account a " +
-            "WHERE a.accountId = :id AND a.role.name = 'CONSULTANT'")
+            "WHERE a.accountId = :id AND a.role.roleName = 'CONSULTANT'")
     Optional<ConsultantDTO> getConsultantDetailsById(int id);
 
     @Query("SELECT new com.gender_healthcare_system.dtos.user.ConsultantDTO" +
             "(a.accountId, a.username, a.password, " +
             "a.fullName, a.avatarUrl, a.phone, a.email, a.address, a.status) " +
             "FROM Account a " +
-            "WHERE a.role.name = 'CONSULTANT'")
+            "WHERE a.role.roleName = 'CONSULTANT'")
     Page<ConsultantDTO> getAllConsultants(Pageable pageable);
 
     @Query("SELECT new com.gender_healthcare_system.dtos.user.ConsultantDTO" +
             "(a.accountId, a.username, a.password, " +
             "a.fullName, a.avatarUrl, a.phone, a.email, a.address, a.status) " +
             "FROM Account a " +
-            "WHERE a.role.name = 'CONSULTANT' AND a.status = :status")
+            "WHERE a.role.roleName = 'CONSULTANT' AND a.status = :status")
     List<ConsultantDTO> getAllConsultantsForCustomer(AccountStatus status);
 
     // Customer specific queries
     @Query("SELECT new com.gender_healthcare_system.dtos.login.LoginResponse(" +
             "a.accountId, a.fullName, a.email) FROM Account a " +
-            "WHERE a.accountId = :id AND a.role.name = 'CUSTOMER'")
+            "WHERE a.accountId = :id AND a.role.roleName = 'CUSTOMER'")
     LoginResponse getCustomerLoginDetails(int id);
 
     @Query("SELECT new com.gender_healthcare_system.dtos.user.CustomerDTO" +
             "(a.accountId, a.username, a.password, " +
             "a.fullName, a.dateOfBirth, a.gender, a.email, a.phone, a.address, a.status) " +
             "FROM Account a " +
-            "WHERE a.accountId = :id AND a.role.name = 'CUSTOMER'")
+            "WHERE a.accountId = :id AND a.role.roleName = 'CUSTOMER'")
     Optional<CustomerDTO> getCustomerDetailsById(int id);
 
     @Query("SELECT new com.gender_healthcare_system.dtos.user.CustomerDTO" +
             "(a.accountId, a.username, a.password, " +
             "a.fullName, a.dateOfBirth, a.gender, a.email, a.phone, a.address, a.status) " +
             "FROM Account a " +
-            "WHERE a.role.name = 'CUSTOMER'")
+            "WHERE a.role.roleName = 'CUSTOMER'")
     Page<CustomerDTO> getAllCustomers(Pageable pageable);
 
     // Update methods
@@ -147,7 +147,7 @@ public interface AccountRepo extends JpaRepository<Account, Integer> {
             "a.phone = :#{#payload.phone}, " +
             "a.email = :#{#payload.email}, " +
             "a.address = :#{#payload.address} " +
-            "WHERE a.accountId = :id AND a.role.name = 'MANAGER'")
+            "WHERE a.accountId = :id AND a.role.roleName = 'MANAGER'")
     void updateManagerById(int id, @Param("payload") ManagerUpdatePayload payload);
 
     @Modifying
@@ -156,7 +156,7 @@ public interface AccountRepo extends JpaRepository<Account, Integer> {
             "a.phone = :#{#payload.phone}, " +
             "a.email = :#{#payload.email}, " +
             "a.address = :#{#payload.address} " +
-            "WHERE a.accountId = :id AND a.role.name = 'STAFF'")
+            "WHERE a.accountId = :id AND a.role.roleName = 'STAFF'")
     void updateStaffById(int id, @Param("payload") StaffUpdatePayload payload);
 
     @Modifying
@@ -166,7 +166,7 @@ public interface AccountRepo extends JpaRepository<Account, Integer> {
             "a.phone = :#{#payload.phone}, " +
             "a.email = :#{#payload.email}, " +
             "a.address = :#{#payload.address} " +
-            "WHERE a.accountId = :id AND a.role.name = 'CONSULTANT'")
+            "WHERE a.accountId = :id AND a.role.roleName = 'CONSULTANT'")
     void updateConsultantById(int id, @Param("payload") ConsultantUpdatePayload payload);
 
     @Modifying
@@ -177,7 +177,7 @@ public interface AccountRepo extends JpaRepository<Account, Integer> {
             "a.email = :#{#payload.email}, " +
             "a.phone = :#{#payload.phone}, " +
             "a.address = :#{#payload.address} " +
-            "WHERE a.accountId = :id AND a.role.name = 'CUSTOMER'")
+            "WHERE a.accountId = :id AND a.role.roleName = 'CUSTOMER'")
     void updateCustomerById(int id, @Param("payload") CustomerUpdatePayload payload);
 
     //update password of an account
@@ -206,7 +206,9 @@ public interface AccountRepo extends JpaRepository<Account, Integer> {
 
     boolean existsAccountByAccountIdAndStatus(int accountId, AccountStatus status);
 
-    boolean existsByAccountIdAndRole_Name(int accountId, String name);
+    boolean existsByAccountIdAndRole_RoleName(int accountId, String roleName);
+
+    boolean existsByAccountIdAndRole_RoleNameAndStatus(int accountId, String roleName, AccountStatus status);
 
     // Get customer gender by booking ID
     @Query("SELECT a.gender FROM Account a " +
@@ -218,7 +220,7 @@ public interface AccountRepo extends JpaRepository<Account, Integer> {
     @Query("SELECT COUNT(b), a.accountId FROM Account a " +
             "LEFT JOIN TestingServiceBooking b ON b.staff.accountId = a.accountId " +
             "AND CAST(b.expectedStartTime AS DATE) = :date " +
-            "WHERE a.role.name = 'STAFF' " +
+            "WHERE a.role.roleName = 'STAFF' " +
             "GROUP BY a.accountId " +
             "ORDER BY COUNT(b) ASC")
     List<Object[]> findStaffOrderedByLeastTests(@Param("date") LocalDate date);

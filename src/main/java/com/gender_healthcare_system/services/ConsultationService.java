@@ -33,6 +33,7 @@ import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
 import java.util.stream.Collectors;
+import com.gender_healthcare_system.entities.enu.AccountStatus;
 
 @Service
 @AllArgsConstructor
@@ -138,7 +139,7 @@ public class ConsultationService {
     public ConsultantScheduleDTO getConsultantScheduleByDate
             (int consultantId, LocalDate date) {
 
-        boolean consultantExist = accountRepo.existsById(consultantId);
+        boolean consultantExist = accountRepo.existsByAccountIdAndRole_RoleNameAndStatus(consultantId, "CONSULTANT", AccountStatus.ACTIVE);
 
         if(!consultantExist){
 

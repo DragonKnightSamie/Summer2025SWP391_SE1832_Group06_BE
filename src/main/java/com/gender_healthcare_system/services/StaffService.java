@@ -71,7 +71,7 @@ public class StaffService  {
 
     @Transactional
     public void updateStaffAccount(int staffId, StaffUpdatePayload payload) {
-        boolean staffExist = accountRepo.existsByAccountIdAndRole_Name(staffId, "STAFF");
+        boolean staffExist = accountRepo.existsByAccountIdAndRole_RoleName(staffId, "STAFF");
 
         if(!staffExist) {
 

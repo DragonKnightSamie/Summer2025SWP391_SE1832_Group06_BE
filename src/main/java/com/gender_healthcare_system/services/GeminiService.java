@@ -84,11 +84,15 @@ public class GeminiService {
         return reply;
     }
 
+        //lấy lại lịch sử chat
+        public List<GeminiRequestDTO.Content> getSessionHistory(String userId) {
+            return userSessions.getOrDefault(userId, new ArrayList<>());
+        }
+        
+    //xóa 
     public void clearSession(String userId) {
         userSessions.remove(userId);
         }
 
-    public List<GeminiRequestDTO.Content> getSessionHistory(String userId) {
-        return userSessions.getOrDefault(userId, new ArrayList<>());
-    }
+    
 }

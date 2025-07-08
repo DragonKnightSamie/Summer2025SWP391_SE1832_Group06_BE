@@ -4,7 +4,6 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.gender_healthcare_system.entities.enu.AccountStatus;
-import com.gender_healthcare_system.entities.enu.Gender;
 import com.gender_healthcare_system.entities.todo.Certificate;
 import com.gender_healthcare_system.entities.user.Account;
 import com.gender_healthcare_system.entities.user.AccountInfoDetails;
@@ -74,7 +73,7 @@ public class AccountService implements IAccountService {
 
     @Transactional
     public void updateCustomerStatus(int customerId, AccountStatus status){
-        boolean customerExist = accountRepo.existsByAccountIdAndRole_Name(customerId, "CUSTOMER");
+        boolean customerExist = accountRepo.existsByAccountIdAndRole_RoleName(customerId, "CUSTOMER");
 
         if(!customerExist) {
             throw new AppException(404, "Customer not found");
@@ -90,7 +89,7 @@ public class AccountService implements IAccountService {
 
     @Transactional
     public void deleteCustomerById(int customerId) {
-        boolean customerExist = accountRepo.existsByAccountIdAndRole_Name(customerId, "CUSTOMER");
+        boolean customerExist = accountRepo.existsByAccountIdAndRole_RoleName(customerId, "CUSTOMER");
 
         if(!customerExist) {
             throw new AppException(404, "Customer not found");
@@ -138,7 +137,7 @@ public class AccountService implements IAccountService {
 
     @Transactional
     public void updateConsultantStatus(int consultantId, AccountStatus status){
-        boolean consultantExist = accountRepo.existsByAccountIdAndRole_Name(consultantId, "CONSULTANT");
+        boolean consultantExist = accountRepo.existsByAccountIdAndRole_RoleNameAndStatus(consultantId, "CONSULTANT", AccountStatus.ACTIVE);
 
         if(!consultantExist) {
             throw new AppException(404, "Consultant not found");
@@ -154,7 +153,7 @@ public class AccountService implements IAccountService {
 
     @Transactional
     public void deleteConsultantById(int consultantId) {
-        boolean consultantExist = accountRepo.existsByAccountIdAndRole_Name(consultantId, "CONSULTANT");
+        boolean consultantExist = accountRepo.existsByAccountIdAndRole_RoleName(consultantId, "CONSULTANT");
 
         if(!consultantExist) {
             throw new AppException(404, "Consultant not found");
@@ -171,7 +170,7 @@ public class AccountService implements IAccountService {
 
     @Transactional
     public void deleteManagerById(int managerId) {
-        boolean managerExist = accountRepo.existsByAccountIdAndRole_Name(managerId, "MANAGER");
+        boolean managerExist = accountRepo.existsByAccountIdAndRole_RoleName(managerId, "MANAGER");
 
         if(!managerExist) {
             throw new AppException(404, "Manager not found");
@@ -188,7 +187,7 @@ public class AccountService implements IAccountService {
 
     @Transactional
     public void deleteStaffById(int staffId) {
-        boolean staffExist = accountRepo.existsByAccountIdAndRole_Name(staffId, "STAFF");
+        boolean staffExist = accountRepo.existsByAccountIdAndRole_RoleName(staffId, "STAFF");
 
         if(!staffExist) {
             throw new AppException(404, "Staff not found");

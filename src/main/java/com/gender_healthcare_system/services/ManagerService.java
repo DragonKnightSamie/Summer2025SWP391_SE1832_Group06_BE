@@ -69,7 +69,7 @@ public class ManagerService {
 
     @Transactional
     public void updateManagerDetails(int id, ManagerUpdatePayload payload){
-        boolean managerExist = accountRepo.existsByAccountIdAndRole_Name(id, "MANAGER");
+        boolean managerExist = accountRepo.existsByAccountIdAndRole_RoleName(id, "MANAGER");
 
         if(!managerExist){
 

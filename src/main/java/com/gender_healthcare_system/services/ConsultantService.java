@@ -104,8 +104,7 @@ public class ConsultantService {
 
     @Transactional
     public void updateConsultantDetails(int consultantId, ConsultantUpdatePayload payload) {
-        boolean consultantExist =
-                accountRepo.existsById(consultantId);
+        boolean consultantExist = accountRepo.existsByAccountIdAndRole_RoleNameAndStatus(consultantId, "CONSULTANT", AccountStatus.ACTIVE);
 
         if (!consultantExist) {
 

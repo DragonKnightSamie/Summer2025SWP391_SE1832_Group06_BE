@@ -23,9 +23,9 @@ public class AccountInfoDetails implements UserDetails {
         PasswordEncoder encoder = new BCryptPasswordEncoder();
         this.password = encoder.encode(userInfo.getPassword());
 
-        this.rolename = userInfo.getRole().getName();
+        this.rolename = userInfo.getRole().getRoleName();
         // đảm bảo userInfo.getRole() != null
-        String roleName = "ROLE_" + userInfo.getRole().getName().toUpperCase();
+        String roleName = "ROLE_" + userInfo.getRole().getRoleName().toUpperCase();
 
         this.authorities = Collections.singletonList(new SimpleGrantedAuthority(roleName));
     }
