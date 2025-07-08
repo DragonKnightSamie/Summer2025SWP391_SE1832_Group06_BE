@@ -206,6 +206,8 @@ public interface AccountRepo extends JpaRepository<Account, Integer> {
 
     boolean existsAccountByAccountIdAndStatus(int accountId, AccountStatus status);
 
+    boolean existsByAccountIdAndRole_Name(int accountId, String name);
+
     // Get customer gender by booking ID
     @Query("SELECT a.gender FROM Account a " +
             "JOIN TestingServiceBooking b ON b.customer.accountId = a.accountId " +

@@ -74,7 +74,7 @@ public class AccountService implements IAccountService {
 
     @Transactional
     public void updateCustomerStatus(int customerId, AccountStatus status){
-        boolean customerExist = accountRepo.existsById(customerId);
+        boolean customerExist = accountRepo.existsByAccountIdAndRole_Name(customerId, "CUSTOMER");
 
         if(!customerExist) {
             throw new AppException(404, "Customer not found");
@@ -90,7 +90,7 @@ public class AccountService implements IAccountService {
 
     @Transactional
     public void deleteCustomerById(int customerId) {
-        boolean customerExist = accountRepo.existsById(customerId);
+        boolean customerExist = accountRepo.existsByAccountIdAndRole_Name(customerId, "CUSTOMER");
 
         if(!customerExist) {
             throw new AppException(404, "Customer not found");
@@ -138,7 +138,7 @@ public class AccountService implements IAccountService {
 
     @Transactional
     public void updateConsultantStatus(int consultantId, AccountStatus status){
-        boolean consultantExist = accountRepo.existsById(consultantId);
+        boolean consultantExist = accountRepo.existsByAccountIdAndRole_Name(consultantId, "CONSULTANT");
 
         if(!consultantExist) {
             throw new AppException(404, "Consultant not found");
@@ -154,7 +154,7 @@ public class AccountService implements IAccountService {
 
     @Transactional
     public void deleteConsultantById(int consultantId) {
-        boolean consultantExist = accountRepo.existsById(consultantId);
+        boolean consultantExist = accountRepo.existsByAccountIdAndRole_Name(consultantId, "CONSULTANT");
 
         if(!consultantExist) {
             throw new AppException(404, "Consultant not found");
@@ -171,7 +171,7 @@ public class AccountService implements IAccountService {
 
     @Transactional
     public void deleteManagerById(int managerId) {
-        boolean managerExist = accountRepo.existsById(managerId);
+        boolean managerExist = accountRepo.existsByAccountIdAndRole_Name(managerId, "MANAGER");
 
         if(!managerExist) {
             throw new AppException(404, "Manager not found");
@@ -188,7 +188,7 @@ public class AccountService implements IAccountService {
 
     @Transactional
     public void deleteStaffById(int staffId) {
-        boolean staffExist = accountRepo.existsById(staffId);
+        boolean staffExist = accountRepo.existsByAccountIdAndRole_Name(staffId, "STAFF");
 
         if(!staffExist) {
             throw new AppException(404, "Staff not found");
