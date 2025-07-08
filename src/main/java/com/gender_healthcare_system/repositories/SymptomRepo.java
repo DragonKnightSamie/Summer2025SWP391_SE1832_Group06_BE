@@ -9,7 +9,7 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public interface SymptomRepo extends JpaRepository<Symptom, Long> {
+public interface SymptomRepo extends JpaRepository<Symptom, Integer> {
 
     @Query("SELECT new com.gender_healthcare_system.dtos.todo.SymptomDTO(" +
             "s.symptomId, s.name, s.description, s.recordedAt, s.customer) " +

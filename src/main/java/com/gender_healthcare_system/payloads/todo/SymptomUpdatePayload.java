@@ -1,7 +1,12 @@
 package com.gender_healthcare_system.payloads.todo;
 
+import com.gender_healthcare_system.entities.enu.SymptomSeverity;
+import com.gender_healthcare_system.entities.enu.SymptomStatus;
+
 import jakarta.validation.constraints.NotBlank;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
 @NoArgsConstructor
@@ -11,4 +16,7 @@ public class SymptomUpdatePayload {
     private String name;
 
     private String description;
+    private SymptomSeverity severity;
+    private SymptomStatus status;
+    private String note;
 }

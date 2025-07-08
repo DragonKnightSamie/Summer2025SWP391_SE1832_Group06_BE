@@ -11,7 +11,7 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public interface MenstrualCycleRepo extends JpaRepository<MenstrualCycle, Long> {
+public interface MenstrualCycleRepo extends JpaRepository<MenstrualCycle, Integer> {
 
     // SELECT DTO by customerId
     @Query("SELECT new com.gender_healthcare_system.dtos.todo.MenstrualCycleDTO(" +
@@ -30,6 +30,6 @@ public interface MenstrualCycleRepo extends JpaRepository<MenstrualCycle, Long> 
             "m.isTrackingEnabled = :#{#payload.isTrackingEnabled}, " +
             "m.updatedAt = CURRENT_TIMESTAMP " +
             "WHERE m.cycleId = :cycleId")
-    void updateCycleById(@Param("cycleId") Long cycleId,
+    void updateCycleById(@Param("cycleId") Integer cycleId,
                          @Param("payload") MenstrualCycleUpdatePayload payload);
 }

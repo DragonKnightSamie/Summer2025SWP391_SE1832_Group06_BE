@@ -33,14 +33,15 @@ public class SymptomService {
 
         Symptom saved = symptomRepo.save(symptom);
         return new SymptomDTO(saved.getSymptomId(), saved.getName(),
-                saved.getDescription(), saved.getRecordedAt(), saved.getCustomer());
+                saved.getDescription(), saved.getRecordedAt(), saved.getCustomer(),
+                saved.getSeverity(), saved.getStatus(), saved.getNote());
     }
 
     public List<SymptomDTO> getSymptomsByCustomerId(int customerId) {
         return symptomRepo.getSymptomsByCustomerId(customerId);
     }
 
-    public void updateSymptom(Long id, SymptomUpdatePayload payload) {
+    public void updateSymptom(Integer id, SymptomUpdatePayload payload) {
         Symptom existing = symptomRepo.findById(id)
                 .orElseThrow(() -> new AppException(404, "Symptom not found"));
 
@@ -51,7 +52,7 @@ public class SymptomService {
         symptomRepo.save(existing);
     }
 
-    public void deleteSymptom(Long id) {
+    public void deleteSymptom(Integer id) {
         if (!symptomRepo.existsById(id)) {
             throw new AppException(404, "Symptom not found");
         }

@@ -479,7 +479,7 @@ public class CustomerController {
     @PutMapping("/menstrual-cycles/update/{cycleId}")
     @PreAuthorize("hasAuthority('ROLE_CUSTOMER')")
     public ResponseEntity<String> updateCycleById(
-            @PathVariable Long cycleId,
+            @PathVariable Integer cycleId,
             @RequestBody @Valid MenstrualCycleUpdatePayload payload
     ) {
         menstrualCycleService.updateCycleById(cycleId, payload);
@@ -507,7 +507,7 @@ public class CustomerController {
     @PutMapping("/symptoms/update/{id}")
     @PreAuthorize("hasAuthority('ROLE_CUSTOMER')")
     public ResponseEntity<String> updateSymptom(
-            @PathVariable Long id,
+            @PathVariable Integer id,
             @RequestBody @Valid SymptomUpdatePayload payload) {
         symptomService.updateSymptom(id, payload);
         return ResponseEntity.ok("Symptom updated successfully");
@@ -516,7 +516,7 @@ public class CustomerController {
     @Operation(summary = "Delete Symptom", description = "Delete a previously recorded symptom")
     @DeleteMapping("/symptoms/delete/{id}")
     @PreAuthorize("hasAuthority('ROLE_CUSTOMER')")
-    public ResponseEntity<String> deleteSymptom(@PathVariable Long id) {
+    public ResponseEntity<String> deleteSymptom(@PathVariable Integer id) {
         symptomService.deleteSymptom(id);
         return ResponseEntity.ok("Symptom deleted successfully");
     }

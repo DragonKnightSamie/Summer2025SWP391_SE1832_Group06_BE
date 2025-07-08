@@ -43,7 +43,10 @@ public class MenstrualCycleService {
                 saved.getIsTrackingEnabled(),
                 saved.getCreatedAt(),
                 saved.getUpdatedAt(),
-                saved.getCustomer()
+                saved.getCustomer(),
+                saved.getSeverity(),
+                saved.getStatus(),
+                saved.getNote()
         );
     }
 
@@ -56,12 +59,11 @@ public class MenstrualCycleService {
     }
 
     @Transactional
-    public void updateCycleById(Long cycleId, MenstrualCycleUpdatePayload payload) {
+    public void updateCycleById(Integer cycleId, MenstrualCycleUpdatePayload payload) {
         boolean exists = menstrualCycleRepo.existsById(cycleId);
         if (!exists) {
             throw new AppException(404, "Menstrual cycle not found");
         }
-
         menstrualCycleRepo.updateCycleById(cycleId, payload);
     }
 }
