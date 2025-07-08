@@ -26,9 +26,7 @@ public class TestingServiceType implements Serializable {
     @Column(name = "service_type_id")
     private int serviceTypeId;
 
-    @Nationalized
-    @Column(name = "service_type_name", nullable = false, length = 100)
-    private String serviceTypeName;
+    // Đã xóa serviceTypeName
 
     @Nationalized
     @Column(name = "title", nullable = false, length = 100)
@@ -50,10 +48,9 @@ public class TestingServiceType implements Serializable {
     //@MapsId // ✅ Map serviceTypeId = serviceResultId
     private List<TestingServiceResult> testingServiceResultList;
 
-    public TestingServiceType(int serviceTypeId, String serviceTypeName, String title,
+    public TestingServiceType(int serviceTypeId, String title,
                               String content, LocalDateTime createdAt) {
         this.serviceTypeId = serviceTypeId;
-        this.serviceTypeName = serviceTypeName;
         this.title = title;
         this.content = content;
         this.createdAt = createdAt;

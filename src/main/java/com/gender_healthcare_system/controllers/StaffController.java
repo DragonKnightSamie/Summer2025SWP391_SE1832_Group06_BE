@@ -1,5 +1,24 @@
 package com.gender_healthcare_system.controllers;
 
+import java.util.List;
+import java.util.Map;
+
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.gender_healthcare_system.dtos.login.LoginResponse;
 import com.gender_healthcare_system.dtos.todo.TestingServiceBookingDTO;
@@ -9,23 +28,17 @@ import com.gender_healthcare_system.entities.todo.TestingServicePayment;
 import com.gender_healthcare_system.entities.user.AccountInfoDetails;
 import com.gender_healthcare_system.payloads.login.LoginRequest;
 import com.gender_healthcare_system.payloads.todo.TestingServiceBookingCompletePayload;
-import com.gender_healthcare_system.payloads.todo.TestingServiceBookingConfirmPayload;
-import com.gender_healthcare_system.services.*;
+import com.gender_healthcare_system.services.JwtService;
+import com.gender_healthcare_system.services.MomoPaymentService;
+import com.gender_healthcare_system.services.StaffService;
+import com.gender_healthcare_system.services.TestingServiceBookingService;
+import com.gender_healthcare_system.services.TestingServicePaymentService;
+import com.gender_healthcare_system.services.TestingServiceResultService;
+
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
-
-import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
-import java.util.Map;
 
 @Tag(name = "Staff APIs", description = "APIs for managing staff functionalities")
 @RestController
@@ -203,13 +216,15 @@ public class StaffController {
                 testingServiceResultService.getAllServiceResultsByBookingId(testingBookingId));
     }
 
-    //get by id
+    @Operation(
+            summary = "Get Testing Service Booking by ID",
+            description = "Retrieve details of a specific testing service booking by its ID."
+    )
     @GetMapping("/testing-service-bookings/{id}")
     @PreAuthorize("hasAuthority('ROLE_STAFF')")
     public ResponseEntity<TestingServiceBookingDTO>
     getTestingServiceBookingById(@PathVariable int id) throws JsonProcessingException {
-        return ResponseEntity.ok(
-                testingServiceBookingService.getTestingServiceBookingDetailsById(id));
+        return ResponseEntity.ok(testingServiceBookingService.getTestingServiceBookingDetailsById(id));
     }
 
     //Lấy danh sách (có phân trang + sắp xếp)
@@ -248,18 +263,24 @@ public class StaffController {
         return ResponseEntity.ok("Testing Service Booking confirmed successfully");
     }*/
 
-    // Update
+    @Operation(
+            summary = "Complete Testing Service Booking",
+            description = "Mark a testing service booking as completed and upload the result."
+    )
     @PutMapping("/testing-service-bookings/{id}/complete")
     @PreAuthorize("hasAuthority('ROLE_STAFF')")
     public ResponseEntity<String> completeTestingServiceBooking(
             @PathVariable int id,
             @RequestBody @Valid TestingServiceBookingCompletePayload payload)
             throws JsonProcessingException {
-
         testingServiceBookingService.completeTestingServiceBooking(id, payload);
-        return ResponseEntity.ok("Testing Service Booking marked as completed successfully");
+        return ResponseEntity.ok("Testing Service Booking marked as completed");
     }
 
+    @Operation(
+            summary = "Delete Testing Service Booking",
+            description = "Delete a specific testing service booking by its ID."
+    )
     @DeleteMapping("/testing-service-bookings/{id}")
     @PreAuthorize("hasAuthority('ROLE_STAFF')")
     public ResponseEntity<String> deleteTestingServiceBooking(@PathVariable int id) {

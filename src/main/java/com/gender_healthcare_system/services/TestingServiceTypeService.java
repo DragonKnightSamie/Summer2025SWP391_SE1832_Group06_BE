@@ -85,7 +85,6 @@ public class TestingServiceTypeService {
 
         TestingServiceType newServiceType = new TestingServiceType();
 
-        newServiceType.setServiceTypeName(payload.getServiceTypeName());
         newServiceType.setTitle(payload.getTitle());
         newServiceType.setContent(payload.getContent());
 

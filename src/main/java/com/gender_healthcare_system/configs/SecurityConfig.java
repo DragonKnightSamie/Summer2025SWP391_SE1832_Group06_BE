@@ -1,7 +1,7 @@
 package com.gender_healthcare_system.configs;
 
-import com.gender_healthcare_system.filters.JwtAuthFilter;
-import lombok.AllArgsConstructor;
+import java.util.List;
+
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -20,7 +20,9 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
-import java.util.List;
+import com.gender_healthcare_system.filters.JwtAuthFilter;
+
+import lombok.AllArgsConstructor;
 
 @Configuration
 @EnableWebSecurity
@@ -119,6 +121,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(AUTH_WHITELIST).permitAll()
                         .requestMatchers(BLOG_PUBLIC_ENDPOINTS).permitAll()
+                        .requestMatchers("/api/chat/**").authenticated() //chỉ cần đăng nhập là chat dc
                         .requestMatchers(ADMIN_AUTHLIST).hasAuthority("ROLE_ADMIN")
                         .requestMatchers(MANAGER_AUTHLIST).hasAuthority("ROLE_MANAGER")
                         .requestMatchers(STAFF_AUTHLIST).hasAuthority("ROLE_STAFF")

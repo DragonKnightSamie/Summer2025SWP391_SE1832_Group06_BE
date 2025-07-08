@@ -377,28 +377,24 @@ public class ManagerController {
     }
 
     @Operation(
-            summary = "Create new customer account",
-            description = "Allows managers to create a new customer account with initial information."
+            summary = "Update customer account status",
+            description = "Allows managers to update the status of an existing customer account."
     )
-    //Manager change customer status
     @PostMapping("/customers/update_status/{customerId}")
     @PreAuthorize("hasAuthority('ROLE_MANAGER')")
     public ResponseEntity<?> updateCustomerStatus
             (@PathVariable int customerId, @RequestParam AccountStatus status) {
-
         accountService.updateCustomerStatus(customerId, status);
         return ResponseEntity.ok("Customer account status updated successfully");
     }
 
     @Operation(
-            summary = "Create new customer account",
-            description = "Allows managers to create a new customer account with initial information."
+            summary = "Delete customer account",
+            description = "Allows managers to delete a customer account from the system by ID."
     )
-    //Manager delete customer from system
     @DeleteMapping("/customers/delete/{id}")
     @PreAuthorize("hasAuthority('ROLE_MANAGER')")
     public ResponseEntity<?> deleteCustomerAccount(@PathVariable int id) {
-
         accountService.deleteCustomerById(id);
         return ResponseEntity.ok("Customer account deleted successfully");
     }
@@ -484,10 +480,9 @@ public class ManagerController {
         return ResponseEntity.ok("Testing Service result updated successfully");
     }*/
     @Operation(
-            summary = "Update testing service result",
-            description = "Allows managers to update an existing testing service result by its ID."
+            summary = "Delete testing service result",
+            description = "Allows managers to delete a testing service result by its ID."
     )
-    //delete testing service result
     @DeleteMapping("/testing-services-results/{id}")
     @PreAuthorize("hasAuthority('ROLE_MANAGER')")
     public ResponseEntity<String> deleteTestingServiceResult(@PathVariable int id) {

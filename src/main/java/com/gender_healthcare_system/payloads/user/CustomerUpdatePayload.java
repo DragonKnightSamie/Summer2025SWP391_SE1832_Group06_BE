@@ -4,6 +4,7 @@ import com.gender_healthcare_system.entities.enu.Gender;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.Nationalized;
 
 import java.time.LocalDate;
 
@@ -11,11 +12,13 @@ import java.time.LocalDate;
 @AllArgsConstructor
 @NoArgsConstructor
 public class CustomerUpdatePayload {
+    @Nationalized
     private String fullName;
     private LocalDate dateOfBirth;
     private Gender gender;
     private String phone;
     private String email;
+    @Nationalized
     private String address;
     private String password;
 }

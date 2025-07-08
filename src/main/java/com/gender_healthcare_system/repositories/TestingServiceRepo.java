@@ -22,7 +22,7 @@ public interface TestingServiceRepo extends JpaRepository<TestingService, Intege
             "ts.serviceId, ts.serviceName, ts.description, ts.status, " +
             "ts.priceAmount, ts.priceDescription, " +
             "new com.gender_healthcare_system.dtos.todo.TestingServiceTypeDTO" +
-            "(tst.serviceTypeId, tst.serviceTypeName, tst.title, tst.content, tst.createdAt)) " +
+            "(tst.serviceTypeId, tst.title, tst.content, tst.createdAt)) " +
             "FROM TestingService ts " +
             "LEFT JOIN ts.testingServiceType tst " +
             "WHERE ts.serviceId = :id")
@@ -37,14 +37,14 @@ public interface TestingServiceRepo extends JpaRepository<TestingService, Intege
 
     // Get all TestingServices (only entity)
     @Query("SELECT new com.gender_healthcare_system.dtos.todo.TestingServiceDTO" +
-            "(ts.serviceId, ts.serviceName, tst.serviceTypeName, ts.description, ts.status) " +
+            "(ts.serviceId, ts.serviceName, ts.description, ts.status) " +
             "FROM TestingService ts " +
             "JOIN ts.testingServiceType tst")
     Page<TestingServiceDTO> getAllTestingServices(Pageable pageable);
 
     // Get all TestingServices (only entity)
     @Query("SELECT new com.gender_healthcare_system.dtos.todo.TestingServiceDTO" +
-            "(ts.serviceId, ts.serviceName, tst.serviceTypeName, ts.description, " +
+            "(ts.serviceId, ts.serviceName, ts.description, " +
             "ts.priceAmount, ts.priceDescription) " +
             "FROM TestingService ts " +
             "JOIN ts.testingServiceType tst")

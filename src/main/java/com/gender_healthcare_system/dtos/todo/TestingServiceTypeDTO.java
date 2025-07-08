@@ -15,8 +15,6 @@ public class TestingServiceTypeDTO implements Serializable {
 
     private Integer serviceTypeId;
 
-    private String serviceTypeName;
-
     private String title;
 
     private String content;
@@ -25,10 +23,8 @@ public class TestingServiceTypeDTO implements Serializable {
     @Schema(type = "string", example = "05/06/2025 07:00")
     private LocalDateTime createdAt;
 
-    public TestingServiceTypeDTO(int serviceTypeId, String serviceTypeName,
-                                 String title, String content, LocalDateTime createdAt) {
+    public TestingServiceTypeDTO(int serviceTypeId, String title, String content, LocalDateTime createdAt) {
         this.serviceTypeId = serviceTypeId;
-        this.serviceTypeName = serviceTypeName;
         this.title = title;
         this.content = content;
         this.createdAt = createdAt;

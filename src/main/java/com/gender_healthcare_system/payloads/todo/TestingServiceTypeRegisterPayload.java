@@ -19,10 +19,7 @@ import java.util.List;
 @NoArgsConstructor
 public class TestingServiceTypeRegisterPayload implements Serializable {
 
-    @Nationalized
-    @NotBlank(message = "Service Type Name is required")
-    @Length(min = 5, max = 100, message = "Service type name must be between 5 and 100 characters")
-    private String serviceTypeName;
+    // Đã xóa serviceTypeName
 
     @Nationalized
     @NotBlank(message = "Title is required")

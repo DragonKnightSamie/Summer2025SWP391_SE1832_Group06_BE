@@ -7,6 +7,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.validator.constraints.Length;
+import org.hibernate.annotations.Nationalized;
 
 import java.io.Serializable;
 
@@ -25,6 +26,7 @@ public class StaffRegisterPayload implements Serializable {
 
     @NotBlank(message = "Full name is required")
     @Length(min = 3,max = 70, message = "Full name must be between 3 and 70 characters")
+    @Nationalized
     private String fullName;
 
     @NotBlank(message = "Phone is required")
@@ -38,6 +40,7 @@ public class StaffRegisterPayload implements Serializable {
 
     @NotBlank(message = "Address is required")
     @Length(min = 3, max = 100, message = "Address must be between 3 and 100 characters")
+    @Nationalized
     private String address;
 
 

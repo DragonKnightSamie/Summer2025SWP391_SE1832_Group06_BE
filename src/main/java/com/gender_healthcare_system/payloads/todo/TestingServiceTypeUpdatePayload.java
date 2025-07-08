@@ -19,10 +19,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 public class TestingServiceTypeUpdatePayload implements Serializable {
 
-    @Nationalized
-    @NotBlank(message = "Service type name is required")
-    @Length(min = 5, max = 100, message = "Service type name must be between 5 and 100 characters")
-    private String serviceTypeName;
+    // Đã xóa serviceTypeName
 
     @Nationalized
     @NotBlank(message = "Title is required")

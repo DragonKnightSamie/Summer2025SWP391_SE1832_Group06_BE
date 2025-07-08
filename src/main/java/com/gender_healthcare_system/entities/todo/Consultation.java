@@ -50,7 +50,7 @@ public class Consultation implements Serializable {
     @Column(name = "comment", length = 255)
     private String comment;
 
-    @Column(name = "consultation_type", nullable = false, length = 15)
+    @Column(name = "consultation_type", nullable = false, length = 30)
     @Enumerated(EnumType.STRING)
     private ConsultationType consultationType;
 
