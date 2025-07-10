@@ -20,13 +20,9 @@ public class TestingService implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    //@SequenceGenerator(name = "testing_service_seq", sequenceName = "testing_service_sequence", allocationSize = 1)
-    //@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "testing_service_seq")
     @Column(name = "service_id")
     private int serviceId;
 
-    /*@OneToMany(mappedBy = "testingService", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private List<PriceList> priceLists;*/
 
     //Relationship with TestingServiceType
     @ManyToOne(fetch = FetchType.LAZY)
@@ -56,14 +52,6 @@ public class TestingService implements Serializable {
     @OneToMany(mappedBy = "testingService", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<TestingServiceBooking> testingServiceHistories;
 
-    //One-to-one relationship with ConsultationPaymentDTO
-    /*@OneToOne
-    @MapsId
-    @JoinColumn(name = "service_id", nullable = false)
-    private ConsultationPayment testingServiceForm;*/
-
-    //Relationship with PriceList
-
     public TestingService(int serviceId, String serviceName,
                           String description, TestingServiceStatus status) {
         this.serviceId = serviceId;
@@ -72,13 +60,4 @@ public class TestingService implements Serializable {
         this.status = status;
     }
 
-    /*public void addPriceItem(PriceList item){
-        item.setTestingService(this);
-
-        if(this.priceLists == null){
-            this.priceLists = new ArrayList<>();
-        }
-
-        this.priceLists.add(item);
-    }*/
 }

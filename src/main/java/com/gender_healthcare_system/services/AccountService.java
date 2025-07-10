@@ -9,7 +9,6 @@ import com.gender_healthcare_system.entities.user.Account;
 import com.gender_healthcare_system.entities.user.AccountInfoDetails;
 import com.gender_healthcare_system.entities.user.Role;
 import com.gender_healthcare_system.exceptions.AppException;
-import com.gender_healthcare_system.iservices.IAccountService;
 import com.gender_healthcare_system.payloads.todo.CertificateRegisterPayload;
 import com.gender_healthcare_system.payloads.user.ConsultantRegisterPayload;
 import com.gender_healthcare_system.payloads.user.CustomerPayload;
@@ -23,6 +22,7 @@ import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
@@ -30,7 +30,7 @@ import java.util.Optional;
 
 @Service
 @AllArgsConstructor
-public class AccountService implements IAccountService {
+public class AccountService implements UserDetailsService {
 
     private final AccountRepo accountRepo;
     private final RoleRepo roleRepo;
@@ -87,7 +87,7 @@ public class AccountService implements IAccountService {
         }
     }
 
-    @Transactional
+    /*@Transactional
     public void deleteCustomerById(int customerId) {
         boolean customerExist = accountRepo.existsByAccountIdAndRole_RoleName(customerId, "CUSTOMER");
 
@@ -96,7 +96,7 @@ public class AccountService implements IAccountService {
         }
 
         accountRepo.deleteAccountById(customerId);
-    }
+    }*/
 
     public void createConsultantAccount(ConsultantRegisterPayload payload){
         Account account = new Account();
@@ -137,7 +137,8 @@ public class AccountService implements IAccountService {
 
     @Transactional
     public void updateConsultantStatus(int consultantId, AccountStatus status){
-        boolean consultantExist = accountRepo.existsByAccountIdAndRole_RoleNameAndStatus(consultantId, "CONSULTANT", AccountStatus.ACTIVE);
+        boolean consultantExist = accountRepo.existsByAccountIdAndRole_RoleName
+                (consultantId, "CONSULTANT");
 
         if(!consultantExist) {
             throw new AppException(404, "Consultant not found");
@@ -151,7 +152,7 @@ public class AccountService implements IAccountService {
         }
     }
 
-    @Transactional
+    /*@Transactional
     public void deleteConsultantById(int consultantId) {
         boolean consultantExist = accountRepo.existsByAccountIdAndRole_RoleName(consultantId, "CONSULTANT");
 
@@ -160,7 +161,7 @@ public class AccountService implements IAccountService {
         }
 
         accountRepo.deleteAccountById(consultantId);
-    }
+    }*/
 
     //createManagerAccount by Admin
     @Transactional
@@ -168,7 +169,7 @@ public class AccountService implements IAccountService {
         createStaffOrManagerAccount(payload, 2); // MANAGER role
     }
 
-    @Transactional
+    /*@Transactional
     public void deleteManagerById(int managerId) {
         boolean managerExist = accountRepo.existsByAccountIdAndRole_RoleName(managerId, "MANAGER");
 
@@ -177,7 +178,7 @@ public class AccountService implements IAccountService {
         }
 
         accountRepo.deleteAccountById(managerId);
-    }
+    }*/
 
     //createStaffAccount by Manager
     @Transactional
@@ -185,7 +186,7 @@ public class AccountService implements IAccountService {
         createStaffOrManagerAccount(payload, 3); // STAFF role
     }
 
-    @Transactional
+    /*@Transactional
     public void deleteStaffById(int staffId) {
         boolean staffExist = accountRepo.existsByAccountIdAndRole_RoleName(staffId, "STAFF");
 
@@ -194,7 +195,7 @@ public class AccountService implements IAccountService {
         }
 
         accountRepo.deleteAccountById(staffId);
-    }
+    }*/
 
     // Common method for creating Staff or Manager accounts
     private void createStaffOrManagerAccount(Object payload, int roleId) {

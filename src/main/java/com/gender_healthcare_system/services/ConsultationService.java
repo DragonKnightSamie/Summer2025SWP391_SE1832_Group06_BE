@@ -156,8 +156,9 @@ public class ConsultationService {
     public void registerConsultation(ConsultationRegisterPayload payload) {
 
         boolean consultationExist = consultationRepo
-                .existsConsultationByConsultantAccountIdAndExpectedStartTime
-                        (payload.getConsultantId(), payload.getExpectedStartTime());
+                .existsConsultationByConsultantAccountIdAndExpectedStartTimeAndStatusNot
+                        (payload.getConsultantId(),
+                                payload.getExpectedStartTime(), ConsultationStatus.CANCELLED);
 
         if(consultationExist){
 
@@ -188,8 +189,14 @@ public class ConsultationService {
         ConsultationPayment consultationPayment = new ConsultationPayment();
 
         consultationPayment.setConsultation(consultation);
+        consultationPayment.setTransactionId(payload.getPayment().getTransactionId());
         consultationPayment.setAmount(payload.getPayment().getAmount());
         consultationPayment.setMethod(payload.getPayment().getMethod());
+        consultationPayment.setDescription(payload.getPayment().getDescription());
+
+        LocalDateTime createdAt = UtilFunctions.convertTimeStampToLocalDateTime
+                (payload.getPayment().getCreatedAtTimeStamp());
+        consultationPayment.setCreatedAt(createdAt);
         consultationPayment.setStatus(PaymentStatus.PAID);
 
         consultationPaymentRepo.saveAndFlush(consultationPayment);
@@ -222,8 +229,9 @@ public class ConsultationService {
         }
 
         boolean consultationTimeConflict = consultationRepo
-                .existsConsultationByConsultantAccountIdAndExpectedStartTime
-                        (payload.getConsultantId(), payload.getExpectedStartTime());
+                .existsConsultationByConsultantAccountIdAndExpectedStartTimeAndStatusNot
+                        (payload.getConsultantId(), payload.getExpectedStartTime(),
+                                ConsultationStatus.CANCELLED);
 
         if(consultationTimeConflict){
 

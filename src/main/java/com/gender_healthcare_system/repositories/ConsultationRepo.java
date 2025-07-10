@@ -124,8 +124,8 @@ public interface ConsultationRepo extends JpaRepository<Consultation, Integer> {
             "WHERE c.consultationId = :id")
     void cancelConsultation(int id);
 
-    boolean existsConsultationByConsultantAccountIdAndExpectedStartTime
-            (int consultantAccountId, LocalDateTime expectedStartTime);
+    boolean existsConsultationByConsultantAccountIdAndExpectedStartTimeAndStatusNot
+            (int consultantAccountId, LocalDateTime expectedStartTime, ConsultationStatus status);
 
     //report
     @Query("SELECT new com.gender_healthcare_system.dtos.report.StatisticResponseDTO" +

@@ -14,7 +14,10 @@ import java.io.Serializable;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "Consultation")
+@Table(name = "Consultation", uniqueConstraints = {
+        @UniqueConstraint(name = "ConsultantIdExpectedStartAndEndTimeUniqueIndex",
+        columnNames = {"consultant_id", "expected_start_time", "expected_end_time"})
+    })
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -22,10 +25,6 @@ public class Consultation implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    // @SequenceGenerator(name = "consultation_sequence", sequenceName =
-    // "consultation_sequence", allocationSize = 1)
-    // @GeneratedValue(strategy = GenerationType.SEQUENCE, generator =
-    // "consultation_sequence")
     @Column(name = "consultation_id")
     private int consultationId;
 
@@ -57,13 +56,13 @@ public class Consultation implements Serializable {
     @Column(name = "created_at", nullable = false, unique = true)
     private LocalDateTime createdAt;
 
-    @Column(name = "expected_start_time", nullable = false, unique = true)
+    @Column(name = "expected_start_time", nullable = false)
     private LocalDateTime expectedStartTime;
 
     @Column(name = "real_start_time")
     private LocalDateTime realStartTime;
 
-    @Column(name = "expected_end_time", nullable = false, unique = true)
+    @Column(name = "expected_end_time", nullable = false)
     private LocalDateTime expectedEndTime;
 
     @Column(name = "real_end_time")

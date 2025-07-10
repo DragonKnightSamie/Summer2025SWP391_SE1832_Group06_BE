@@ -43,7 +43,6 @@ public class SecurityConfig {
             "/v3/api-docs/**",
             "/swagger-ui/**",
             "/swagger-ui.html",
-            "/api/v1/momo/payment-transactions/**", //để tạm API của MoMo ở đây để test
             "/api/v1/admin/statistic-reports/**", //để tạm API báo cáo ở đây để test
             "/api/v1/vnpay/payment-transaction/**" //để tạm API báo cáo ở đây để test
     };

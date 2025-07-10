@@ -1,18 +1,10 @@
 package com.gender_healthcare_system.services;
 
-import com.gender_healthcare_system.configs.VNPayConfig;
-import com.gender_healthcare_system.payloads.todo.VNPayRefundPayload;
+import com.gender_healthcare_system.utils.VNPayUtil;
 import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpServlet;
 import org.springframework.stereotype.Service;
 
-import java.io.BufferedReader;
-import java.io.DataOutputStream;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.URL;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
@@ -33,10 +25,10 @@ public class VNPayService extends HttpServlet{
         String bankCode = "VNBANK";
         String locale = "vn";
 
-        String vnp_TxnRef = VNPayConfig.generateRandomNumber(8);
-        String vnp_IpAddr = VNPayConfig.getIpAddress(request);
+        String vnp_TxnRef = VNPayUtil.generateRandomNumber(8);
+        String vnp_IpAddr = VNPayUtil.getIpAddress(request);
 
-        String vnp_TmnCode = VNPayConfig.vnp_TmnCode;
+        String vnp_TmnCode = VNPayUtil.vnp_TmnCode;
 
         Map<String, String> vnp_Params = new HashMap<>();
         vnp_Params.put("vnp_Version", vnp_Version);
@@ -90,9 +82,9 @@ public class VNPayService extends HttpServlet{
             }
         }
         //String queryUrl = query.toString();
-        String vnp_SecureHash = VNPayConfig.hmacSHA512(VNPayConfig.secretKey, hashData.toString());
+        String vnp_SecureHash = VNPayUtil.hmacSHA512(VNPayUtil.secretKey, hashData.toString());
         query.append("&vnp_SecureHash=").append(vnp_SecureHash);
-        return VNPayConfig.vnp_PayUrl + "?" + query;
+        return VNPayUtil.vnp_PayUrl + "?" + query;
     }
 
     /*public String createTransactionRefundRequest
@@ -116,13 +108,13 @@ public class VNPayService extends HttpServlet{
         System.out.println("Param vnp_TransactionDate: " + request.getAttribute("vnp_TransactionDate"));
         System.out.println("Param vnp_Amount: " + request.getAttribute("vnp_Amount"));
 
-        String vnp_RequestId = VNPayConfig.getRandomNumber(8);
+        String vnp_RequestId = VNPayUtil.getRandomNumber(8);
         String vnp_Version = "2.1.0";
         String vnp_Command = "refund";
-        String vnp_TmnCode = VNPayConfig.vnp_TmnCode;
+        String vnp_TmnCode = VNPayUtil.vnp_TmnCode;
         String vnp_TransactionType = "02";
         //String vnp_TxnRef = (String) request.getAttribute("vnp_TxnRef");
-        String vnp_TxnRef = VNPayConfig.getRandomNumber(8);
+        String vnp_TxnRef = VNPayUtil.getRandomNumber(8);
 
         long amount = (long)request.getAttribute("vnp_Amount")*100;
         String vnp_Amount = String.valueOf(amount);
@@ -136,7 +128,7 @@ public class VNPayService extends HttpServlet{
         SimpleDateFormat formatter = new SimpleDateFormat("yyyyMMddHHmmss");
         String vnp_CreateDate = formatter.format(cld.getTime());
 
-        String vnp_IpAddr = VNPayConfig.getIpAddress(request);
+        String vnp_IpAddr = VNPayUtil.getIpAddress(request);
 
         Map<String, String> vnp_Params = new HashMap<>();
 
@@ -158,12 +150,12 @@ public class VNPayService extends HttpServlet{
                 vnp_TransactionType, vnp_TxnRef, vnp_Amount, vnp_TransactionNo, vnp_TransactionDate,
                 vnp_CreateBy, vnp_CreateDate, vnp_IpAddr, vnp_OrderInfo);
 
-        String vnp_SecureHash = VNPayConfig
-                .hmacSHA512(VNPayConfig.secretKey, hash_Data);
+        String vnp_SecureHash = VNPayUtil
+                .hmacSHA512(VNPayUtil.secretKey, hash_Data);
 
         vnp_Params.put("vnp_SecureHash", vnp_SecureHash);
 
-        URL url = new URL (VNPayConfig.vnp_ApiUrl);
+        URL url = new URL (VNPayUtil.vnp_ApiUrl);
         HttpURLConnection con = (HttpURLConnection)url.openConnection();
         con.setRequestMethod("POST");
         con.setRequestProperty("Content-Type", "application/json");
@@ -223,7 +215,7 @@ public class VNPayService extends HttpServlet{
             fields.remove("vnp_SecureHash");
         }
 
-        String signValue = VNPayConfig.hashAllFields(fields);
+        String signValue = VNPayUtil.hashAllFields(fields);
 
         if(signValue.equals(vnp_SecureHash)){
 

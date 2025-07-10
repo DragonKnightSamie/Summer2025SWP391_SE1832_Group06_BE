@@ -21,9 +21,6 @@ import java.time.LocalDateTime;
 public class ConsultationPayment implements Serializable {
 
     @Id
-    /*@SequenceGenerator(name = "consultation_payment_seq",
-            sequenceName = "consultation_payment_seq", allocationSize = 1)
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "consultation_payment_seq")*/
     @Column(name = "consultation_payment_id")
     private int consultationPaymentId;
 

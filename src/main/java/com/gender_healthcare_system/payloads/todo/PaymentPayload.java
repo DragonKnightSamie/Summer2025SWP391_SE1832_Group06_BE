@@ -33,4 +33,8 @@ public class PaymentPayload implements Serializable {
     @Size(min = 5, max = 100, message = "Description must be either " +
             "empty or between 5 to 100 characters")
     private String description;
+
+    @NotBlank(message = "Created at timestamp is required")
+    @Pattern(regexp = "\\d{14}", message = "Created at timestamp must be exactly 14 digits")
+    private String createdAtTimeStamp;
 }

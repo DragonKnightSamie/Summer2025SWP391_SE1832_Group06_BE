@@ -138,7 +138,7 @@ public class AdminController {
     @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     public ResponseEntity<Map<String, Object>> getAllManagers
     (@RequestParam(defaultValue = "0") int page,
-     @RequestParam(defaultValue = "managerId") String sort,
+     @RequestParam(defaultValue = "accountId") String sort,
      @RequestParam(defaultValue = "asc") String order) {
 
         return ResponseEntity.ok(managerService.getAllManagers(page, sort, order));

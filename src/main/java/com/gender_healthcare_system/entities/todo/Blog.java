@@ -23,10 +23,6 @@ public class Blog implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    // @SequenceGenerator(name = "blog_sequence", sequenceName = "blog_sequence",
-    // allocationSize = 1)
-    // @GeneratedValue(strategy = GenerationType.SEQUENCE, generator =
-    // "blog_sequence")
     @Column(name = "blog_id")
     private int blogId;
 

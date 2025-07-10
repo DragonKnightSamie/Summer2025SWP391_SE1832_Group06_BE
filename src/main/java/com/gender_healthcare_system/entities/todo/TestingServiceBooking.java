@@ -23,10 +23,6 @@ public class TestingServiceBooking implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    // @SequenceGenerator(name = "testing_service_booking_seq",
-    // sequenceName = "testing_service_booking_seq", allocationSize = 1)
-    // @GeneratedValue(strategy = GenerationType.SEQUENCE, generator =
-    // "testing_service_booking_seq")
     @Column(name = "service_booking_id")
     private int serviceBookingId;
 
@@ -50,11 +46,11 @@ public class TestingServiceBooking implements Serializable {
     private Account staff;
 
     @Nationalized
-    @Column(columnDefinition = "NVARCHAR(MAX)", name = "result")
+    @Column(columnDefinition = "nvarchar(MAX)", name = "result")
     private String result;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "rating", length = 15, nullable = false)
+    @Column(name = "rating", length = 15)
     private Rating rating;
 
     @Nationalized

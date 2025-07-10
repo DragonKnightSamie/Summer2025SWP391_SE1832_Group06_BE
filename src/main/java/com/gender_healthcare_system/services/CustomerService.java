@@ -1,8 +1,6 @@
 package com.gender_healthcare_system.services;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.gender_healthcare_system.dtos.login.LoginResponse;
 import com.gender_healthcare_system.dtos.user.CustomerDTO;
 
@@ -10,11 +8,9 @@ import com.gender_healthcare_system.dtos.user.CustomerPeriodDetailsDTO;
 import com.gender_healthcare_system.entities.enu.Gender;
 import com.gender_healthcare_system.entities.user.Account;
 import com.gender_healthcare_system.exceptions.AppException;
-import com.gender_healthcare_system.iservices.ICustomerService;
 import com.gender_healthcare_system.payloads.user.CustomerUpdatePayload;
 import com.gender_healthcare_system.repositories.AccountRepo;
 
-import com.gender_healthcare_system.utils.UtilFunctions;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -29,11 +25,10 @@ import java.util.Map;
 
 @Service
 @AllArgsConstructor
-public class CustomerService implements ICustomerService {
+public class CustomerService{
 
     private final AccountRepo accountRepo;
 
-    @Override
     public LoginResponse getCustomerLoginDetails(int id) {
         return accountRepo.getCustomerLoginDetails(id);
     }

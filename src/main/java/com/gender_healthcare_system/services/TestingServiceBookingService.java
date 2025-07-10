@@ -211,7 +211,11 @@ public class TestingServiceBookingService {
         testingServicePayment.setTransactionId(payload.getPayment().getTransactionId());
         testingServicePayment.setAmount(payload.getPayment().getAmount());
         testingServicePayment.setMethod(payload.getPayment().getMethod());
-        testingServicePayment.setCreatedAt(UtilFunctions.getCurrentDateTimeWithTimeZone());
+
+        LocalDateTime createdAt = UtilFunctions.convertTimeStampToLocalDateTime
+                (payload.getPayment().getCreatedAtTimeStamp());
+
+        testingServicePayment.setCreatedAt(createdAt);
         testingServicePayment.setDescription(payload.getPayment().getDescription());
         testingServicePayment.setStatus(PaymentStatus.PAID);
 

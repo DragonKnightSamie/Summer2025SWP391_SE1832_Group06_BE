@@ -11,11 +11,18 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
 
 public class UtilFunctions {
 
+    public static LocalDateTime convertTimeStampToLocalDateTime(String timeStamp){
+
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMddHHmmss");
+
+        return LocalDateTime.parse(timeStamp, formatter);
+    }
 
     public static LocalDateTime getCurrentDateTimeWithTimeZone(){
         ZoneId zone = ZoneId.of("Asia/Bangkok");

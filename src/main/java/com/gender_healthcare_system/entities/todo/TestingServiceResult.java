@@ -23,10 +23,6 @@ public class TestingServiceResult implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    //@SequenceGenerator(name = "testing_service_result_sequence",
-    //        sequenceName = "testing_service_result_sequence", allocationSize = 1)
-    //@GeneratedValue(strategy = GenerationType.SEQUENCE,
-    //        generator = "testing_service_result_sequence")
     @Column(name = "service_result_id")
     private int serviceResultId;
 

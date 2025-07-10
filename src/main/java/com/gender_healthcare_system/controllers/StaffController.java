@@ -29,7 +29,6 @@ import com.gender_healthcare_system.entities.user.AccountInfoDetails;
 import com.gender_healthcare_system.payloads.login.LoginRequest;
 import com.gender_healthcare_system.payloads.todo.TestingServiceBookingCompletePayload;
 import com.gender_healthcare_system.services.JwtService;
-import com.gender_healthcare_system.services.MomoPaymentService;
 import com.gender_healthcare_system.services.StaffService;
 import com.gender_healthcare_system.services.TestingServiceBookingService;
 import com.gender_healthcare_system.services.TestingServicePaymentService;
@@ -53,8 +52,6 @@ public class StaffController {
     private final AuthenticationManager authenticationManager;
 
     private final JwtService jwtService;
-
-    private final MomoPaymentService momoPaymentService;
 
     private final TestingServiceResultService testingServiceResultService;
 
@@ -185,24 +182,6 @@ public class StaffController {
         }
     }
 
-    /// /////////////////////////////// Manage Momo Payment Refund /////////////////////////////////
-
-    /*
-    //Get customer payment info
-    @GetMapping("/payment-transaction/check-error")
-    @PreAuthorize("hasAuthority('ROLE_STAFF')")
-    public ResponseEntity<String> handleCallback(
-            @RequestParam String orderId,
-            @RequestParam String resultCode
-    ) {
-        if ("0".equals(resultCode)) {
-            // payment success
-            return ResponseEntity.ok("Payment successful for orderId " + orderId);
-        } else {
-            // payment failed
-            return ResponseEntity.status(400).body("Payment failed with code: " + resultCode);
-        }
-    }*/
 
     /// ////////////////////////////////////// Manage Testing Service Bookings //////////////////////////////////////
 
@@ -240,28 +219,6 @@ public class StaffController {
         return ResponseEntity.ok(testingServiceBookingService
                 .getAllTestingServiceBookingsByStaffId(staffId, page, sortField, sortOrder));
     }
-
-    //Lấy danh sách booking có status pending (có phân trang + sắp xếp)
-    /*@GetMapping("/testing-service-bookings/pending-list")
-    @PreAuthorize("hasAuthority('ROLE_STAFF')")
-    public ResponseEntity<Map<String, Object>> getAllPendingTestingServiceBookings(
-            @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "serviceBookingId") String sortField,
-            @RequestParam(defaultValue = "asc") String sortOrder) {
-
-        return ResponseEntity.ok(testingServiceBookingService
-                .getAllPendingTestingServiceBookings(page, sortField, sortOrder));
-    }*/
-
-    /*// Update
-    @PutMapping("/testing-service-bookings/{id}/confirm")
-    @PreAuthorize("hasAuthority('ROLE_STAFF')")
-    public ResponseEntity<String> confirmTestingServiceBooking(
-            @PathVariable int id,
-            @RequestBody @Valid TestingServiceBookingConfirmPayload payload) {
-        testingServiceBookingService.confirmTestingServiceBooking(id, payload);
-        return ResponseEntity.ok("Testing Service Booking confirmed successfully");
-    }*/
 
     @Operation(
             summary = "Complete Testing Service Booking",

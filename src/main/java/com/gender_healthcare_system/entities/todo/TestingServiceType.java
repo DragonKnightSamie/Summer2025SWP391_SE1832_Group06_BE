@@ -21,12 +21,8 @@ public class TestingServiceType implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    //@SequenceGenerator(name = "testing_service_type_seq", sequenceName = "testing_service_type_sequence", allocationSize = 1)
-    //@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "testing_service_type_seq")
     @Column(name = "service_type_id")
     private int serviceTypeId;
-
-    // Đã xóa serviceTypeName
 
     @Nationalized
     @Column(name = "title", nullable = false, length = 100)

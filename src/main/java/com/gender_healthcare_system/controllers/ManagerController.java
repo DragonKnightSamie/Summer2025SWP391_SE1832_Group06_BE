@@ -205,7 +205,7 @@ public class ManagerController {
     @PreAuthorize("hasAuthority('ROLE_MANAGER')")
     public ResponseEntity<Map<String, Object>> getAllConsultants
     (@RequestParam(defaultValue = "0") int page,
-     @RequestParam(defaultValue = "managerId") String sort,
+     @RequestParam(defaultValue = "accountId") String sort,
      @RequestParam(defaultValue = "asc") String order) {
 
         return ResponseEntity.ok(consultantService.getAllConsultants(page, sort, order));
@@ -284,7 +284,7 @@ public class ManagerController {
     @PreAuthorize("hasAuthority('ROLE_MANAGER')")
     public ResponseEntity<Map<String, Object>> getAllStaffs
     (@RequestParam(defaultValue = "0") int page,
-     @RequestParam(defaultValue = "staffId") String sort,
+     @RequestParam(defaultValue = "accountId") String sort,
      @RequestParam(defaultValue = "asc") String order) {
         return ResponseEntity.ok(staffService.getAllStaffs(page, sort, order));
     }
@@ -332,7 +332,7 @@ public class ManagerController {
         return ResponseEntity.ok("Staff details updated successfully");
     }
 
-    @Operation(
+    /*@Operation(
             summary = "Delete staff account",
             description = "Allows managers to delete a staff account from the system by ID."
     )
@@ -343,7 +343,7 @@ public class ManagerController {
 
         accountService.deleteStaffById(id);
         return ResponseEntity.ok("Staff account deleted successfully");
-    }
+    }*/
 
 
     /// //////////////////////// Manage Customer /////////////////////////////////////
@@ -357,7 +357,7 @@ public class ManagerController {
     @PreAuthorize("hasAuthority('ROLE_MANAGER')")
     public ResponseEntity<Map<String, Object>> getAllCustomers
     (@RequestParam(defaultValue = "0") int page,
-     @RequestParam(defaultValue = "customerId") String sort,
+     @RequestParam(defaultValue = "accountId") String sort,
      @RequestParam(defaultValue = "asc") String order) {
         return ResponseEntity.ok(customerService.getAllCustomers(page, sort, order));
     }
@@ -388,7 +388,7 @@ public class ManagerController {
         return ResponseEntity.ok("Customer account status updated successfully");
     }
 
-    @Operation(
+    /*@Operation(
             summary = "Delete customer account",
             description = "Allows managers to delete a customer account from the system by ID."
     )
@@ -397,7 +397,7 @@ public class ManagerController {
     public ResponseEntity<?> deleteCustomerAccount(@PathVariable int id) {
         accountService.deleteCustomerById(id);
         return ResponseEntity.ok("Customer account deleted successfully");
-    }
+    }*/
 
     /// //////////////////////// Manage Testing Service Type /////////////////////////////////////
 
@@ -569,33 +569,6 @@ public class ManagerController {
         testingService_Service.deleteTestingService(id);
         return ResponseEntity.ok("Testing Service deleted successfully");
     }
-
-
-    /// //////////////////////////// Price List Operations ///////////////////////////////
-
-    /*@Operation(
-            summary = "Get price list by ID",
-            description = "Retrieve a specific price list by its ID for managers."
-    )
-    //update price list by ID
-    @PutMapping("/price-lists/{id}")
-    @PreAuthorize("hasAuthority('ROLE_MANAGER')")
-    public void updatePriceList(@PathVariable int id,
-                                @RequestBody @Valid PriceListUpdatePayload payload) {
-        priceListService.updatePriceList(id, payload);
-    }*/
-
-    /*@Operation(
-            summary = "Get all price lists for a testing service",
-            description = "Retrieve all price lists for a specific testing service with pagination, sorting, and ordering options."
-    )
-    //delete price list by ID
-    @DeleteMapping("/price-lists/{id}")
-    @PreAuthorize("hasAuthority('ROLE_MANAGER')")
-
-    public void deletePriceList(@PathVariable int id) {
-        priceListService.deletePriceList(id);
-    }*/
 
 
     /// //////////////////////// API UPLOAD IMAGE /////////////////////////////////////

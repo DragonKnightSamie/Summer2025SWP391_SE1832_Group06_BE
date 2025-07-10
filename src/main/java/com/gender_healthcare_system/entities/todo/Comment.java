@@ -14,7 +14,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 @Entity
-@Table(name = "comment")
+@Table(name = "Comment")
 @ToString(exclude = {"blog", "account", "parentComment"})
 @Data
 @AllArgsConstructor

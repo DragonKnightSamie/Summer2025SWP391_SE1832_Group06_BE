@@ -19,8 +19,6 @@ import java.time.LocalDateTime;
 public class TestingServicePayment implements Serializable {
 
     @Id
-    //@SequenceGenerator(name = "payment_seq", sequenceName = "payment_sequence", allocationSize = 1)
-    //@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "payment_seq")
     @Column(name = "service_payment_id")
     private int servicePaymentId;
 
@@ -29,10 +27,6 @@ public class TestingServicePayment implements Serializable {
     @JoinColumn(name = "service_payment_id")
     private TestingServiceBooking testingServiceBooking;
 
-    /*@Column(name = "service_history_id", nullable = false)
-    private int serviceHistoryId;*/
-
-    //oderID
     @Column(name = "transaction_id", nullable = false, unique = true, length = 30)
     private String transactionId;
 

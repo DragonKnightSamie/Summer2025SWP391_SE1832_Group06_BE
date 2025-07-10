@@ -1,4 +1,4 @@
-package com.gender_healthcare_system.configs;
+package com.gender_healthcare_system.utils;
 
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
@@ -14,7 +14,7 @@ import javax.crypto.spec.SecretKeySpec;
 
 import jakarta.servlet.http.HttpServletRequest;
 
-public class VNPayConfig {
+public class VNPayUtil {
 
     public static final String vnp_PayUrl = "https://sandbox.vnpayment.vn/paymentv2/vpcpay.html";
     public static final String vnp_ReturnUrl =

@@ -41,15 +41,6 @@ class VNPayController {
                 (vnPayService.createPaymentUrl(amount, redirectUrl, request));
     }
 
-    /*@PostMapping("/create-transaction-refund-request")
-    public ResponseEntity<String> createVNPayTransactionRefundRequest(
-            @RequestBody @Valid VNPayRefundPayload payload,
-            HttpServletRequest request, HttpServletResponse response) throws IOException {
-
-        return ResponseEntity.ok(
-                vnPayService.createTransactionRefundRequest(payload, request, response));
-    }*/
-
     @GetMapping("/check-payment-error")
     public ResponseEntity<String> checkPaymentErrorCode(
             @RequestParam String transactionNo,

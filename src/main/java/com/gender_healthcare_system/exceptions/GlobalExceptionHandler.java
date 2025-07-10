@@ -3,6 +3,7 @@ package com.gender_healthcare_system.exceptions;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.exc.InvalidFormatException;
 import io.swagger.v3.oas.annotations.Hidden;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -15,11 +16,74 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 @Hidden
 @RestControllerAdvice
 public class GlobalExceptionHandler {
+
+    @ExceptionHandler(DataIntegrityViolationException.class)
+    public ResponseEntity<String> handleDataIntegrityViolation(DataIntegrityViolationException ex) {
+        String message = ex.getMostSpecificCause().getMessage();
+        String formatted;
+
+        if (message.contains("PRIMARY KEY") ||
+                (message.contains("constraint") && message.contains("PK_"))) {
+            formatted = extractInfo(message,
+                    "Duplicate Primary Key",
+                    "A record with this primary key already exists.",
+                    "Violation of PRIMARY KEY constraint"
+            );
+        } else if (message.contains("UNIQUE") || message.contains("IX_")) {
+            formatted = extractInfo(message,
+                    "Unique Constraint Violation",
+                    "This value must be unique but already exists.",
+                    "Unique index violation"
+            );
+        } else if (message.contains("FOREIGN KEY") || message.contains("FK_")) {
+            formatted = extractInfo(message,
+                    "Foreign Key Violation",
+                    "Referenced record not found or is in use elsewhere.",
+                    "Foreign key constraint error"
+            );
+        } else if (message.contains("does not allow nulls")
+                || message.contains("Cannot insert the value NULL")) {
+            formatted = extractInfo(message,
+                    "Missing Required Field",
+                    "A non-null field was left empty.",
+                    "Null value in non-nullable column"
+            );
+        } else {
+            formatted = "A data integrity violation occurred. Please check input.";
+        }
+
+        return ResponseEntity.status(400).body(formatted);
+    }
+
+    private String extractInfo(String rawMessage, String title, String userMessage, String reason) {
+        // Try to extract table and column names
+        String table = matchPattern(rawMessage, "table '([\\w\\.]+)'");
+        String column = matchPattern(rawMessage, "column '([\\w\\.]+)'");
+        String value = matchPattern(rawMessage, "value '([^']*)'");
+
+        return String.format(
+                "%s: %s\nTable: %s\nColumn: %s%s\nCause: %s",
+                title,
+                userMessage,
+                (table != null ? table : "unknown"),
+                (column != null ? column : "unknown"),
+                (value != null ? "\nInvalid Value: " + value : ""),
+                reason
+        );
+    }
+
+    private String matchPattern(String text, String regex) {
+        Pattern p = Pattern.compile(regex);
+        Matcher m = p.matcher(text);
+        return m.find() ? m.group(1) : null;
+    }
 
     @ExceptionHandler(InvalidFormatException.class)
     public ResponseEntity<String> handleInvalidFormatException(InvalidFormatException ex) {
