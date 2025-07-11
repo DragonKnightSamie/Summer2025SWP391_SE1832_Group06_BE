@@ -6,6 +6,7 @@ import com.gender_healthcare_system.dtos.login.LoginResponse;
 import com.gender_healthcare_system.dtos.todo.*;
 import com.gender_healthcare_system.dtos.user.ConsultantDTO;
 import com.gender_healthcare_system.dtos.user.CustomerDTO;
+import com.gender_healthcare_system.dtos.user.ManagerDTO;
 import com.gender_healthcare_system.dtos.user.StaffDTO;
 import com.gender_healthcare_system.entities.enu.AccountStatus;
 import com.gender_healthcare_system.entities.user.AccountInfoDetails;
@@ -13,6 +14,7 @@ import com.gender_healthcare_system.payloads.login.LoginRequest;
 import com.gender_healthcare_system.payloads.todo.*;
 import com.gender_healthcare_system.payloads.user.ConsultantRegisterPayload;
 import com.gender_healthcare_system.payloads.user.ManagerRegisterPayload;
+import com.gender_healthcare_system.payloads.user.ManagerUpdatePayload;
 import com.gender_healthcare_system.payloads.user.StaffRegisterPayload;
 import com.gender_healthcare_system.payloads.user.StaffUpdatePayload;
 import com.gender_healthcare_system.services.*;
@@ -25,9 +27,12 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.server.ResponseStatusException;
+import org.springframework.http.HttpStatus;
 
 import java.io.IOException;
 import java.util.Map;
@@ -205,7 +210,7 @@ public class ManagerController {
     @PreAuthorize("hasAuthority('ROLE_MANAGER')")
     public ResponseEntity<Map<String, Object>> getAllConsultants
     (@RequestParam(defaultValue = "0") int page,
-     @RequestParam(defaultValue = "accountId") String sort,
+     @RequestParam(defaultValue = "managerId") String sort,
      @RequestParam(defaultValue = "asc") String order) {
 
         return ResponseEntity.ok(consultantService.getAllConsultants(page, sort, order));
@@ -284,7 +289,7 @@ public class ManagerController {
     @PreAuthorize("hasAuthority('ROLE_MANAGER')")
     public ResponseEntity<Map<String, Object>> getAllStaffs
     (@RequestParam(defaultValue = "0") int page,
-     @RequestParam(defaultValue = "accountId") String sort,
+     @RequestParam(defaultValue = "staffId") String sort,
      @RequestParam(defaultValue = "asc") String order) {
         return ResponseEntity.ok(staffService.getAllStaffs(page, sort, order));
     }
@@ -357,7 +362,7 @@ public class ManagerController {
     @PreAuthorize("hasAuthority('ROLE_MANAGER')")
     public ResponseEntity<Map<String, Object>> getAllCustomers
     (@RequestParam(defaultValue = "0") int page,
-     @RequestParam(defaultValue = "accountId") String sort,
+     @RequestParam(defaultValue = "customerId") String sort,
      @RequestParam(defaultValue = "asc") String order) {
         return ResponseEntity.ok(customerService.getAllCustomers(page, sort, order));
     }
@@ -571,6 +576,33 @@ public class ManagerController {
     }
 
 
+    /// //////////////////////////// Price List Operations ///////////////////////////////
+
+    /*@Operation(
+            summary = "Get price list by ID",
+            description = "Retrieve a specific price list by its ID for managers."
+    )
+    //update price list by ID
+    @PutMapping("/price-lists/{id}")
+    @PreAuthorize("hasAuthority('ROLE_MANAGER')")
+    public void updatePriceList(@PathVariable int id,
+                                @RequestBody @Valid PriceListUpdatePayload payload) {
+        priceListService.updatePriceList(id, payload);
+    }*/
+
+    /*@Operation(
+            summary = "Get all price lists for a testing service",
+            description = "Retrieve all price lists for a specific testing service with pagination, sorting, and ordering options."
+    )
+    //delete price list by ID
+    @DeleteMapping("/price-lists/{id}")
+    @PreAuthorize("hasAuthority('ROLE_MANAGER')")
+
+    public void deletePriceList(@PathVariable int id) {
+        priceListService.deletePriceList(id);
+    }*/
+
+
     /// //////////////////////// API UPLOAD IMAGE /////////////////////////////////////
     private final Cloudinary cloudinary;
 
@@ -611,6 +643,65 @@ public class ManagerController {
         boolean isDelete = imageUploadService.deleteImage(publicId);
         return isDelete ? ResponseEntity.ok("Deleted") :
                 ResponseEntity.status(404).body("Not found");
+    }
+
+    @Operation(
+            summary = "Get my Manager Profile",
+            description = "Manager lấy thông tin profile của chính mình (id lấy từ token)"
+    )
+    @GetMapping("/profile/my")
+    @PreAuthorize("hasAuthority('ROLE_MANAGER')")
+    public ResponseEntity<ManagerDTO> getMyManagerProfile(
+            @AuthenticationPrincipal AccountInfoDetails account) {
+        int managerId = account.getId();
+        return ResponseEntity.ok(managerService.getManagerDetailsById(managerId).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Manager not found")));
+    }
+
+    @Operation(
+            summary = "Update my Manager Profile",
+            description = "Manager cập nhật profile của chính mình (id lấy từ token)"
+    )
+    @PutMapping("/profile/update/my")
+    @PreAuthorize("hasAuthority('ROLE_MANAGER')")
+    public ResponseEntity<?> updateMyManagerProfile(
+            @AuthenticationPrincipal AccountInfoDetails account,
+            @RequestBody @Valid ManagerUpdatePayload payload) {
+        int managerId = account.getId();
+        managerService.updateManagerById(managerId, payload);
+        return ResponseEntity.ok("Manager profile updated successfully");
+    }
+
+    // API cũ, kiểm tra bảo mật
+    @Operation(
+            summary = "Get Manager Profile by ID (bảo mật)",
+            description = "Manager chỉ được xem profile của chính mình, nếu truyền id khác sẽ bị cấm."
+    )
+    @GetMapping("/profile/{id}")
+    @PreAuthorize("hasAuthority('ROLE_MANAGER')")
+    public ResponseEntity<ManagerDTO> getManagerProfileById(
+            @PathVariable int id,
+            @AuthenticationPrincipal AccountInfoDetails account) {
+        if (id != account.getId()) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Bạn không có quyền xem dữ liệu này!");
+        }
+        return ResponseEntity.ok(managerService.getManagerDetailsById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Manager not found")));
+    }
+
+    @Operation(
+            summary = "Update Manager Profile by ID (bảo mật)",
+            description = "Manager chỉ được cập nhật profile của chính mình, nếu truyền id khác sẽ bị cấm."
+    )
+    @PutMapping("/profile/update/{id}")
+    @PreAuthorize("hasAuthority('ROLE_MANAGER')")
+    public ResponseEntity<?> updateManagerProfileById(
+            @PathVariable int id,
+            @AuthenticationPrincipal AccountInfoDetails account,
+            @RequestBody @Valid ManagerUpdatePayload payload) {
+        if (id != account.getId()) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Bạn không có quyền cập nhật dữ liệu này!");
+        }
+        managerService.updateManagerById(id, payload);
+        return ResponseEntity.ok("Manager profile updated successfully");
     }
 
 }

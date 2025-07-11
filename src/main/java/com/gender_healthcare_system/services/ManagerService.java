@@ -17,6 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 @Service
 @AllArgsConstructor
@@ -32,6 +33,18 @@ public class ManagerService {
         return accountRepo.getManagerDetailsById(id)
                 .orElseThrow(() -> new AppException
                         (404, "Manager not found with ID "+ id));
+    }
+
+    public Optional<ManagerDTO> getManagerDetailsById(int id) {
+        try {
+            return Optional.of(getManagerDetails(id));
+        } catch (AppException e) {
+            return Optional.empty();
+        }
+    }
+
+    public void updateManagerById(int id, ManagerUpdatePayload payload) {
+        updateManagerDetails(id, payload);
     }
 
     public Map<String, Object> getAllManagers(int page, String sortField, String sortOrder){

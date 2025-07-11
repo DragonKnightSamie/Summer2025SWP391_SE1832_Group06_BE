@@ -1,23 +1,10 @@
 package com.gender_healthcare_system.controllers;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.gender_healthcare_system.dtos.login.LoginResponse;
-import com.gender_healthcare_system.dtos.todo.*;
-import com.gender_healthcare_system.dtos.user.ConsultantDTO;
-import com.gender_healthcare_system.dtos.user.CustomerPeriodDetailsDTO;
-import com.gender_healthcare_system.dtos.user.CustomerDTO;
-import com.gender_healthcare_system.entities.user.AccountInfoDetails;
-import com.gender_healthcare_system.payloads.todo.*;
-import com.gender_healthcare_system.payloads.login.LoginRequest;
-import com.gender_healthcare_system.payloads.user.CustomerPayload;
-import com.gender_healthcare_system.payloads.user.CustomerUpdatePayload;
-import com.gender_healthcare_system.services.*;
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.Parameter;
-import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.validation.Valid;
-import lombok.AllArgsConstructor;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -25,13 +12,61 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.gender_healthcare_system.dtos.login.LoginResponse;
+import com.gender_healthcare_system.dtos.todo.CertificateDTO;
+import com.gender_healthcare_system.dtos.todo.ConsultantScheduleDTO;
+import com.gender_healthcare_system.dtos.todo.ConsultationDTO;
+import com.gender_healthcare_system.dtos.todo.MenstrualCycleDTO;
+import com.gender_healthcare_system.dtos.todo.SymptomDTO;
+import com.gender_healthcare_system.dtos.todo.TestingServiceBookingDTO;
+import com.gender_healthcare_system.dtos.todo.TestingServiceResultDTO;
+import com.gender_healthcare_system.dtos.user.ConsultantDTO;
+import com.gender_healthcare_system.dtos.user.CustomerDTO;
+import com.gender_healthcare_system.dtos.user.CustomerPeriodDetailsDTO;
+import com.gender_healthcare_system.entities.user.AccountInfoDetails;
+import com.gender_healthcare_system.payloads.login.LoginRequest;
+import com.gender_healthcare_system.payloads.todo.ConsultationRegisterPayload;
+import com.gender_healthcare_system.payloads.todo.EvaluatePayload;
+import com.gender_healthcare_system.payloads.todo.MenstrualCreatePayload;
+import com.gender_healthcare_system.payloads.todo.MenstrualCycleUpdatePayload;
+import com.gender_healthcare_system.payloads.todo.SymptomCreatePayload;
+import com.gender_healthcare_system.payloads.todo.SymptomUpdatePayload;
+import com.gender_healthcare_system.payloads.todo.TestingServiceBookingRegisterPayload;
+import com.gender_healthcare_system.payloads.todo.TestingServiceBookingSchedulePayload;
+import com.gender_healthcare_system.payloads.user.CustomerPayload;
+import com.gender_healthcare_system.payloads.user.CustomerUpdatePayload;
+import com.gender_healthcare_system.services.AccountService;
+import com.gender_healthcare_system.services.CertificateService;
+import com.gender_healthcare_system.services.ConsultantService;
+import com.gender_healthcare_system.services.ConsultationService;
+import com.gender_healthcare_system.services.CustomerService;
+import com.gender_healthcare_system.services.JwtService;
+import com.gender_healthcare_system.services.MenstrualCycleService;
+import com.gender_healthcare_system.services.SymptomService;
+import com.gender_healthcare_system.services.TestingServiceBookingService;
+import com.gender_healthcare_system.services.TestingServiceResultService;
+import com.gender_healthcare_system.services.TestingService_Service;
+
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
+import lombok.AllArgsConstructor;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.server.ResponseStatusException;
+import org.springframework.http.HttpStatus;
 
 @Tag(name = "Customer APIs", description = "APIs for managing customer functionalities")
 @RestController
@@ -261,6 +296,23 @@ public class CustomerController {
                 .getAllTestingServiceBookingsByCustomerId(customerId, page, sort, order));
     }
 
+
+    //thêm api lấy booking của customer
+    @Operation(
+            summary = "Get my Testing Service Bookings",
+            description = "Customer lấy danh sách booking của chính mình (id lấy từ token)"
+    )
+    @GetMapping("/testing-service-bookings/my")
+    @PreAuthorize("hasAuthority('ROLE_CUSTOMER')")
+    public ResponseEntity<Map<String, Object>> getMyTestingServiceBookings(
+            @AuthenticationPrincipal AccountInfoDetails account,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "serviceBookingId") String sort,
+            @RequestParam(defaultValue = "asc") String order) {
+        int customerId = account.getId();
+        return ResponseEntity.ok(testingServiceBookingService.getAllTestingServiceBookingsByCustomerId(customerId, page, sort, order));
+    }
+
     @Operation(
             summary = "Get Testing Service Booking Details by ID",
             description = "Retrieve details of a specific testing service booking by its ID."
@@ -358,19 +410,38 @@ public class CustomerController {
                 (consultationService.getAllConsultationTypesForCustomer());
     }
 
+    // Lấy consultation của chính mình
     @Operation(
-            summary = "Get Consultations by Customer ID",
-            description = "Retrieve all consultations made by a specific customer with pagination, sorting, and ordering options."
+            summary = "Get my Consultations",
+            description = "Customer lấy danh sách consultation của chính mình (id lấy từ token)"
     )
-    //Get consultations by customer ID
+    @GetMapping("/consultations/my")
+    @PreAuthorize("hasAuthority('ROLE_CUSTOMER')")
+    public ResponseEntity<Map<String, Object>> getMyConsultations(
+            @AuthenticationPrincipal AccountInfoDetails account,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "consultationId") String sort,
+            @RequestParam(defaultValue = "asc") String order) {
+        int customerId = account.getId();
+        return ResponseEntity.ok(consultationService.getConsultationsByCustomerId(customerId, page, sort, order));
+    }
+
+    // API cũ, kiểm tra bảo mật
+    @Operation(
+            summary = "Get Consultations by Customer ID (bảo mật)",
+            description = "Customer chỉ được xem consultation của chính mình, nếu truyền id khác sẽ bị cấm."
+    )
     @GetMapping("/consultations/customer/{customerId}")
     @PreAuthorize("hasAuthority('ROLE_CUSTOMER')")
-    public ResponseEntity<Map<String, Object>> getConsultationsByCustomerId
-            (@PathVariable int customerId,
-             @RequestParam(defaultValue = "0") int page,
-             @RequestParam(defaultValue = "consultationId") String sort,
-             @RequestParam(defaultValue = "asc") String order) {
-
+    public ResponseEntity<Map<String, Object>> getConsultationsByCustomerId(
+            @PathVariable int customerId,
+            @AuthenticationPrincipal AccountInfoDetails account,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "consultationId") String sort,
+            @RequestParam(defaultValue = "asc") String order) {
+        if (customerId != account.getId()) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Bạn không có quyền xem dữ liệu này!");
+        }
         return ResponseEntity.ok(consultationService.getConsultationsByCustomerId(customerId, page, sort, order));
     }
 
@@ -461,15 +532,33 @@ public class CustomerController {
         return ResponseEntity.ok(createdCycle);
     }
 
+    // Lấy menstrual cycles của chính mình
     @Operation(
-            summary = "Get cycles by customer ID",
-            description = "Retrieve all cycles for a specific customer"
+            summary = "Get my Menstrual Cycles",
+            description = "Customer lấy danh sách menstrual cycles của chính mình (id lấy từ token)"
+    )
+    @GetMapping("/menstrual-cycles/my")
+    @PreAuthorize("hasAuthority('ROLE_CUSTOMER')")
+    public ResponseEntity<List<MenstrualCycleDTO>> getMyCycles(
+            @AuthenticationPrincipal AccountInfoDetails account) {
+        int customerId = account.getId();
+        return ResponseEntity.ok(menstrualCycleService.getCyclesByCustomerId(customerId));
+    }
+
+    // API cũ, kiểm tra bảo mật
+    @Operation(
+            summary = "Get Menstrual Cycles by Customer ID (bảo mật)",
+            description = "Customer chỉ được xem menstrual cycles của chính mình, nếu truyền id khác sẽ bị cấm."
     )
     @GetMapping("/menstrual-cycles/customer/{customerId}")
     @PreAuthorize("hasAuthority('ROLE_CUSTOMER')")
-    public ResponseEntity<List<MenstrualCycleDTO>> getCyclesByCustomerId(@PathVariable int customerId) {
-        List<MenstrualCycleDTO> cycles = menstrualCycleService.getCyclesByCustomerId(customerId);
-        return ResponseEntity.ok(cycles);
+    public ResponseEntity<List<MenstrualCycleDTO>> getCyclesByCustomerId(
+            @PathVariable int customerId,
+            @AuthenticationPrincipal AccountInfoDetails account) {
+        if (customerId != account.getId()) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Bạn không có quyền xem dữ liệu này!");
+        }
+        return ResponseEntity.ok(menstrualCycleService.getCyclesByCustomerId(customerId));
     }
 
     @Operation(
@@ -496,10 +585,26 @@ public class CustomerController {
         return ResponseEntity.ok(symptomService.createSymptom(payload));
     }
 
-    @Operation(summary = "Get Symptoms by Customer ID", description = "Get all symptoms recorded by a customer")
+    // Lấy symptoms của chính mình
+    @Operation(summary = "Get my Symptoms", description = "Customer lấy danh sách symptoms của chính mình (id lấy từ token)")
+    @GetMapping("/symptoms/my")
+    @PreAuthorize("hasAuthority('ROLE_CUSTOMER')")
+    public ResponseEntity<List<SymptomDTO>> getMySymptoms(
+            @AuthenticationPrincipal AccountInfoDetails account) {
+        int customerId = account.getId();
+        return ResponseEntity.ok(symptomService.getSymptomsByCustomerId(customerId));
+    }
+
+    // API cũ, kiểm tra bảo mật
+    @Operation(summary = "Get Symptoms by Customer ID (bảo mật)", description = "Customer chỉ được xem symptoms của chính mình, nếu truyền id khác sẽ bị cấm.")
     @GetMapping("/symptoms/customer/{customerId}")
     @PreAuthorize("hasAuthority('ROLE_CUSTOMER')")
-    public ResponseEntity<List<SymptomDTO>> getSymptomsByCustomerId(@PathVariable int customerId) {
+    public ResponseEntity<List<SymptomDTO>> getSymptomsByCustomerId(
+            @PathVariable int customerId,
+            @AuthenticationPrincipal AccountInfoDetails account) {
+        if (customerId != account.getId()) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Bạn không có quyền xem dữ liệu này!");
+        }
         return ResponseEntity.ok(symptomService.getSymptomsByCustomerId(customerId));
     }
 

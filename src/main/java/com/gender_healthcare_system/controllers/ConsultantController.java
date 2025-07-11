@@ -156,7 +156,7 @@ public class ConsultantController {
     public ResponseEntity<Map<String, Object>>
     getConsultationsByConsultantId(@PathVariable int id,
                      @RequestParam(defaultValue = "0") int page,
-                     @RequestParam(defaultValue = "consultationId") String sort,
+                     @RequestParam(defaultValue = "accountId") String sort, // sửa lại sortField hợp lệ
                      @RequestParam(defaultValue = "asc") String order ) {
 
         return ResponseEntity.ok(consultationService
