@@ -19,7 +19,6 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -34,7 +33,7 @@ public class CommentService {
 
     private final AccountRepo accountRepo;
 
-    public Map<String, Object> getAllBlogCommentsAndSubcomments
+    public Map<String, Object> getAllBlogComments
             (int blogId, int page, String sortField, String sortOrder) {
 
         final int itemSize = 20;
@@ -52,12 +51,12 @@ public class CommentService {
                 .getAllTopCommentsOfABlog(blogId, pageRequest);
 
         if (!pageResult.hasContent()) {
-            throw new AppException(404, "No top comments of Blog with ID "+ blogId +" found");
+            throw new AppException(404, "No Comments of Blog with ID "+ blogId +" found");
         }
 
         List<CommentDTO> commentList = pageResult.getContent();
 
-        for (CommentDTO item: commentList){
+        /*for (CommentDTO item: commentList){
 
             Page<CommentDTO> subCommentResult = commentRepo
                     .getAllSubCommentsOfAComment(item.getCommentId(), pageRequest);
@@ -68,7 +67,7 @@ public class CommentService {
 
                 item.setSubComments(subCommentList);
             }
-        }
+        }*/
 
         Map<String, Object> map = new HashMap<>();
         map.put("totalItems", pageResult.getTotalElements());

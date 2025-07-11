@@ -13,7 +13,8 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
 
-@Tag(name = "Blog comment APIs", description = "APIs to access and manipulate blog comments")
+@Tag(name = "Blog comment APIs", description = "APIs to access and manipulate blog " +
+        "comments and subcomments")
 @RestController
 @RequestMapping("api/v1/blogs/comments")
 @AllArgsConstructor
@@ -22,23 +23,23 @@ class BlogCommentController {
     private final CommentService commentService;
 
     @Operation(
-            summary = "Get comments and subcomments",
-            description = "Retrieve comments and subcomments of a blog with" +
+            summary = "Get Comments of a Blog",
+            description = "Retrieve comments of a blog with" +
                     " pagination, sorting, and ordering options."
     )
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "List of comments and " +
-                    "subcomments of a blog retrieved successfully")
+            @ApiResponse(responseCode = "200", description = "List of comments of a blog " +
+                    "retrieved successfully")
     })
     @GetMapping("/blogId/{blogId}")
     @PreAuthorize("hasAnyAuthority('ROLE_MANAGER', 'ROLE_CONSULTANT', 'ROLE_CUSTOMER')")
-    public ResponseEntity<Map<String, Object>> getAllBlogCommentsAndSubcomments
+    public ResponseEntity<Map<String, Object>> getAllBlogComments
             (@PathVariable int blogId,
              @RequestParam(defaultValue = "0") int page,
              @RequestParam(defaultValue = "commentId") String sort,
              @RequestParam(defaultValue = "asc") String order) {
         return ResponseEntity.ok(
-                commentService.getAllBlogCommentsAndSubcomments(blogId, page, sort, order));
+                commentService.getAllBlogComments(blogId, page, sort, order));
     }
 
     @Operation(

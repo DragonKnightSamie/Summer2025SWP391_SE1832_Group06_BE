@@ -32,10 +32,14 @@ public interface CommentRepo extends JpaRepository<Comment, Integer> {
     Optional<Comment> getCommentDumpById(int commentId, int accountId);*/
 
     @Query("SELECT new com.gender_healthcare_system.dtos.todo.CommentDTO" +
-            "(c.commentId, c.content, c.createdAt, c.edited_Content, c.editedAt, c.status) " +
-            "FROM Comment c " +
+            "(c.commentId, COUNT(sc.commentId), c.content, c.createdAt, " +
+            "c.edited_Content, c.editedAt, c.status) " +
+            "FROM Comment c LEFT JOIN Comment sc " +
+            "ON sc.parentComment.commentId = c.commentId " +
             "WHERE c.blog.blogId = :blogId " +
-            "AND c.parentComment = NULL")
+            "AND c.parentComment IS NULL " +
+            "GROUP BY c.commentId, c.content, c.createdAt, c.edited_Content, " +
+            "c.editedAt, c.status")
     Page<CommentDTO> getAllTopCommentsOfABlog(int blogId, Pageable pageable);
 
     @Query("SELECT new com.gender_healthcare_system.dtos.todo.CommentDTO" +

@@ -3,11 +3,9 @@ package com.gender_healthcare_system.dtos.todo;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.gender_healthcare_system.entities.enu.CommentStatus;
-import com.gender_healthcare_system.entities.todo.Blog;
-import com.gender_healthcare_system.entities.todo.Comment;
-import com.gender_healthcare_system.entities.user.Account;
 import io.swagger.v3.oas.annotations.media.Schema;
-import jakarta.persistence.*;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -15,7 +13,7 @@ import org.hibernate.annotations.Nationalized;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
-import java.util.List;
+
 
 @Data
 @AllArgsConstructor
@@ -28,17 +26,17 @@ public class CommentDTO implements Serializable {
     private String content;
 
     @JsonInclude(JsonInclude.Include.NON_NULL)
-    private Integer parentCommentId;
+    private Long subCommentCount;
 
     @JsonInclude(JsonInclude.Include.NON_NULL)
-    private List<CommentDTO> subComments;
+    private Integer parentCommentId;
 
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy HH:mm")
     @Schema(type = "string", example = "05/06/2025 07:00")
     private LocalDateTime createdAt;
 
     @Nationalized
-    private String editedContent;
+    private String edited_Content;
 
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy HH:mm")
     @Schema(type = "string", example = "05/06/2025 07:00")
@@ -46,24 +44,26 @@ public class CommentDTO implements Serializable {
 
     private CommentStatus status;
 
-    public CommentDTO(Integer commentId, String content, LocalDateTime createdAt,
-                      String editedContent, LocalDateTime editedAt, CommentStatus status) {
+    public CommentDTO(Integer commentId, Long subCommentCount, String content,
+                      LocalDateTime createdAt, String edited_Content,
+                      LocalDateTime editedAt, CommentStatus status) {
         this.commentId = commentId;
         this.content = content;
+        this.subCommentCount = subCommentCount;
         this.createdAt = createdAt;
-        this.editedContent = editedContent;
+        this.edited_Content = edited_Content;
         this.editedAt = editedAt;
         this.status = status;
     }
 
     public CommentDTO(Integer commentId, String content,
                       Integer parentCommentId, LocalDateTime createdAt,
-                      String editedContent, LocalDateTime editedAt, CommentStatus status) {
+                      String edited_Content, LocalDateTime editedAt, CommentStatus status) {
         this.commentId = commentId;
         this.content = content;
         this.parentCommentId = parentCommentId;
         this.createdAt = createdAt;
-        this.editedContent = editedContent;
+        this.edited_Content = edited_Content;
         this.editedAt = editedAt;
         this.status = status;
     }
