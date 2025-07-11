@@ -210,7 +210,7 @@ public class ManagerController {
     @PreAuthorize("hasAuthority('ROLE_MANAGER')")
     public ResponseEntity<Map<String, Object>> getAllConsultants
     (@RequestParam(defaultValue = "0") int page,
-     @RequestParam(defaultValue = "managerId") String sort,
+     @RequestParam(defaultValue = "accountId") String sort,
      @RequestParam(defaultValue = "asc") String order) {
 
         return ResponseEntity.ok(consultantService.getAllConsultants(page, sort, order));
@@ -289,7 +289,7 @@ public class ManagerController {
     @PreAuthorize("hasAuthority('ROLE_MANAGER')")
     public ResponseEntity<Map<String, Object>> getAllStaffs
     (@RequestParam(defaultValue = "0") int page,
-     @RequestParam(defaultValue = "staffId") String sort,
+     @RequestParam(defaultValue = "accountId") String sort,
      @RequestParam(defaultValue = "asc") String order) {
         return ResponseEntity.ok(staffService.getAllStaffs(page, sort, order));
     }
@@ -362,7 +362,7 @@ public class ManagerController {
     @PreAuthorize("hasAuthority('ROLE_MANAGER')")
     public ResponseEntity<Map<String, Object>> getAllCustomers
     (@RequestParam(defaultValue = "0") int page,
-     @RequestParam(defaultValue = "customerId") String sort,
+     @RequestParam(defaultValue = "accountId") String sort,
      @RequestParam(defaultValue = "asc") String order) {
         return ResponseEntity.ok(customerService.getAllCustomers(page, sort, order));
     }
