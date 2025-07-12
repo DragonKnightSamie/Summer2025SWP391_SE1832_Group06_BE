@@ -159,7 +159,6 @@ public class TestingServiceBookingService {
     }
 
     // Create new TestingServiceBooking with payment
-    @Transactional
     public void createTestingServiceBooking
             (TestingServiceBookingRegisterPayload payload) {
 

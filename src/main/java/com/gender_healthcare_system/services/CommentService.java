@@ -17,6 +17,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.HashMap;
@@ -165,6 +166,7 @@ public class CommentService {
 
     }
 
+    @Transactional
     public void updateCommentOrSubComment(int commentId, int accountId, String newContent){
 
         boolean commentWithAccountIdExist = commentRepo
@@ -182,6 +184,7 @@ public class CommentService {
         commentRepo.updateACommentOrSubComment(commentId, newContent, editedCreatedAt);
     }
 
+    @Transactional
     public void removeCommentOrSubComment(int commentId){
 
         boolean commentExist = commentRepo

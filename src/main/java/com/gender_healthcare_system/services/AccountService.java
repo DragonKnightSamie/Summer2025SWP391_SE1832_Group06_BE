@@ -46,7 +46,7 @@ public class AccountService implements UserDetailsService {
                         new UsernameNotFoundException("Invalid Username or Password"));
     }
 
-    @Transactional
+
     public void createCustomerAccount(CustomerPayload payload) throws JsonProcessingException {
         ObjectMapper mapper = new ObjectMapper();
         mapper.registerModule(new JavaTimeModule());
@@ -164,7 +164,7 @@ public class AccountService implements UserDetailsService {
     }*/
 
     //createManagerAccount by Admin
-    @Transactional
+
     public void createManagerAccount(ManagerRegisterPayload payload) {
         createStaffOrManagerAccount(payload, 2); // MANAGER role
     }
@@ -181,7 +181,7 @@ public class AccountService implements UserDetailsService {
     }*/
 
     //createStaffAccount by Manager
-    @Transactional
+
     public void createStaffAccount(StaffRegisterPayload payload) {
         createStaffOrManagerAccount(payload, 3); // STAFF role
     }
