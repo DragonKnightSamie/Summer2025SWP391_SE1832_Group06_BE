@@ -140,7 +140,7 @@ public class CommentService {
     public void createANewSubCommentForAComment
             (int commentId, int blogId, int accountId, String content){
 
-        Comment comment = commentRepo.getParentCommentDumpById(blogId)
+        Comment comment = commentRepo.getParentCommentDumpById(commentId)
                 .orElseThrow(() -> new AppException(404, "No Comment found with ID "+ commentId));
 
         Blog blog = blogRepo.getBlogDumpById(blogId)
@@ -162,7 +162,7 @@ public class CommentService {
         subcomment.setEditedAt(null);
         subcomment.setStatus(CommentStatus.ACTIVE);
 
-        commentRepo.saveAndFlush(comment);
+        commentRepo.saveAndFlush(subcomment);
 
     }
 

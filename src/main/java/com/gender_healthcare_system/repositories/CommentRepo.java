@@ -16,20 +16,11 @@ import java.util.Optional;
 public interface CommentRepo extends JpaRepository<Comment, Integer> {
 
     @Query("SELECT new com.gender_healthcare_system.entities.todo.Comment" +
-            "(c.commentId, c.content, c.parentComment, " +
-            "c.createdAt, c.edited_Content, c.editedAt, c.status) " +
+            "(c.commentId, c.content, c.createdAt, c.edited_Content, c.editedAt, c.status) " +
             "FROM Comment c " +
             "WHERE c.commentId = :commentId " +
-            "AND c.parentComment = NULL")
+            "AND c.parentComment IS NULL")
     Optional<Comment> getParentCommentDumpById(int commentId);
-
-    /*@Query("SELECT new com.gender_healthcare_system.entities.todo.Comment" +
-            "(c.commentId, c.content, c.parentComment, " +
-            "c.createdAt, c.edited_Content, c.editedAt, c.status) " +
-            "FROM Comment c " +
-            "WHERE c.commentId = :commentId " +
-            "AND c.account.accountId = :accountId")
-    Optional<Comment> getCommentDumpById(int commentId, int accountId);*/
 
     @Query("SELECT new com.gender_healthcare_system.dtos.todo.CommentDTO" +
             "(c.commentId, COUNT(sc.commentId), c.content, c.createdAt, " +
