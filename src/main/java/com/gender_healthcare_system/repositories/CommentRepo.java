@@ -10,42 +10,36 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 
 import java.time.LocalDateTime;
-import java.util.List;
 import java.util.Optional;
 
 public interface CommentRepo extends JpaRepository<Comment, Integer> {
 
     @Query("SELECT new com.gender_healthcare_system.entities.todo.Comment" +
-            "(c.commentId, c.content, c.parentComment, " +
-            "c.createdAt, c.edited_Content, c.editedAt, c.status) " +
+            "(c.commentId, c.content, c.createdAt, c.edited_Content, c.editedAt, c.status) " +
             "FROM Comment c " +
             "WHERE c.commentId = :commentId " +
-            "AND c.parentComment = NULL")
+            "AND c.parentComment IS NULL")
     Optional<Comment> getParentCommentDumpById(int commentId);
 
-    /*@Query("SELECT new com.gender_healthcare_system.entities.todo.Comment" +
-            "(c.commentId, c.content, c.parentComment, " +
-            "c.createdAt, c.edited_Content, c.editedAt, c.status) " +
-            "FROM Comment c " +
-            "WHERE c.commentId = :commentId " +
-            "AND c.account.accountId = :accountId")
-    Optional<Comment> getCommentDumpById(int commentId, int accountId);*/
-
     @Query("SELECT new com.gender_healthcare_system.dtos.todo.CommentDTO" +
-            "(c.commentId, COUNT(sc.commentId), c.content, c.createdAt, " +
-            "c.edited_Content, c.editedAt, c.status) " +
-            "FROM Comment c LEFT JOIN Comment sc " +
+            "(c.commentId, COUNT(sc.commentId), a.accountId, a.username," +
+            " c.content, c.createdAt, c.edited_Content, c.editedAt, c.status) " +
+            "FROM Comment c " +
+            "JOIN c.account a " +
+            "LEFT JOIN Comment sc " +
             "ON sc.parentComment.commentId = c.commentId " +
             "WHERE c.blog.blogId = :blogId " +
             "AND c.parentComment IS NULL " +
-            "GROUP BY c.commentId, c.content, c.createdAt, c.edited_Content, " +
+            "GROUP BY c.commentId, a.accountId, a.username," +
+            " c.content, c.createdAt, c.edited_Content, " +
             "c.editedAt, c.status")
     Page<CommentDTO> getAllTopCommentsOfABlog(int blogId, Pageable pageable);
 
     @Query("SELECT new com.gender_healthcare_system.dtos.todo.CommentDTO" +
-            "(c.commentId, c.content, c.parentComment.commentId," +
+            "(c.commentId, a.accountId, a.username, c.content, c.parentComment.commentId," +
             " c.createdAt, c.edited_Content, c.editedAt, c.status) " +
             "FROM Comment c " +
+            "JOIN c.account a " +
             "WHERE c.parentComment.commentId = :commentId")
     Page<CommentDTO> getAllSubCommentsOfAComment(int commentId, Pageable pageable);
 

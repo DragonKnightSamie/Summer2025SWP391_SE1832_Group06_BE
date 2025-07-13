@@ -22,6 +22,10 @@ public class CommentDTO implements Serializable {
 
     private Integer commentId;
 
+    private Integer accountId;
+
+    private String username;
+
     @Nationalized
     private String content;
 
@@ -44,10 +48,13 @@ public class CommentDTO implements Serializable {
 
     private CommentStatus status;
 
-    public CommentDTO(Integer commentId, Long subCommentCount, String content,
-                      LocalDateTime createdAt, String edited_Content,
-                      LocalDateTime editedAt, CommentStatus status) {
+    public CommentDTO(Integer commentId, Long subCommentCount, Integer accountId,
+                      String username, String content,
+                      LocalDateTime createdAt, String edited_Content, LocalDateTime editedAt,
+                      CommentStatus status) {
         this.commentId = commentId;
+        this.accountId = accountId;
+        this.username = username;
         this.content = content;
         this.subCommentCount = subCommentCount;
         this.createdAt = createdAt;
@@ -56,11 +63,14 @@ public class CommentDTO implements Serializable {
         this.status = status;
     }
 
-    public CommentDTO(Integer commentId, String content,
+    public CommentDTO(Integer commentId, Integer accountId,
+                      String username, String content,
                       Integer parentCommentId, LocalDateTime createdAt,
                       String edited_Content, LocalDateTime editedAt, CommentStatus status) {
         this.commentId = commentId;
         this.content = content;
+        this.accountId = accountId;
+        this.username = username;
         this.parentCommentId = parentCommentId;
         this.createdAt = createdAt;
         this.edited_Content = edited_Content;

@@ -59,12 +59,11 @@ public class Comment implements Serializable {
     @Enumerated(EnumType.STRING)
     private CommentStatus status;
 
-    public Comment(int commentId, String content, Comment parentComment,
+    public Comment(int commentId, String content,
                    LocalDateTime createdAt, String edited_Content,
                    LocalDateTime editedAt, CommentStatus status) {
         this.commentId = commentId;
         this.content = content;
-        this.parentComment = parentComment;
         this.createdAt = createdAt;
         this.edited_Content = edited_Content;
         this.editedAt = editedAt;
