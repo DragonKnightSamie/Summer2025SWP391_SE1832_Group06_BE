@@ -7,8 +7,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.gender_healthcare_system.services.EmailService;
-import com.google.firebase.FirebaseApp;
-import com.google.firebase.auth.FirebaseAuth;
+
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.AllArgsConstructor;
@@ -20,19 +19,11 @@ import lombok.AllArgsConstructor;
 public class AuthController {
     private final EmailService emailService;
 
-    @Operation(summary = "Quên mật khẩu", description = "Gửi email đặt lại mật khẩu cho người dùng thông qua Firebase Authentication")
+    @Operation(summary = "Quên mật khẩu", description = "Gửi email đặt lại mật khẩu cho người dùng")
     @PostMapping("/forgot-password/")
     public ResponseEntity<?> forgotPassword(@RequestParam String email) {
         try {
             System.out.println("Processing forgot password request for email: " + email);
-
-            // Kiểm tra Firebase đã được khởi tạo chưa
-            if (FirebaseApp.getApps().isEmpty()) {
-                System.err.println("Firebase not initialized!");
-                return ResponseEntity.status(500).body("Hệ thống đang bảo trì. Vui lòng thử lại sau.");
-            }
-
-            System.out.println("Firebase apps count: " + FirebaseApp.getApps().size());
 
             // Kiểm tra email có hợp lệ không
             if (email == null || email.trim().isEmpty()) {
@@ -44,19 +35,13 @@ public class AuthController {
                 return ResponseEntity.badRequest().body("Email phải là địa chỉ Gmail hợp lệ");
             }
 
-            String link = FirebaseAuth.getInstance().generatePasswordResetLink(email);
-            System.out.println("Generated reset link successfully");
-
-            emailService.sendResetPasswordEmail(email, link);
+            // Tạo link đặt lại mật khẩu (có thể thay đổi theo logic của bạn)
+            String resetLink = "http://localhost:3000/reset-password?email=" + email + "&token=" + generateResetToken(); // thay đổi đường link cho phù hợp để test
+            
+            emailService.sendResetPasswordEmail(email, resetLink);
             System.out.println("Email sent successfully");
 
             return ResponseEntity.ok("Đã gửi email đặt lại mật khẩu! Vui lòng kiểm tra hộp thư.");
-        } catch (com.google.firebase.auth.FirebaseAuthException e) {
-            System.err.println("Firebase Auth Error: " + e.getMessage());
-            if (e.getMessage().contains("USER_NOT_FOUND")) {
-                return ResponseEntity.badRequest().body("Email không tồn tại trong hệ thống");
-            }
-            return ResponseEntity.badRequest().body("Lỗi xác thực: " + e.getMessage());
         } catch (Exception e) {
             System.err.println("Error in forgotPassword: " + e.getMessage());
             e.printStackTrace();
@@ -64,18 +49,8 @@ public class AuthController {
         }
     }
 
-    @Operation(summary = "Kiểm tra trạng thái Firebase", description = "Kiểm tra xem Firebase đã được khởi tạo chưa")
-    @PostMapping("/test-firebase/")
-    public ResponseEntity<?> testFirebase() {
-        try {
-            if (FirebaseApp.getApps().isEmpty()) {
-                return ResponseEntity.status(500).body("Firebase not initialized");
-            }
-            int appCount = FirebaseApp.getApps().size();
-            String appName = FirebaseApp.getApps().get(0).getName();
-            return ResponseEntity.ok("Firebase status: " + appCount + " app(s) initialized. Current app: " + appName);
-        } catch (Exception e) {
-            return ResponseEntity.status(500).body("Firebase error: " + e.getMessage());
-        }
+    // Tạo token đặt lại mật khẩu (có thể thay đổi theo logic của bạn)
+    private String generateResetToken() {
+        return java.util.UUID.randomUUID().toString();
     }
 }

@@ -45,8 +45,7 @@ public class SecurityConfig {
                         "/swagger-ui.html",
                         "/api/v1/admin/statistic-reports/**", // để tạm API báo cáo ở đây để test
                         "/api/v1/vnpay/payment-transaction/**", // để tạm API báo cáo ở đây để test
-                        "/api/v1/auth/forgot-password/", // Cho phép quên mật khẩu public
-                        "/api/v1/auth/test-firebase/" // Cho phép test Firebase
+                        "/api/v1/auth/forgot-password/" // Cho phép quên mật khẩu public
         };
 
         // Các API blog công khai (xem, tìm kiếm)
