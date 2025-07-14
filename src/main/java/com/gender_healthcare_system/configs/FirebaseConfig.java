@@ -10,10 +10,10 @@ import org.springframework.core.io.ClassPathResource;
 import java.io.IOException;
 import java.io.InputStream;
 
-@Configuration
+//@Configuration
 public class FirebaseConfig {
 
-    @Bean
+    /*@Bean
     public FirebaseApp firebaseApp() throws IOException {
         if (!FirebaseApp.getApps().isEmpty()) {
             return FirebaseApp.getApps().get(0);
@@ -25,5 +25,5 @@ public class FirebaseConfig {
                     .build();
             return FirebaseApp.initializeApp(options);
         }
-    }
+    }*/
 } 

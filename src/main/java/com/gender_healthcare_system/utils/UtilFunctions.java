@@ -1,6 +1,5 @@
 package com.gender_healthcare_system.utils;
 
-import com.gender_healthcare_system.entities.enu.Gender;
 import com.gender_healthcare_system.entities.enu.GenderType;
 import com.gender_healthcare_system.entities.enu.ResultType;
 import com.gender_healthcare_system.exceptions.AppException;
@@ -201,7 +200,7 @@ public class UtilFunctions {
 
         for(TestingServiceResultCompletePayload item: resultList){
 
-            BigDecimal realValue = item.getRealValue();
+            BigDecimal realValue = item.getResult();
             BigDecimal minValue = item.getMinValue();
             BigDecimal maxValue = item.getMaxValue();
 

@@ -31,7 +31,7 @@ public class TestingServiceResultCompletePayload implements Serializable {
     private String description;
 
     @NotNull(message = "Test result type is required")
-    private ResultType type;
+    private ResultType resultType;
 
     @NotNull(message = "Test result gender type is required")
     private GenderType genderType;
@@ -55,5 +55,5 @@ public class TestingServiceResultCompletePayload implements Serializable {
     @DecimalMax(value = "999.99", message = "Min value must be equal to or less than 999.99")
     @Digits(integer = 3, fraction = 2, message = "If provided, min test result value can " +
             "only have 1 to 3 integer digits and 2 decimal digits at most")
-    private BigDecimal realValue;
+    private BigDecimal result;
 }
