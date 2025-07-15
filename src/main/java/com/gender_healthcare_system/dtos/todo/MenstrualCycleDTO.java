@@ -21,12 +21,12 @@ public class MenstrualCycleDTO {
     private Boolean isTrackingEnabled;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
-    private Account customer;
+
     private MenstrualSeverity severity;
     private MenstrualStatus status;
     private String note;
 
-    public MenstrualCycleDTO(Integer cycleId, LocalDate startDate, Integer cycleLength, Boolean isTrackingEnabled, LocalDateTime createdAt, LocalDateTime updatedAt, Account customer) {
-        this(cycleId, startDate, cycleLength, isTrackingEnabled, createdAt, updatedAt, customer, null, null, null);
+    public MenstrualCycleDTO(Integer cycleId, LocalDate startDate, Integer cycleLength, Boolean isTrackingEnabled, LocalDateTime createdAt, LocalDateTime updatedAt) {
+        this(cycleId, startDate, cycleLength, isTrackingEnabled, createdAt, updatedAt,null, null, null);
     }
 }

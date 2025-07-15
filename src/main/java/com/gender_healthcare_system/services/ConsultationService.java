@@ -5,7 +5,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.gender_healthcare_system.dtos.todo.ConsultationDTO;
 import com.gender_healthcare_system.dtos.todo.ConsultantScheduleDTO;
-import com.gender_healthcare_system.dtos.user.CustomerPeriodDetailsDTO;
 import com.gender_healthcare_system.entities.enu.*;
 import com.gender_healthcare_system.entities.todo.Consultation;
 import com.gender_healthcare_system.entities.todo.ConsultationPayment;

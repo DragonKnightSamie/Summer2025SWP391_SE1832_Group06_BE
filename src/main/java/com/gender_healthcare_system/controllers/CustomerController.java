@@ -6,11 +6,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -21,6 +23,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.server.ResponseStatusException;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -34,7 +37,6 @@ import com.gender_healthcare_system.dtos.todo.TestingServiceBookingDTO;
 import com.gender_healthcare_system.dtos.todo.TestingServiceResultDTO;
 import com.gender_healthcare_system.dtos.user.ConsultantDTO;
 import com.gender_healthcare_system.dtos.user.CustomerDTO;
-import com.gender_healthcare_system.dtos.user.CustomerPeriodDetailsDTO;
 import com.gender_healthcare_system.entities.user.AccountInfoDetails;
 import com.gender_healthcare_system.payloads.login.LoginRequest;
 import com.gender_healthcare_system.payloads.todo.ConsultationRegisterPayload;
@@ -64,9 +66,6 @@ import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.server.ResponseStatusException;
-import org.springframework.http.HttpStatus;
 
 @Tag(name = "Customer APIs", description = "APIs for managing customer functionalities")
 @RestController
@@ -149,19 +148,19 @@ public class CustomerController {
         return ResponseEntity.ok(responseMap);
     }
 
-    @Operation(
-            summary = "Get Customer Period Details",
-            description = "Get menstrual cycle details for a female customer"
-    )
-    //get period details for a female customers
-    @GetMapping("/female/period-details/{customerId}")
-    @PreAuthorize("hasAuthority('ROLE_CUSTOMER')")
-    public ResponseEntity<CustomerPeriodDetailsDTO>
-    getPeriodDetailsForFemaleCustomer
-            (@PathVariable int customerId) throws JsonProcessingException {
-
-        return ResponseEntity.ok(customerService.getFemaleCustomerPeriodDetails(customerId));
-    }
+//    @Operation(
+//            summary = "Get Customer Period Details",
+//            description = "Get menstrual cycle details for a female customer"
+//    )
+//    //get period details for a female customers
+////    @GetMapping("/female/period-details/{customerId}")
+////    @PreAuthorize("hasAuthority('ROLE_CUSTOMER')")
+////  public ResponseEntity<CustomerPeriodDetailsDTO>
+////    getPeriodDetailsForFemaleCustomer
+////            (@PathVariable int customerId) throws JsonProcessingException {
+////
+////        return ResponseEntity.ok(customerService.getFemaleCustomerPeriodDetails(customerId));
+////    }
 
 
     /// /////////////////////////////// Manage Customer Profile /////////////////////////////////
@@ -311,7 +310,7 @@ public class CustomerController {
             @RequestParam(defaultValue = "asc") String order) {
         int customerId = account.getId();
         return ResponseEntity.ok(testingServiceBookingService.getAllTestingServiceBookingsByCustomerId(customerId, page, sort, order));
-    }
+    } 
 
     @Operation(
             summary = "Get Testing Service Booking Details by ID",
@@ -527,8 +526,8 @@ public class CustomerController {
     )
     @PostMapping("/menstrual-cycles/create")
     @PreAuthorize("hasAuthority('ROLE_CUSTOMER')")
-    public ResponseEntity<MenstrualCycleDTO> createCycle(@RequestBody @Valid MenstrualCreatePayload payload) {
-        MenstrualCycleDTO createdCycle = menstrualCycleService.createCycle(payload);
+    public ResponseEntity<MenstrualCycleDTO> createCycle(@RequestBody @Valid MenstrualCreatePayload payload, @AuthenticationPrincipal AccountInfoDetails account) {
+        MenstrualCycleDTO createdCycle = menstrualCycleService.createCycle(payload, account.getId());
         return ResponseEntity.ok(createdCycle);
     }
 

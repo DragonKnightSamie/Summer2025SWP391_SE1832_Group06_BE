@@ -1,14 +1,18 @@
 package com.gender_healthcare_system.repositories;
 
-import com.gender_healthcare_system.dtos.todo.MenstrualCycleDTO;
-import com.gender_healthcare_system.payloads.todo.MenstrualCycleUpdatePayload;
-import com.gender_healthcare_system.entities.todo.MenstrualCycle;
-import jakarta.transaction.Transactional;
-import org.springframework.data.jpa.repository.*;
+import java.util.List;
+
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
-import java.util.List;
+import com.gender_healthcare_system.dtos.todo.MenstrualCycleDTO;
+import com.gender_healthcare_system.entities.todo.MenstrualCycle;
+import com.gender_healthcare_system.payloads.todo.MenstrualCycleUpdatePayload;
+
+import jakarta.transaction.Transactional;
 
 @Repository
 public interface MenstrualCycleRepo extends JpaRepository<MenstrualCycle, Integer> {
@@ -16,7 +20,7 @@ public interface MenstrualCycleRepo extends JpaRepository<MenstrualCycle, Intege
     // SELECT DTO by customerId
     @Query("SELECT new com.gender_healthcare_system.dtos.todo.MenstrualCycleDTO(" +
             "m.cycleId, m.startDate, m.cycleLength, m.isTrackingEnabled, " +
-            "m.createdAt, m.updatedAt, m.customer) " +
+            "m.createdAt, m.updatedAt) " +
             "FROM MenstrualCycle m " +
             "WHERE m.customer.accountId = :customerId")
     List<MenstrualCycleDTO> getCyclesByCustomerId(@Param("customerId") int customerId);

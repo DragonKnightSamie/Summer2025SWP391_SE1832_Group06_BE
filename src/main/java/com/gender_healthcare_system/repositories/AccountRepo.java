@@ -1,10 +1,21 @@
 package com.gender_healthcare_system.repositories;
 
+import java.time.LocalDate;
+import java.util.List;
+import java.util.Optional;
+
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
+
 import com.gender_healthcare_system.dtos.login.LoginResponse;
-import com.gender_healthcare_system.dtos.user.ManagerDTO;
-import com.gender_healthcare_system.dtos.user.StaffDTO;
 import com.gender_healthcare_system.dtos.user.ConsultantDTO;
 import com.gender_healthcare_system.dtos.user.CustomerDTO;
+import com.gender_healthcare_system.dtos.user.ManagerDTO;
+import com.gender_healthcare_system.dtos.user.StaffDTO;
 import com.gender_healthcare_system.entities.enu.AccountStatus;
 import com.gender_healthcare_system.entities.enu.Gender;
 import com.gender_healthcare_system.entities.user.Account;
@@ -12,17 +23,6 @@ import com.gender_healthcare_system.payloads.user.ConsultantUpdatePayload;
 import com.gender_healthcare_system.payloads.user.CustomerUpdatePayload;
 import com.gender_healthcare_system.payloads.user.ManagerUpdatePayload;
 import com.gender_healthcare_system.payloads.user.StaffUpdatePayload;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Modifying;
-import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.query.Param;
-import org.springframework.transaction.annotation.Transactional;
-
-import java.time.LocalDate;
-import java.util.List;
-import java.util.Optional;
 
 
 public interface AccountRepo extends JpaRepository<Account, Integer> {
@@ -126,16 +126,14 @@ public interface AccountRepo extends JpaRepository<Account, Integer> {
             "WHERE a.accountId = :id AND a.role.roleName = 'CUSTOMER'")
     LoginResponse getCustomerLoginDetails(int id);
 
-    @Query("SELECT new com.gender_healthcare_system.dtos.user.CustomerDTO" +
-            "(a.accountId, a.username, a.password, " +
-            "a.fullName, a.dateOfBirth, a.gender, a.email, a.phone, a.address, a.status) " +
+    @Query("SELECT new com.gender_healthcare_system.dtos.user.CustomerDTO(" +
+            "a.accountId, a.username, a.fullName, a.dateOfBirth, a.gender, a.phone, a.email, a.address, a.status) " +
             "FROM Account a " +
             "WHERE a.accountId = :id AND a.role.roleName = 'CUSTOMER'")
     Optional<CustomerDTO> getCustomerDetailsById(int id);
 
-    @Query("SELECT new com.gender_healthcare_system.dtos.user.CustomerDTO" +
-            "(a.accountId, a.username, a.password, " +
-            "a.fullName, a.dateOfBirth, a.gender, a.email, a.phone, a.address, a.status) " +
+    @Query("SELECT new com.gender_healthcare_system.dtos.user.CustomerDTO(" +
+            "a.accountId, a.username, a.fullName, a.dateOfBirth, a.gender, a.phone, a.email, a.address, a.status) " +
             "FROM Account a " +
             "WHERE a.role.roleName = 'CUSTOMER'")
     Page<CustomerDTO> getAllCustomers(Pageable pageable);

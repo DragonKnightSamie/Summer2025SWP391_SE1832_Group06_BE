@@ -9,5 +9,4 @@ public class MenstrualCreatePayload {
     private LocalDate startDate;
     private Integer cycleLength;
     private Boolean isTrackingEnabled;
-    private Account customer;
 }

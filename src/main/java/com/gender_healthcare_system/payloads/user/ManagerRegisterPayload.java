@@ -1,15 +1,16 @@
 package com.gender_healthcare_system.payloads.user;
 
+import java.io.Serializable;
+
+import org.hibernate.annotations.Nationalized;
+import org.hibernate.validator.constraints.Length;
+
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.hibernate.validator.constraints.Length;
-import org.hibernate.annotations.Nationalized;
-
-import java.io.Serializable;
 
 
 @Data
@@ -43,7 +44,6 @@ public class ManagerRegisterPayload implements Serializable {
     @Length(min = 3, max = 100, message = "Address must be between 3 and 100 characters")
     @Nationalized
     private String address;
-
 
 }
 

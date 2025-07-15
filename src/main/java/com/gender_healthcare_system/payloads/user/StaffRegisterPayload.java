@@ -43,6 +43,5 @@ public class StaffRegisterPayload implements Serializable {
     @Nationalized
     private String address;
 
-
 }
 

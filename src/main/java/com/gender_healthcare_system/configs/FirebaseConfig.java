@@ -18,7 +18,7 @@ public class FirebaseConfig {
         if (!FirebaseApp.getApps().isEmpty()) {
             return FirebaseApp.getApps().get(0);
         }
-        ClassPathResource resource = new ClassPathResource("gender-healthcare-system-firebase-adminsdk-fbsvc-0f5bb965a8.json");
+        ClassPathResource resource = new ClassPathResource("gender-healthcare-system-firebase-adminsdk-fbsvc-93def682e4.json");
         try (InputStream serviceAccount = resource.getInputStream()) {
             FirebaseOptions options = FirebaseOptions.builder()
                     .setCredentials(GoogleCredentials.fromStream(serviceAccount))
