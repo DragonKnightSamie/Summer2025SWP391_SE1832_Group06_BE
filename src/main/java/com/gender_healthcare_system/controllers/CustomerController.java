@@ -184,7 +184,7 @@ public class CustomerController {
     //Customer update profile infos
     @PutMapping("profile/update/{id}")
     @PreAuthorize("hasAuthority('ROLE_CUSTOMER')")
-    public ResponseEntity<?> updateConsultantProfile
+    public ResponseEntity<?> updateCustomerProfile
             (@PathVariable int id, @RequestBody @Valid CustomerUpdatePayload payload)
             throws JsonProcessingException {
 

@@ -32,6 +32,7 @@ public interface MenstrualCycleRepo extends JpaRepository<MenstrualCycle, Intege
             "m.startDate = :#{#payload.startDate}, " +
             "m.cycleLength = :#{#payload.cycleLength}, " +
             "m.isTrackingEnabled = :#{#payload.isTrackingEnabled}, " +
+            "m.note = :#{#payload.note}, " +
             "m.updatedAt = CURRENT_TIMESTAMP " +
             "WHERE m.cycleId = :cycleId")
     void updateCycleById(@Param("cycleId") Integer cycleId,
