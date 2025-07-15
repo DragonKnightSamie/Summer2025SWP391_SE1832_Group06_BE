@@ -27,6 +27,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -138,24 +139,33 @@ public class TestingServiceBookingService {
         return response;
     }
 
-    public List<LocalDateTime> getBookingScheduleForADay
-            (TestingServiceBookingSchedulePayload payload){
+    public List<String> getBookingScheduleForADay
+            (int serviceId, int customerId, LocalDate checkDate){
 
         List<LocalDateTime> bookingSchedule =
                 testingServiceBookingRepo.getBookingScheduleInADate
-                        (payload.getCheckDate(), TestingServiceBookingStatus.CANCELLED);
+                        (checkDate, TestingServiceBookingStatus.CANCELLED);
 
         List<LocalDateTime> customerBookedSchedule =
                 testingServiceBookingRepo
                         .getCustomerBookedScheduleInADate
-                                (payload.getServiceId(), payload.getCustomerId(),
-                                        payload.getCheckDate(),
+                                (serviceId, customerId, checkDate,
                                         TestingServiceBookingStatus.CANCELLED);
 
-        return Stream.concat(bookingSchedule.stream(), customerBookedSchedule.stream())
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
+        List<String> finalBookingSchedule = Stream
+                .concat(bookingSchedule.stream(), customerBookedSchedule.stream())
                 .distinct()
                 .sorted()
+                .map(dateTime -> dateTime.format(formatter))
                 .toList();
+
+        if(finalBookingSchedule.isEmpty()){
+
+            throw new AppException(404, "No booked schedule found for date " + checkDate);
+        }
+
+        return finalBookingSchedule;
     }
 
     // Create new TestingServiceBooking with payment

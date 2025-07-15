@@ -1,7 +1,6 @@
 package com.gender_healthcare_system.controllers;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -46,7 +45,6 @@ import com.gender_healthcare_system.payloads.todo.MenstrualCycleUpdatePayload;
 import com.gender_healthcare_system.payloads.todo.SymptomCreatePayload;
 import com.gender_healthcare_system.payloads.todo.SymptomUpdatePayload;
 import com.gender_healthcare_system.payloads.todo.TestingServiceBookingRegisterPayload;
-import com.gender_healthcare_system.payloads.todo.TestingServiceBookingSchedulePayload;
 import com.gender_healthcare_system.payloads.user.CustomerPayload;
 import com.gender_healthcare_system.payloads.user.CustomerUpdatePayload;
 import com.gender_healthcare_system.services.AccountService;
@@ -270,12 +268,17 @@ public class CustomerController {
     //Lấy lịch xét nghiệm với các expected start time đã full lịch đặt (5 người)
     //và cả các expected start time customer đã đặt với testing service đó
     @GetMapping("/testing-service-bookings/check-schedule")
-    @PreAuthorize("hasAuthority('ROLE_STAFF')")
-    public ResponseEntity<List<LocalDateTime>> getTestingScheduleForADay
-    (@RequestBody @Valid TestingServiceBookingSchedulePayload payload) {
+    @PreAuthorize("hasAuthority('ROLE_CUSTOMER')")
+    public ResponseEntity<List<String>> getTestingScheduleForADay
+    (@RequestParam int serviceId,
+     @RequestParam int customerId,
+     @Parameter(example = "05/06/2025")
+     @RequestParam("checkDate")
+     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy")
+     LocalDate checkDate) {
 
         return ResponseEntity.ok(testingServiceBookingService
-                .getBookingScheduleForADay(payload));
+                .getBookingScheduleForADay(serviceId, customerId, checkDate));
     }
 
     @Operation(

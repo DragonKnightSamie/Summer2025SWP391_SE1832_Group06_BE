@@ -72,7 +72,7 @@ public interface TestingServiceBookingRepo extends JpaRepository<TestingServiceB
     @Query("SELECT tsb.expectedStartTime " +
             "FROM TestingServiceBooking tsb " +
             "WHERE CAST(tsb.expectedStartTime AS DATE) = :date " +
-            "AND NOT tsb.status = :status " +
+            "AND tsb.status <> :status " +
             "GROUP BY tsb.expectedStartTime " +
             "HAVING COUNT(tsb) = 5 " +
             "ORDER BY tsb.expectedStartTime")
@@ -84,7 +84,7 @@ public interface TestingServiceBookingRepo extends JpaRepository<TestingServiceB
             "WHERE tsb.customer.accountId = :customerId " +
             "AND tsb.testingService.serviceId = :serviceId " +
             "AND CAST(tsb.expectedStartTime AS DATE) = :date " +
-            "AND NOT tsb.status = :status " +
+            "AND tsb.status <> :status " +
             "GROUP BY tsb.expectedStartTime " +
             "ORDER BY tsb.expectedStartTime")
     List<LocalDateTime> getCustomerBookedScheduleInADate
