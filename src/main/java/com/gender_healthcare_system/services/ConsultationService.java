@@ -34,6 +34,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 import com.gender_healthcare_system.entities.enu.AccountStatus;
 
+
 @Service
 @AllArgsConstructor
 public class ConsultationService {
@@ -151,7 +152,7 @@ public class ConsultationService {
         return new ConsultantScheduleDTO(consultantId, consultationList);
     }
 
-    //register new consultation with payment
+    @Transactional(rollbackFor = Exception.class)
     public void registerConsultation(ConsultationRegisterPayload payload) {
 
         boolean consultationExist = consultationRepo
@@ -201,7 +202,7 @@ public class ConsultationService {
         consultationPaymentRepo.saveAndFlush(consultationPayment);
     }
 
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     public void cancelConsultation(int id) {
         boolean consultationExist = consultationRepo.existsById(id);
 
@@ -213,7 +214,7 @@ public class ConsultationService {
         consultationRepo.cancelConsultation(id);
     }
 
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     public void reScheduleConsultation(int consultationId, ConsultationConfirmPayload payload) {
 
         Consultation consultation = consultationRepo
@@ -243,7 +244,7 @@ public class ConsultationService {
                 (consultationId, payload, expectedEndTime, ConsultationStatus.RESCHEDULED);
     }
 
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     public void updateConsultationCommentAndRating
             (int id, EvaluatePayload payload) {
         boolean consultationExist = consultationRepo.existsById(id);
@@ -256,7 +257,7 @@ public class ConsultationService {
         consultationRepo.updateConsultationCommentAndRatingById(id, payload);
     }
 
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     public void completeConsultation(ConsultationCompletePayload payload) {
 
         Consultation consultation = consultationRepo

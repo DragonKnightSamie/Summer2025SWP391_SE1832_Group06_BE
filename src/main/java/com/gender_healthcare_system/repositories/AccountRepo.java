@@ -219,9 +219,10 @@ public interface AccountRepo extends JpaRepository<Account, Integer> {
             "LEFT JOIN TestingServiceBooking b ON b.staff.accountId = a.accountId " +
             "AND CAST(b.expectedStartTime AS DATE) = :date " +
             "WHERE a.role.roleName = 'STAFF' " +
+            "AND a.status = :status " +
             "GROUP BY a.accountId " +
             "ORDER BY COUNT(b) ASC")
-    List<Object[]> findStaffOrderedByLeastTests(@Param("date") LocalDate date);
+    List<Object[]> findStaffOrderedByLeastTests(@Param("date") LocalDate date, @Param("status") AccountStatus status);
 
     //report
     @Query("SELECT COUNT(a) FROM Account a")

@@ -10,6 +10,7 @@ import com.gender_healthcare_system.repositories.AccountRepo;
 import com.gender_healthcare_system.repositories.SymptomRepo;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -21,6 +22,7 @@ public class SymptomService {
     private final SymptomRepo symptomRepo;
     private final AccountRepo accountRepo;
 
+    @Transactional(rollbackFor = Exception.class)
     public SymptomDTO createSymptom(SymptomCreatePayload payload) {
         Account customer = accountRepo.findById(payload.getCustomerId())
                 .orElseThrow(() -> new AppException(404, "Customer not found"));
@@ -41,6 +43,7 @@ public class SymptomService {
         return symptomRepo.getSymptomsByCustomerId(customerId);
     }
 
+    @Transactional(rollbackFor = Exception.class)
     public void updateSymptom(Integer id, SymptomUpdatePayload payload) {
         Symptom existing = symptomRepo.findById(id)
                 .orElseThrow(() -> new AppException(404, "Symptom not found"));

@@ -18,13 +18,13 @@ import com.gender_healthcare_system.repositories.AccountRepo;
 import com.gender_healthcare_system.repositories.CertificateRepo;
 import com.gender_healthcare_system.repositories.RoleRepo;
 import com.gender_healthcare_system.utils.UtilFunctions;
-import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 
@@ -42,11 +42,10 @@ public class AccountService implements UserDetailsService {
 
         return accountInfo
                 .map(AccountInfoDetails::new)
-                .orElseThrow(() ->
-                        new UsernameNotFoundException("Invalid Username or Password"));
+                .orElseThrow(() -> new UsernameNotFoundException("Invalid Username or Password"));
     }
 
-
+    @Transactional(rollbackFor = Exception.class)
     public void createCustomerAccount(CustomerPayload payload) throws JsonProcessingException {
         ObjectMapper mapper = new ObjectMapper();
         mapper.registerModule(new JavaTimeModule());
@@ -67,38 +66,42 @@ public class AccountService implements UserDetailsService {
         account.setPhone(payload.getPhone());
         account.setEmail(payload.getEmail());
         account.setAddress(payload.getAddress());
-        
+
         accountRepo.saveAndFlush(account);
     }
 
-    @Transactional
-    public void updateCustomerStatus(int customerId, AccountStatus status){
+    @Transactional(rollbackFor = Exception.class)
+    public void updateCustomerStatus(int customerId, AccountStatus status) {
         boolean customerExist = accountRepo.existsByAccountIdAndRole_RoleName(customerId, "CUSTOMER");
 
-        if(!customerExist) {
+        if (!customerExist) {
             throw new AppException(404, "Customer not found");
         }
 
         boolean accountStatusIdentical = accountRepo
                 .existsAccountByAccountIdAndStatus(customerId, status);
 
-        if(!accountStatusIdentical){
+        if (!accountStatusIdentical) {
             accountRepo.updateAccountStatus(customerId, status);
         }
     }
 
-    /*@Transactional
-    public void deleteCustomerById(int customerId) {
-        boolean customerExist = accountRepo.existsByAccountIdAndRole_RoleName(customerId, "CUSTOMER");
+    /*
+     * @Transactional
+     * public void deleteCustomerById(int customerId) {
+     * boolean customerExist =
+     * accountRepo.existsByAccountIdAndRole_RoleName(customerId, "CUSTOMER");
+     * 
+     * if(!customerExist) {
+     * throw new AppException(404, "Customer not found");
+     * }
+     * 
+     * accountRepo.deleteAccountById(customerId);
+     * }
+     */
 
-        if(!customerExist) {
-            throw new AppException(404, "Customer not found");
-        }
-
-        accountRepo.deleteAccountById(customerId);
-    }*/
-
-    public void createConsultantAccount(ConsultantRegisterPayload payload){
+    @Transactional(rollbackFor = Exception.class)
+    public void createConsultantAccount(ConsultantRegisterPayload payload) {
         Account account = new Account();
         Certificate certificate;
 
@@ -117,9 +120,8 @@ public class AccountService implements UserDetailsService {
 
         accountRepo.saveAndFlush(account);
 
-        for(CertificateRegisterPayload item: payload.getCertificates()) {
-            UtilFunctions.validateIssueDateAndExpiryDate
-                    (item.getIssueDate(), item.getExpiryDate());
+        for (CertificateRegisterPayload item : payload.getCertificates()) {
+            UtilFunctions.validateIssueDateAndExpiryDate(item.getIssueDate(), item.getExpiryDate());
 
             certificate = new Certificate();
             certificate.setConsultant(account);
@@ -135,73 +137,83 @@ public class AccountService implements UserDetailsService {
         }
     }
 
-    @Transactional
-    public void updateConsultantStatus(int consultantId, AccountStatus status){
-        boolean consultantExist = accountRepo.existsByAccountIdAndRole_RoleName
-                (consultantId, "CONSULTANT");
+    @Transactional(rollbackFor = Exception.class)
+    public void updateConsultantStatus(int consultantId, AccountStatus status) {
+        boolean consultantExist = accountRepo.existsByAccountIdAndRole_RoleName(consultantId, "CONSULTANT");
 
-        if(!consultantExist) {
+        if (!consultantExist) {
             throw new AppException(404, "Consultant not found");
         }
 
         boolean accountStatusIdentical = accountRepo
                 .existsAccountByAccountIdAndStatus(consultantId, status);
 
-        if(!accountStatusIdentical){
+        if (!accountStatusIdentical) {
             accountRepo.updateAccountStatus(consultantId, status);
         }
     }
 
-    /*@Transactional
-    public void deleteConsultantById(int consultantId) {
-        boolean consultantExist = accountRepo.existsByAccountIdAndRole_RoleName(consultantId, "CONSULTANT");
+    /*
+     * @Transactional
+     * public void deleteConsultantById(int consultantId) {
+     * boolean consultantExist =
+     * accountRepo.existsByAccountIdAndRole_RoleName(consultantId, "CONSULTANT");
+     * 
+     * if(!consultantExist) {
+     * throw new AppException(404, "Consultant not found");
+     * }
+     * 
+     * accountRepo.deleteAccountById(consultantId);
+     * }
+     */
 
-        if(!consultantExist) {
-            throw new AppException(404, "Consultant not found");
-        }
+    // createManagerAccount by Admin
 
-        accountRepo.deleteAccountById(consultantId);
-    }*/
-
-    //createManagerAccount by Admin
-
+    @Transactional(rollbackFor = Exception.class)
     public void createManagerAccount(ManagerRegisterPayload payload) {
         createStaffOrManagerAccount(payload, 2); // MANAGER role
     }
 
-    /*@Transactional
-    public void deleteManagerById(int managerId) {
-        boolean managerExist = accountRepo.existsByAccountIdAndRole_RoleName(managerId, "MANAGER");
+    /*
+     * @Transactional
+     * public void deleteManagerById(int managerId) {
+     * boolean managerExist =
+     * accountRepo.existsByAccountIdAndRole_RoleName(managerId, "MANAGER");
+     * 
+     * if(!managerExist) {
+     * throw new AppException(404, "Manager not found");
+     * }
+     * 
+     * accountRepo.deleteAccountById(managerId);
+     * }
+     */
 
-        if(!managerExist) {
-            throw new AppException(404, "Manager not found");
-        }
+    // createStaffAccount by Manager
 
-        accountRepo.deleteAccountById(managerId);
-    }*/
-
-    //createStaffAccount by Manager
-
+    @Transactional(rollbackFor = Exception.class)
     public void createStaffAccount(StaffRegisterPayload payload) {
         createStaffOrManagerAccount(payload, 3); // STAFF role
     }
 
-    /*@Transactional
-    public void deleteStaffById(int staffId) {
-        boolean staffExist = accountRepo.existsByAccountIdAndRole_RoleName(staffId, "STAFF");
-
-        if(!staffExist) {
-            throw new AppException(404, "Staff not found");
-        }
-
-        accountRepo.deleteAccountById(staffId);
-    }*/
+    /*
+     * @Transactional
+     * public void deleteStaffById(int staffId) {
+     * boolean staffExist = accountRepo.existsByAccountIdAndRole_RoleName(staffId,
+     * "STAFF");
+     * 
+     * if(!staffExist) {
+     * throw new AppException(404, "Staff not found");
+     * }
+     * 
+     * accountRepo.deleteAccountById(staffId);
+     * }
+     */
 
     // Common method for creating Staff or Manager accounts
     private void createStaffOrManagerAccount(Object payload, int roleId) {
         Account account = new Account();
         Role role = roleRepo.findByRoleId(roleId);
-        
+
         account.setUsername(getUsernameFromPayload(payload));
         account.setPassword(getPasswordFromPayload(payload));
         account.setStatus(AccountStatus.ACTIVE);

@@ -31,15 +31,11 @@ public class TestingServiceTypeService {
 
     private final TestingServiceResultRepo testingServiceResultRepo;
 
-
     public TestingServiceTypeDetailsDTO getTestingServiceTypeById(int id) {
-        TestingServiceTypeDetailsDTO serviceTypeDetails =
-                testingServiceTypeRepo.getTestingServiceDetailsById(id)
-                .orElseThrow(() -> new AppException
-                        (404,"Testing Service type not found with ID: " + id));
+        TestingServiceTypeDetailsDTO serviceTypeDetails = testingServiceTypeRepo.getTestingServiceDetailsById(id)
+                .orElseThrow(() -> new AppException(404, "Testing Service type not found with ID: " + id));
 
-        List<TestingServiceResultDTO> serviceTypeResultList =
-                testingServiceResultRepo.getAllServiceResultsByTypeId(id);
+        List<TestingServiceResultDTO> serviceTypeResultList = testingServiceResultRepo.getAllServiceResultsByTypeId(id);
 
         serviceTypeDetails.setServiceResultList(serviceTypeResultList);
         return serviceTypeDetails;
@@ -51,18 +47,16 @@ public class TestingServiceTypeService {
 
         Sort sort = Sort.by(Sort.Direction.ASC, sortField);
 
-        if(sortOrder.equals("desc")){
+        if (sortOrder.equals("desc")) {
             sort = Sort.by(Sort.Direction.DESC, sortField);
         }
 
         Pageable pageRequest = PageRequest
                 .of(page, itemSize, sort);
 
+        Page<TestingServiceTypeDTO> pageResult = testingServiceTypeRepo.getAllTestingServiceTypes(pageRequest);
 
-        Page<TestingServiceTypeDTO> pageResult =
-                testingServiceTypeRepo.getAllTestingServiceTypes(pageRequest);
-
-        if(!pageResult.hasContent()){
+        if (!pageResult.hasContent()) {
 
             throw new AppException(404, "No Testing Service Types found");
         }
@@ -80,8 +74,8 @@ public class TestingServiceTypeService {
     }
 
     // Create a new testing service type
-    public void createTestingServiceType
-    (TestingServiceTypeRegisterPayload payload) {
+    @Transactional(rollbackFor = Exception.class)
+    public void createTestingServiceType(TestingServiceTypeRegisterPayload payload) {
 
         TestingServiceType newServiceType = new TestingServiceType();
 
@@ -92,7 +86,7 @@ public class TestingServiceTypeService {
 
         UtilFunctions.validateBulkTestTemplates(payload.getServiceResultList());
 
-        for(TestingServiceResultPayload item: payload.getServiceResultList()) {
+        for (TestingServiceResultPayload item : payload.getServiceResultList()) {
 
             TestingServiceResult resultItem = new TestingServiceResult();
 
@@ -108,16 +102,17 @@ public class TestingServiceTypeService {
 
         }
 
-        /*if (testingService == null) {
-            throw new IllegalArgumentException("Testing Service cannot be null");
-        }*/
+        /*
+         * if (testingService == null) {
+         * throw new IllegalArgumentException("Testing Service cannot be null");
+         * }
+         */
 
         testingServiceTypeRepo.saveAndFlush(newServiceType);
     }
 
-    @Transactional
-    public void updateTestingServiceType
-            (int id, TestingServiceTypeUpdatePayload payload) {
+    @Transactional(rollbackFor = Exception.class)
+    public void updateTestingServiceType(int id, TestingServiceTypeUpdatePayload payload) {
         boolean serviceTypeExists = testingServiceTypeRepo.existsById(id);
         if (!serviceTypeExists) {
             throw new AppException(404, "Testing Service type not found with ID: " + id);
@@ -127,7 +122,7 @@ public class TestingServiceTypeService {
 
     }
 
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     public void deleteTestingServiceType(int id) {
         boolean serviceExists = testingServiceTypeRepo.existsById(id);
         if (!serviceExists) {

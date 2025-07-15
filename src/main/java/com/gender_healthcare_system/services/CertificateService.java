@@ -25,7 +25,7 @@ public class CertificateService {
         return certificates;
     }
 
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     public void updateConsultantCertificate(int certificateId, CertificateUpdatePayload payload) {
         boolean certificateExist = certificateRepo.existsById(certificateId);
 

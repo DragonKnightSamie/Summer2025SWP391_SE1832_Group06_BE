@@ -25,14 +25,13 @@ public class ManagerService {
 
     private final AccountRepo accountRepo;
 
-    public LoginResponse getManagerLoginDetails(int id){
+    public LoginResponse getManagerLoginDetails(int id) {
         return accountRepo.getManagerLoginDetails(id);
     }
 
-    public ManagerDTO getManagerDetails(int id){
+    public ManagerDTO getManagerDetails(int id) {
         return accountRepo.getManagerDetailsById(id)
-                .orElseThrow(() -> new AppException
-                        (404, "Manager not found with ID "+ id));
+                .orElseThrow(() -> new AppException(404, "Manager not found with ID " + id));
     }
 
     public Optional<ManagerDTO> getManagerDetailsById(int id) {
@@ -43,27 +42,27 @@ public class ManagerService {
         }
     }
 
+    @Transactional(rollbackFor = Exception.class)
     public void updateManagerById(int id, ManagerUpdatePayload payload) {
         updateManagerDetails(id, payload);
     }
 
-    public Map<String, Object> getAllManagers(int page, String sortField, String sortOrder){
+    public Map<String, Object> getAllManagers(int page, String sortField, String sortOrder) {
 
         final int itemSize = 10;
 
         Sort sort = Sort.by(Sort.Direction.ASC, sortField);
 
-        if(sortOrder.equals("desc")){
+        if (sortOrder.equals("desc")) {
             sort = Sort.by(Sort.Direction.DESC, sortField);
         }
 
         Pageable pageRequest = PageRequest
                 .of(page, itemSize, sort);
 
-
         Page<ManagerDTO> pageResult = accountRepo.getAllManagers(pageRequest);
 
-        if(!pageResult.hasContent()){
+        if (!pageResult.hasContent()) {
 
             throw new AppException(404, "No Managers found");
         }
@@ -80,11 +79,11 @@ public class ManagerService {
         return map;
     }
 
-    @Transactional
-    public void updateManagerDetails(int id, ManagerUpdatePayload payload){
+    @Transactional(rollbackFor = Exception.class)
+    public void updateManagerDetails(int id, ManagerUpdatePayload payload) {
         boolean managerExist = accountRepo.existsByAccountIdAndRole_RoleName(id, "MANAGER");
 
-        if(!managerExist){
+        if (!managerExist) {
 
             throw new AppException(404, "Manager not found with ID " + id);
         }
@@ -92,7 +91,7 @@ public class ManagerService {
         boolean accountStatusIdentical = accountRepo
                 .existsAccountByAccountIdAndStatus(id, payload.getStatus());
 
-        if(!accountStatusIdentical){
+        if (!accountStatusIdentical) {
 
             accountRepo.updateAccountStatus(id, payload.getStatus());
         }

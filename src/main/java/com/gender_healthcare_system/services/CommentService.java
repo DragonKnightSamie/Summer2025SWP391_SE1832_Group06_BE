@@ -137,6 +137,7 @@ public class CommentService {
 
     }
 
+    @Transactional
     public void createANewSubCommentForAComment
             (int commentId, int blogId, int accountId, String content){
 

@@ -32,29 +32,25 @@ public class TestingService_Service {
 
     public TestingServiceDTO getTestingServiceById(int id) {
         return testingServiceRepo.getTestingServiceById(id)
-                .orElseThrow(() -> new AppException
-                        (404,"Testing Service not found with ID: " + id));
+                .orElseThrow(() -> new AppException(404, "Testing Service not found with ID: " + id));
     }
 
-    public Map<String, Object> getAllTestingServicesForCustomer
-            (int page, String sortField, String sortOrder) {
+    public Map<String, Object> getAllTestingServicesForCustomer(int page, String sortField, String sortOrder) {
 
         final int itemSize = 10;
 
         Sort sort = Sort.by(Sort.Direction.ASC, sortField);
 
-        if(sortOrder.equals("desc")){
+        if (sortOrder.equals("desc")) {
             sort = Sort.by(Sort.Direction.DESC, sortField);
         }
 
         Pageable pageRequest = PageRequest
                 .of(page, itemSize, sort);
 
+        Page<TestingServiceDTO> pageResult = testingServiceRepo.getAllTestingServicesForCustomer(pageRequest);
 
-        Page<TestingServiceDTO> pageResult =
-                testingServiceRepo.getAllTestingServicesForCustomer(pageRequest);
-
-        if(!pageResult.hasContent()){
+        if (!pageResult.hasContent()) {
 
             throw new AppException(404, "No Testing Services found");
         }
@@ -71,25 +67,22 @@ public class TestingService_Service {
         return map;
     }
 
-    public Map<String, Object> getAllTestingServices
-            (int page, String sortField, String sortOrder) {
+    public Map<String, Object> getAllTestingServices(int page, String sortField, String sortOrder) {
 
         final int itemSize = 10;
 
         Sort sort = Sort.by(Sort.Direction.ASC, sortField);
 
-        if(sortOrder.equals("desc")){
+        if (sortOrder.equals("desc")) {
             sort = Sort.by(Sort.Direction.DESC, sortField);
         }
 
         Pageable pageRequest = PageRequest
                 .of(page, itemSize, sort);
 
+        Page<TestingServiceDTO> pageResult = testingServiceRepo.getAllTestingServices(pageRequest);
 
-        Page<TestingServiceDTO> pageResult =
-                testingServiceRepo.getAllTestingServices(pageRequest);
-
-        if(!pageResult.hasContent()){
+        if (!pageResult.hasContent()) {
 
             throw new AppException(404, "No Testing Services found");
         }
@@ -107,15 +100,15 @@ public class TestingService_Service {
     }
 
     // Create a new testing service
-    public void createTestingService
-    (TestingServiceRegisterPayload payload) {
+    @Transactional(rollbackFor = Exception.class)
+    public void createTestingService(TestingServiceRegisterPayload payload) {
 
         TestingService newService = new TestingService();
 
         TestingServiceType service = testingServiceTypeRepo
                 .findById(payload.getServiceTypeId())
-                .orElseThrow(() -> new AppException
-                        (404, "No service type found with ID " + payload.getServiceTypeId()));
+                .orElseThrow(
+                        () -> new AppException(404, "No service type found with ID " + payload.getServiceTypeId()));
 
         newService.setTestingServiceType(service);
         newService.setServiceName(payload.getServiceName());
@@ -126,25 +119,29 @@ public class TestingService_Service {
 
         newService.setStatus(TestingServiceStatus.AVAILABLE);
 
-        /*for(PriceListRegisterPayload item: payload.getPriceList()) {
-            PriceList priceItem = new PriceList();
+        /*
+         * for(PriceListRegisterPayload item: payload.getPriceList()) {
+         * PriceList priceItem = new PriceList();
+         * 
+         * priceItem.setDescription(item.getDescription());
+         * priceItem.setPrice(item.getPrice());
+         * priceItem.setStatus(PriceListStatus.ACTIVE);
+         * 
+         * newService.addPriceItem(priceItem);
+         * 
+         * }
+         */
 
-            priceItem.setDescription(item.getDescription());
-            priceItem.setPrice(item.getPrice());
-            priceItem.setStatus(PriceListStatus.ACTIVE);
+        /*
+         * if (testingService == null) {
+         * throw new IllegalArgumentException("Testing Service cannot be null");
+         * }
+         */
 
-            newService.addPriceItem(priceItem);
-
-        }*/
-
-        /*if (testingService == null) {
-            throw new IllegalArgumentException("Testing Service cannot be null");
-        }*/
-
-         testingServiceRepo.saveAndFlush(newService);
+        testingServiceRepo.saveAndFlush(newService);
     }
 
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     public void updateTestingService(int id, TestingServiceUpdatePayload payload) {
         boolean serviceExists = testingServiceRepo.existsById(id);
         if (!serviceExists) {
@@ -154,7 +151,6 @@ public class TestingService_Service {
 
     }
 
-
     public void deleteTestingService(int id) {
         boolean serviceExists = testingServiceRepo.existsById(id);
         if (!serviceExists) {
@@ -162,6 +158,5 @@ public class TestingService_Service {
         }
         testingServiceRepo.deleteById(id);
     }
-
 
 }

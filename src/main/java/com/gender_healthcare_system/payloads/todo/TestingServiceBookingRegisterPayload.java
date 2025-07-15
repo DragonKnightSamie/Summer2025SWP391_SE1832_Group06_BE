@@ -23,7 +23,7 @@ public class TestingServiceBookingRegisterPayload implements Serializable {
     private Integer customerId;
 
     @NotNull(message = "Expected Start time is required")
-    @Schema(type = "String", example = "05/06/2025 07:00")
+    @Schema(type = "string", example = "05/06/2025 07:00")
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy HH:mm")
     private LocalDateTime expectedStartTime;
 

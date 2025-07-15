@@ -1,23 +1,24 @@
 package com.gender_healthcare_system.services;
 
-import com.gender_healthcare_system.dtos.login.LoginResponse;
-import com.gender_healthcare_system.dtos.user.StaffDTO;
-import com.gender_healthcare_system.exceptions.AppException;
-import com.gender_healthcare_system.payloads.user.StaffUpdatePayload;
-import com.gender_healthcare_system.repositories.AccountRepo;
-
-import jakarta.transaction.Transactional;
-import lombok.AllArgsConstructor;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import com.gender_healthcare_system.dtos.login.LoginResponse;
+import com.gender_healthcare_system.dtos.user.StaffDTO;
+import com.gender_healthcare_system.entities.enu.AccountStatus;
+import com.gender_healthcare_system.exceptions.AppException;
+import com.gender_healthcare_system.payloads.user.StaffUpdatePayload;
+import com.gender_healthcare_system.repositories.AccountRepo;
+
+import lombok.AllArgsConstructor;
 
 @Service
 @AllArgsConstructor
@@ -69,7 +70,7 @@ public class StaffService  {
         return map;
     }
 
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     public void updateStaffAccount(int staffId, StaffUpdatePayload payload) {
         boolean staffExist = accountRepo.existsByAccountIdAndRole_RoleName(staffId, "STAFF");
 

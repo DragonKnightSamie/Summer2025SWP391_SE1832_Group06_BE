@@ -108,6 +108,7 @@ public class BlogService {
     }
 
     ////////////////////////////// Create blog //////////////////////////////
+    @Transactional(rollbackFor = Exception.class)
     public void createBlog(BlogRegisterPayload payload) {
         Account manager = accountRepo.findById(payload.getManagerId())
                 .orElseThrow(() -> new AppException(404, "Manager not found with ID " + payload.getManagerId()));
@@ -126,7 +127,7 @@ public class BlogService {
     }
 
     ////////////////////////////// Update blog //////////////////////////////
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     public void updateBlog(int id, BlogUpdatePayload payload) {
         boolean blogExist = blogRepo.existsById(id);
 
@@ -138,7 +139,7 @@ public class BlogService {
     }
 
     ////////////////////////////// Delete blog //////////////////////////////
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     public void deleteBlog(int id) {
         boolean blogExist = blogRepo.existsById(id);
 
