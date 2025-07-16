@@ -7,7 +7,6 @@ import org.hibernate.validator.constraints.Length;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Pattern;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -37,7 +36,6 @@ public class ManagerRegisterPayload implements Serializable {
 
     @NotBlank(message = "Email is required")
     @Email(message = "Invalid email format")
-    @Pattern(regexp = "^[a-zA-Z0-9._%+-]+@gmail\\.com$", message = "Email must be a Gmail address")
     private String email;
 
     @NotBlank(message = "Address is required")

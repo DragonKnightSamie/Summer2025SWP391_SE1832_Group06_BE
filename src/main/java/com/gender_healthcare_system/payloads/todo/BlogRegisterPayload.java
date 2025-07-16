@@ -30,8 +30,7 @@ public class BlogRegisterPayload implements Serializable {
 
     @Nationalized
     @NotBlank(message = "Content is required")
-    @Length(min = 10, max = 1000,
-            message = "Blog content must be between 10 and 1000 characters")
+    @Length(min = 10, message = "Blog content must be at least 10 characters")
     private String content;
 
 }

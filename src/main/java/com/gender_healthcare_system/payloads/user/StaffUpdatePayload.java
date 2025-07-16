@@ -1,17 +1,18 @@
 package com.gender_healthcare_system.payloads.user;
 
-import com.gender_healthcare_system.entities.enu.AccountStatus;
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Pattern;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import java.io.Serializable;
+
 import org.hibernate.annotations.Nationalized;
 import org.hibernate.validator.constraints.Length;
 
-import java.io.Serializable;
+import com.gender_healthcare_system.entities.enu.AccountStatus;
+
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
 @NoArgsConstructor
@@ -29,7 +30,6 @@ public class StaffUpdatePayload implements Serializable {
 
     @NotBlank(message = "Email is required")
     @Email(message = "Invalid email format")
-    @Pattern(regexp = "^[a-zA-Z0-9._%+-]+@gmail\\.com$", message = "Email must be a Gmail address")
     private String email;
 
     @NotBlank(message = "Address is required")

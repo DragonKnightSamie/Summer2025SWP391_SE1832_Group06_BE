@@ -1,6 +1,13 @@
 package com.gender_healthcare_system.payloads.user;
 
+import java.io.Serializable;
+import java.util.List;
+
+import org.hibernate.annotations.Nationalized;
+import org.hibernate.validator.constraints.Length;
+
 import com.gender_healthcare_system.payloads.todo.CertificateRegisterPayload;
+
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
@@ -9,11 +16,6 @@ import jakarta.validation.constraints.Pattern;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.Nationalized;
-import org.hibernate.validator.constraints.Length;
-
-import java.io.Serializable;
-import java.util.List;
 
 @Data
 @AllArgsConstructor
@@ -43,8 +45,6 @@ public class ConsultantRegisterPayload implements Serializable {
 
     @NotBlank(message = "Email is required")
     @Email(message = "Invalid email format")
-    @Pattern(regexp = "^[a-zA-Z0-9._%+-]+@gmail\\.com$",
-            message = "Email must be a Gmail address")
     private String email;
 
     @NotBlank(message = "Address is required")
