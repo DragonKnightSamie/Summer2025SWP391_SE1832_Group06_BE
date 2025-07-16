@@ -54,7 +54,7 @@ public class Blog implements Serializable {
     private String title;
 
     @Nationalized
-    @Column(name = "content", nullable = false, columnDefinition = "TEXT")
+    @Column(name = "content", nullable = false, columnDefinition = "nvarchar(MAX)")
     private String content;
 
     @Column(name = "created_at", nullable = false)
