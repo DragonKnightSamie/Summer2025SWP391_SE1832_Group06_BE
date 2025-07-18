@@ -47,6 +47,7 @@ public class TestingServiceBookingDTO implements Serializable {
     @Schema(type = "string", example = "05/06/2025 07:00")
     private LocalDateTime realStartTime;
 
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy HH:mm")
     @Schema(type = "string", example = "05/06/2025 07:00")
     private LocalDateTime expectedEndTime;
@@ -89,12 +90,14 @@ public class TestingServiceBookingDTO implements Serializable {
 
     public TestingServiceBookingDTO(Integer serviceBookingId, String serviceName,
                                     String name, LocalDateTime createdAt,
+                                    LocalDateTime expectedStartTime,
                                     TestingServiceBookingStatus status) {
         this.serviceBookingId = serviceBookingId;
         this.serviceName = serviceName;
         this.staffName = name;
         this.customerName = name;
         this.createdAt = createdAt;
+        this.expectedStartTime =expectedStartTime;
         this.status = status;
     }
 

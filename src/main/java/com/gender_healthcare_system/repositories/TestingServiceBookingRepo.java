@@ -49,7 +49,8 @@ public interface TestingServiceBookingRepo extends JpaRepository<TestingServiceB
 
     //get all TestingServiceBooking (only entity)
     @Query("SELECT new com.gender_healthcare_system.dtos.todo.TestingServiceBookingDTO" +
-            "(tsb.serviceBookingId, ts.serviceName, s.fullName, tsb.createdAt, tsb.status) " +
+            "(tsb.serviceBookingId, ts.serviceName, s.fullName, tsb.createdAt, " +
+            "tsb.expectedStartTime, tsb.status) " +
             "FROM TestingServiceBooking tsb " +
             "JOIN tsb.testingService ts " +
             "LEFT JOIN tsb.staff s " +
@@ -60,7 +61,8 @@ public interface TestingServiceBookingRepo extends JpaRepository<TestingServiceB
 
     //get all TestingServiceBooking (only entity)
     @Query("SELECT new com.gender_healthcare_system.dtos.todo.TestingServiceBookingDTO" +
-            "(tsb.serviceBookingId, ts.serviceName, c.fullName, tsb.createdAt, tsb.status) " +
+            "(tsb.serviceBookingId, ts.serviceName, c.fullName, tsb.createdAt, " +
+            "tsb.expectedStartTime, tsb.status) " +
             "FROM TestingServiceBooking tsb " +
             "JOIN tsb.testingService ts " +
             "LEFT JOIN tsb.staff s " +
