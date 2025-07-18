@@ -43,6 +43,9 @@ public class MenstrualCycle {
     @Column(name = "is_tracking_enabled", nullable = false)
     private Boolean isTrackingEnabled = true;
 
+    @Column(name = "end_date")
+    private LocalDate endDate;
+
     @Enumerated(EnumType.STRING)
     @Column(name = "severity", length = 20)
     private MenstrualSeverity severity; // mức độ: LIGHT, MEDIUM, HEAVY

@@ -20,7 +20,7 @@ public interface MenstrualCycleRepo extends JpaRepository<MenstrualCycle, Intege
     // SELECT DTO by customerId
     @Query("SELECT new com.gender_healthcare_system.dtos.todo.MenstrualCycleDTO(" +
             "m.cycleId, m.startDate, m.cycleLength, m.isTrackingEnabled, " +
-            "m.createdAt, m.updatedAt) " +
+            "m.createdAt, m.updatedAt, m.endDate) " +
             "FROM MenstrualCycle m " +
             "WHERE m.customer.accountId = :customerId")
     List<MenstrualCycleDTO> getCyclesByCustomerId(@Param("customerId") int customerId);
@@ -33,7 +33,8 @@ public interface MenstrualCycleRepo extends JpaRepository<MenstrualCycle, Intege
             "m.cycleLength = :#{#payload.cycleLength}, " +
             "m.isTrackingEnabled = :#{#payload.isTrackingEnabled}, " +
             "m.note = :#{#payload.note}, " +
-            "m.updatedAt = CURRENT_TIMESTAMP " +
+            "m.updatedAt = CURRENT_TIMESTAMP, " +
+            "m.endDate = :#{#payload.endDate} " +
             "WHERE m.cycleId = :cycleId")
     void updateCycleById(@Param("cycleId") Integer cycleId,
                          @Param("payload") MenstrualCycleUpdatePayload payload);

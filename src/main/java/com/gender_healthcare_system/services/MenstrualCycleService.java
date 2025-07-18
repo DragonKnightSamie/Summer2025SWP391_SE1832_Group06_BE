@@ -30,6 +30,7 @@ public class MenstrualCycleService {
 
         MenstrualCycle cycle = new MenstrualCycle();
         cycle.setStartDate(payload.getStartDate());
+        cycle.setEndDate(payload.getEndDate());
         cycle.setCycleLength(payload.getCycleLength());
         cycle.setIsTrackingEnabled(payload.getIsTrackingEnabled());
         cycle.setCreatedAt(LocalDateTime.now());
@@ -45,6 +46,7 @@ public class MenstrualCycleService {
                 saved.getIsTrackingEnabled(),
                 saved.getCreatedAt(),
                 saved.getUpdatedAt(),
+                saved.getEndDate(),
                 saved.getSeverity(),
                 saved.getStatus(),
                 saved.getNote()
@@ -65,6 +67,17 @@ public class MenstrualCycleService {
         if (!exists) {
             throw new AppException(404, "Menstrual cycle not found");
         }
-        menstrualCycleRepo.updateCycleById(cycleId, payload);
+        // Fetch the entity, update all fields including endDate, and save
+        MenstrualCycle cycle = menstrualCycleRepo.findById(cycleId)
+                .orElseThrow(() -> new AppException(404, "Menstrual cycle not found"));
+        cycle.setStartDate(payload.getStartDate());
+        cycle.setEndDate(payload.getEndDate());
+        cycle.setCycleLength(payload.getCycleLength());
+        cycle.setIsTrackingEnabled(payload.getIsTrackingEnabled());
+        cycle.setSeverity(payload.getSeverity());
+        cycle.setStatus(payload.getStatus());
+        cycle.setNote(payload.getNote());
+        cycle.setUpdatedAt(java.time.LocalDateTime.now());
+        menstrualCycleRepo.save(cycle);
     }
 }

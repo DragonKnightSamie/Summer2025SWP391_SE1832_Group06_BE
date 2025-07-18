@@ -35,13 +35,15 @@ public class MenstrualCycleDTO {
     @Schema(type = "string", example = "05/06/2025 07:00")
     private LocalDateTime updatedAt;
 
+    private LocalDate endDate;
+
     private MenstrualSeverity severity;
 
     private MenstrualStatus status;
 
     private String note;
 
-    public MenstrualCycleDTO(Integer cycleId, LocalDate startDate, Integer cycleLength, Boolean isTrackingEnabled, LocalDateTime createdAt, LocalDateTime updatedAt) {
-        this(cycleId, startDate, cycleLength, isTrackingEnabled, createdAt, updatedAt, null, null, null);
+    public MenstrualCycleDTO(Integer cycleId, LocalDate startDate, Integer cycleLength, Boolean isTrackingEnabled, LocalDateTime createdAt, LocalDateTime updatedAt, LocalDate endDate) {
+        this(cycleId, startDate, cycleLength, isTrackingEnabled, createdAt, updatedAt, endDate, null, null, null);
     }
 }

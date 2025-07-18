@@ -2,6 +2,8 @@ package com.gender_healthcare_system.payloads.todo;
 
 import java.time.LocalDate;
 
+import org.hibernate.validator.constraints.Length;
+
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.gender_healthcare_system.entities.enu.MenstrualSeverity;
 import com.gender_healthcare_system.entities.enu.MenstrualStatus;
@@ -11,7 +13,6 @@ import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
-import org.hibernate.validator.constraints.Length;
 
 @Data
 public class MenstrualCycleUpdatePayload {
@@ -35,4 +36,6 @@ public class MenstrualCycleUpdatePayload {
     @Length(min = 5, max = 255, message = "Note must be either empty or" +
             " between 5 and 255 characters")
     private String note;
+
+    private LocalDate endDate;
 }
