@@ -1,13 +1,13 @@
 package com.gender_healthcare_system.services;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.gender_healthcare_system.dtos.todo.ConsultationDTO;
 import com.gender_healthcare_system.dtos.todo.ConsultantScheduleDTO;
+import com.gender_healthcare_system.dtos.todo.ConsultationTypeDTO;
 import com.gender_healthcare_system.entities.enu.*;
 import com.gender_healthcare_system.entities.todo.Consultation;
 import com.gender_healthcare_system.entities.todo.ConsultationPayment;
+import com.gender_healthcare_system.entities.todo.ConsultationType;
 import com.gender_healthcare_system.entities.user.Account;
 import com.gender_healthcare_system.exceptions.AppException;
 import com.gender_healthcare_system.payloads.todo.ConsultationCompletePayload;
@@ -17,9 +17,11 @@ import com.gender_healthcare_system.payloads.todo.ConsultationRegisterPayload;
 import com.gender_healthcare_system.repositories.AccountRepo;
 import com.gender_healthcare_system.repositories.ConsultationPaymentRepo;
 import com.gender_healthcare_system.repositories.ConsultationRepo;
+import com.gender_healthcare_system.repositories.ConsultationTypeRepo;
 import com.gender_healthcare_system.utils.UtilFunctions;
 import lombok.AllArgsConstructor;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -31,7 +33,6 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
-import java.util.stream.Collectors;
 import com.gender_healthcare_system.entities.enu.AccountStatus;
 
 
@@ -41,6 +42,7 @@ public class ConsultationService {
 
     private final AccountRepo accountRepo;
     private final ConsultationRepo consultationRepo;
+    private final ConsultationTypeRepo consultationTypeRepo;
     private final ConsultationPaymentRepo consultationPaymentRepo;
 
     //getConsultationById
@@ -59,10 +61,18 @@ public class ConsultationService {
                 .orElseThrow(() -> new AppException(404, "Consultation not found"));
     }
 
-    public List<String> getAllConsultationTypesForCustomer(){
-        return Arrays.stream(ConsultationType.values())
-                .map(Enum::name)
-                .collect(Collectors.toList());
+    public List<ConsultationTypeDTO> getAllConsultationTypesForCustomerByGender
+            (GenderType gender){
+        List<ConsultationTypeDTO> consultationTypes = consultationTypeRepo
+                .getAllConsultationTypesForCustomerByGender(gender);
+
+        if(consultationTypes.isEmpty()){
+
+            throw new AppException(404, "No Consultation Type found for gender "
+                    + gender.getType());
+        }
+
+        return consultationTypes;
     }
 
     //getConsultationByCustomerId
@@ -155,6 +165,20 @@ public class ConsultationService {
     @Transactional(rollbackFor = Exception.class)
     public void registerConsultation(ConsultationRegisterPayload payload) {
 
+        if(payload.getPayment().getMethod() == PaymentMethod.CASH
+        && !StringUtils.isEmpty(payload.getPayment().getTransactionId()) ){
+
+            throw new AppException(400,
+                    "Input TransactionId is not required when using CASH method");
+        }
+
+        if(payload.getPayment().getMethod() == PaymentMethod.BANKING
+                && StringUtils.isEmpty(payload.getPayment().getTransactionId()) ){
+
+            throw new AppException(400,
+                    "TransactionId is required when using CASH method");
+        }
+
         boolean consultationExist = consultationRepo
                 .existsConsultationByConsultantAccountIdAndExpectedStartTimeAndStatusNot
                         (payload.getConsultantId(),
@@ -165,9 +189,25 @@ public class ConsultationService {
             throw new AppException(409, "Consultation has already been booked");
         }
 
+        ConsultationType consultationType = consultationTypeRepo
+                .findById(payload.getConsultationTypeId())
+                .orElseThrow(() -> new AppException(404,
+                        "No Consultation type found with ID " + payload.getConsultationTypeId()));
+
         Account customer = accountRepo.findById(payload.getCustomerId())
                 .orElseThrow(() -> new AppException(404,
                         "Customer not found with ID " + payload.getCustomerId()));
+
+        String consultationTypeTargetGender = consultationType.getTargetGender().getType();
+        String customerGender = customer.getGender().getGender();
+
+        if(!consultationTypeTargetGender.equals("ANY")
+        && !customerGender.equals(consultationTypeTargetGender)){
+
+            throw new AppException(400, "Customer with gender "+ customerGender +
+                    " cannot book Consultation Type with target gender of "+
+                    consultationTypeTargetGender);
+        }
 
         Account consultant = accountRepo.findById(payload.getConsultantId())
                 .orElseThrow(() -> new AppException(404,
@@ -179,7 +219,7 @@ public class ConsultationService {
         consultation.setExpectedStartTime(payload.getExpectedStartTime());
         LocalDateTime expectedEndTime = payload.getExpectedStartTime().plusHours(1);
         consultation.setExpectedEndTime(expectedEndTime);
-        consultation.setConsultationType(payload.getConsultationType());
+        consultation.setConsultationType(consultationType);
         consultation.setStatus(ConsultationStatus.CONFIRMED);
         consultation.setCustomer(customer);
         consultation.setConsultant(consultant);
@@ -189,7 +229,22 @@ public class ConsultationService {
         ConsultationPayment consultationPayment = new ConsultationPayment();
 
         consultationPayment.setConsultation(consultation);
+
+        if(payload.getPayment().getMethod() == PaymentMethod.CASH){
+
+            long currentTimeMillis = System.currentTimeMillis();
+            long timeTrimmed = currentTimeMillis / 100000;
+            long timeTrailing = currentTimeMillis % 100000;
+            String finalTime = String.valueOf(timeTrimmed + timeTrailing);
+
+            consultationPayment.setTransactionId(finalTime);
+        }
+
+        if(payload.getPayment().getMethod() == PaymentMethod.BANKING){
+
         consultationPayment.setTransactionId(payload.getPayment().getTransactionId());
+        }
+
         consultationPayment.setAmount(payload.getPayment().getAmount());
         consultationPayment.setMethod(payload.getPayment().getMethod());
         consultationPayment.setDescription(payload.getPayment().getDescription());

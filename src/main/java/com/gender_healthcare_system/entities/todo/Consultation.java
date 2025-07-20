@@ -1,6 +1,5 @@
 package com.gender_healthcare_system.entities.todo;
 
-import com.gender_healthcare_system.entities.enu.ConsultationType;
 import com.gender_healthcare_system.entities.enu.Rating;
 import com.gender_healthcare_system.entities.user.Account;
 import com.gender_healthcare_system.entities.enu.ConsultationStatus;
@@ -49,8 +48,8 @@ public class Consultation implements Serializable {
     @Column(name = "comment", length = 255)
     private String comment;
 
-    @Column(name = "consultation_type", nullable = false, length = 30)
-    @Enumerated(EnumType.STRING)
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "consultation_type_id", nullable = false)
     private ConsultationType consultationType;
 
     @Column(name = "created_at", nullable = false, unique = true)

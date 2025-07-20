@@ -5,14 +5,11 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.gender_healthcare_system.dtos.todo.TestingServiceBookingDTO;
 import com.gender_healthcare_system.dtos.todo.TestingServiceResultDTO;
-import com.gender_healthcare_system.entities.enu.PaymentStatus;
-import com.gender_healthcare_system.entities.enu.Rating;
-import com.gender_healthcare_system.entities.enu.TestingServiceBookingStatus;
+import com.gender_healthcare_system.entities.enu.*;
 import com.gender_healthcare_system.entities.todo.TestingService;
 import com.gender_healthcare_system.entities.todo.TestingServiceBooking;
 import com.gender_healthcare_system.entities.todo.TestingServicePayment;
 import com.gender_healthcare_system.entities.user.Account;
-import com.gender_healthcare_system.entities.enu.AccountStatus;
 import com.gender_healthcare_system.exceptions.AppException;
 import com.gender_healthcare_system.payloads.todo.*;
 import com.gender_healthcare_system.repositories.*;
@@ -48,14 +45,16 @@ public class TestingServiceBookingService {
             throws JsonProcessingException {
         TestingServiceBookingDTO testingService = testingServiceBookingRepo
                 .getTestingBookingDetailsById(id)
-                .orElseThrow(() -> new AppException(404, "Testing Service Booking not found with ID: " + id));
+                .orElseThrow(() -> new AppException(404,
+                        "Testing Service Booking not found with ID: " + id));
 
         String result = testingService.getResult();
 
         if (!StringUtils.isEmpty(result)) {
             ObjectMapper mapper = new ObjectMapper();
 
-            List<TestingServiceResultDTO> resultList = mapper.readValue(result, new TypeReference<>() {
+            List<TestingServiceResultDTO> resultList = mapper
+                    .readValue(result, new TypeReference<>() {
             });
 
             testingService.setResults(resultList);
@@ -165,6 +164,20 @@ public class TestingServiceBookingService {
     @Transactional(rollbackFor = Exception.class)
     public void createTestingServiceBooking(TestingServiceBookingRegisterPayload payload) {
 
+        if(payload.getPayment().getMethod() == PaymentMethod.CASH
+                && !StringUtils.isEmpty(payload.getPayment().getTransactionId()) ){
+
+            throw new AppException(400,
+                    "Input TransactionId is not required when using CASH method");
+        }
+
+        if(payload.getPayment().getMethod() == PaymentMethod.BANKING
+                && StringUtils.isEmpty(payload.getPayment().getTransactionId()) ){
+
+            throw new AppException(400,
+                    "TransactionId is required when using CASH method");
+        }
+
         boolean bookingExist = testingServiceBookingRepo
                 .existsByTestingService_ServiceIdAndCustomer_AccountIdAndExpectedStartTime(payload.getServiceId(),
                         payload.getCustomerId(), payload.getExpectedStartTime());
@@ -180,6 +193,17 @@ public class TestingServiceBookingService {
         TestingService testingService = testingServiceRepo.findById(payload.getServiceId())
                 .orElseThrow(() -> new AppException(404,
                         "Testing Service not found with ID " + payload.getServiceId()));
+
+        String serviceTargetGender = testingService.getTargetGender().getType();
+        String customerGender = customer.getGender().getGender();
+
+        if(!serviceTargetGender.equals("ANY")
+        && !customerGender.equals(serviceTargetGender)){
+
+            throw new AppException(400, "Customer with gender "+ customerGender +
+                    " cannot book Testing Service with target gender of " +
+                    serviceTargetGender);
+        }
 
         // Auto-assign staff based on availability
         LocalDate dateExtraction = payload.getExpectedStartTime().toLocalDate();
@@ -210,7 +234,22 @@ public class TestingServiceBookingService {
         TestingServicePayment testingServicePayment = new TestingServicePayment();
 
         testingServicePayment.setTestingServiceBooking(testingServiceBooking);
-        testingServicePayment.setTransactionId(payload.getPayment().getTransactionId());
+
+        if(payload.getPayment().getMethod() == PaymentMethod.CASH){
+
+            long currentTimeMillis = System.currentTimeMillis();
+            long timeTrimmed = currentTimeMillis / 100000;
+            long timeTrailing = currentTimeMillis % 100000;
+            String finalTime = String.valueOf(timeTrimmed + timeTrailing);
+
+            testingServicePayment.setTransactionId(finalTime);
+        }
+
+        if(payload.getPayment().getMethod() == PaymentMethod.BANKING){
+
+            testingServicePayment.setTransactionId(payload.getPayment().getTransactionId());
+        }
+
         testingServicePayment.setAmount(payload.getPayment().getAmount());
         testingServicePayment.setMethod(payload.getPayment().getMethod());
 

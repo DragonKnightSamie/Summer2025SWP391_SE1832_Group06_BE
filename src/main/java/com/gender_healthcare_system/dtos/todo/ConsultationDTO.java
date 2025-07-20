@@ -4,7 +4,6 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.gender_healthcare_system.dtos.user.CustomerDTO;
 import com.gender_healthcare_system.entities.enu.ConsultationStatus;
-import com.gender_healthcare_system.entities.enu.ConsultationType;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -24,7 +23,7 @@ public class ConsultationDTO implements Serializable {
     @Schema(type = "string", example = "Phan Hoang S")
     private String consultantName;
 
-    private ConsultationType consultationType;
+    private String consultationType;
 
     @Schema(type = "string", example = "05/06/2025 07:00")
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy HH:mm")
@@ -56,7 +55,7 @@ public class ConsultationDTO implements Serializable {
 
     private ConsultationPaymentDTO payment;
 
-    public ConsultationDTO(Integer consultationId, ConsultationType consultationType,
+    public ConsultationDTO(Integer consultationId, String consultationType,
                            LocalDateTime createdAt,
                            LocalDateTime expectedStartTime, LocalDateTime realStartTime,
                            LocalDateTime expectedEndTime, LocalDateTime realEndTime,
@@ -76,7 +75,7 @@ public class ConsultationDTO implements Serializable {
         this.payment = payment;
     }
 
-    public ConsultationDTO(Integer consultationId, ConsultationType consultationType,
+    public ConsultationDTO(Integer consultationId, String consultationType,
                            LocalDateTime createdAt,
                            LocalDateTime expectedStartTime,
                            LocalDateTime realStartTime,
@@ -97,7 +96,7 @@ public class ConsultationDTO implements Serializable {
     }
 
     public ConsultationDTO(Integer consultationId, String consultantName,
-                           ConsultationType consultationType,
+                           String consultationType,
                            LocalDateTime createdAt, LocalDateTime expectedStartTime,
                            LocalDateTime realStartTime, LocalDateTime expectedEndTime,
                            LocalDateTime realEndTime, String description,

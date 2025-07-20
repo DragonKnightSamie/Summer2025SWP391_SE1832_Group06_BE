@@ -1,6 +1,7 @@
 package com.gender_healthcare_system.dtos.login;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.gender_healthcare_system.entities.enu.Gender;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -16,6 +17,7 @@ public class LoginResponse implements Serializable {
     private Integer id;
     private String username;
     private String fullname;
+    private Gender gender;
     private String avatarUrl;
     private String email;
     private String token;
@@ -26,9 +28,10 @@ public class LoginResponse implements Serializable {
         this.email = email;
     }
 
-    public LoginResponse(String fullname, String avatarUrl, String email) {
+    public LoginResponse(Integer id, String fullname, Gender gender, String email) {
+        this.id = id;
         this.fullname = fullname;
-        this.avatarUrl = avatarUrl;
+        this.gender = gender;
         this.email = email;
     }
 }

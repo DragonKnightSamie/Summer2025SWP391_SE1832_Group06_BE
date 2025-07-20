@@ -1,5 +1,6 @@
 package com.gender_healthcare_system.entities.todo;
 
+import com.gender_healthcare_system.entities.enu.GenderType;
 import com.gender_healthcare_system.entities.enu.TestingServiceStatus;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -8,7 +9,6 @@ import lombok.NoArgsConstructor;
 import org.hibernate.annotations.Nationalized;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -36,6 +36,10 @@ public class TestingService implements Serializable {
     @Nationalized
     @Column(name = "description")
     private String description;
+
+    @Column(name = "target_gender", nullable = false, length = 15)
+    @Enumerated(EnumType.STRING)
+    private GenderType targetGender;
 
     @Column(name = "price_amount", nullable = false)
     private long priceAmount;

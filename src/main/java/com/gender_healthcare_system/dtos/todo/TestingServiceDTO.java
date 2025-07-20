@@ -1,6 +1,7 @@
 package com.gender_healthcare_system.dtos.todo;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.gender_healthcare_system.entities.enu.GenderType;
 import com.gender_healthcare_system.entities.enu.TestingServiceStatus;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -19,6 +20,8 @@ public class TestingServiceDTO implements Serializable {
 
     private String description;
 
+    private GenderType targetGender;
+
     private Long priceAmount;
 
     private String priceDescription;
@@ -29,30 +32,36 @@ public class TestingServiceDTO implements Serializable {
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private TestingServiceTypeDTO testingServiceType;
 
-    public TestingServiceDTO(Integer serviceId, String serviceName, String description, TestingServiceStatus status) {
+    public TestingServiceDTO(Integer serviceId, String serviceName, String description,
+                             GenderType targetGender,TestingServiceStatus status) {
         this.serviceId = serviceId;
         this.serviceName = serviceName;
         this.description = description;
+        this.targetGender = targetGender;
         this.status = status;
     }
 
     public TestingServiceDTO(Integer serviceId, String serviceName, String description,
-                             TestingServiceStatus status,
+                             GenderType targetGender, TestingServiceStatus status,
                              Long priceAmount, String priceDescription,
                              TestingServiceTypeDTO testingServiceType) {
         this.serviceId = serviceId;
         this.serviceName = serviceName;
         this.description = description;
+        this.targetGender = targetGender;
         this.status = status;
         this.testingServiceType = testingServiceType;
         this.priceAmount = priceAmount;
         this.priceDescription = priceDescription;
     }
 
-    public TestingServiceDTO(Integer serviceId, String serviceName, String description, Long priceAmount, String priceDescription) {
+    public TestingServiceDTO(Integer serviceId, String serviceName, String description,
+                             GenderType targetGender, Long priceAmount,
+                             String priceDescription) {
         this.serviceId = serviceId;
         this.serviceName = serviceName;
         this.description = description;
+        this.targetGender = targetGender;
         this.priceAmount = priceAmount;
         this.priceDescription = priceDescription;
     }

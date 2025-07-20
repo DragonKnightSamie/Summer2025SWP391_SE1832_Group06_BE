@@ -3,7 +3,6 @@ package com.gender_healthcare_system.repositories;
 import com.gender_healthcare_system.dtos.report.StatisticResponseDTO;
 import com.gender_healthcare_system.dtos.todo.ConsultationDTO;
 import com.gender_healthcare_system.entities.enu.ConsultationStatus;
-import com.gender_healthcare_system.entities.enu.ConsultationType;
 import com.gender_healthcare_system.entities.todo.Consultation;
 import com.gender_healthcare_system.payloads.todo.ConsultationCompletePayload;
 import com.gender_healthcare_system.payloads.todo.ConsultationConfirmPayload;
@@ -18,7 +17,6 @@ import org.springframework.stereotype.Repository;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
@@ -26,7 +24,7 @@ import java.util.Optional;
 public interface ConsultationRepo extends JpaRepository<Consultation, Integer> {
 
     @Query("SELECT new com.gender_healthcare_system.dtos.todo" +
-            ".ConsultationDTO(c.consultationId,c.consultant.fullName, c.consultationType, " +
+            ".ConsultationDTO(c.consultationId,c.consultant.fullName, c.consultationType.name, " +
             " c.createdAt, c.expectedStartTime, c.realStartTime, " +
             "c.expectedEndTime, c.realEndTime, c.description, c.status) " +
             "FROM Consultation c " +
@@ -35,7 +33,7 @@ public interface ConsultationRepo extends JpaRepository<Consultation, Integer> {
     Page<ConsultationDTO> findByCustomerId(int customerId, Pageable pageable);
 
     @Query("SELECT new com.gender_healthcare_system.dtos.todo" +
-            ".ConsultationDTO(c.consultationId, cs.fullName, c.consultationType, " +
+            ".ConsultationDTO(c.consultationId, cs.fullName, c.consultationType.name, " +
             "c.createdAt, c.expectedStartTime, c.realStartTime, " +
             "c.expectedEndTime, c.realEndTime, c.description, c.status) " +
             "FROM Consultation c " +
@@ -52,7 +50,7 @@ public interface ConsultationRepo extends JpaRepository<Consultation, Integer> {
     Optional<Consultation> findConsultationById(int id);
 
     @Query("SELECT new com.gender_healthcare_system.dtos.todo" +
-            ".ConsultationDTO(c.consultationId, c.consultationType, c.createdAt, " +
+            ".ConsultationDTO(c.consultationId, c.consultationType.name, c.createdAt, " +
             "c.expectedStartTime, c.realStartTime, c.expectedEndTime, " +
             "c.realEndTime,c.description," +
             "c.status, " +
@@ -69,7 +67,7 @@ public interface ConsultationRepo extends JpaRepository<Consultation, Integer> {
     Optional<ConsultationDTO> getConsultationDetailsById(int id);
 
     @Query("SELECT new com.gender_healthcare_system.dtos.todo" +
-            ".ConsultationDTO(c.consultationId, c.consultationType, c.createdAt, " +
+            ".ConsultationDTO(c.consultationId, c.consultationType.name, c.createdAt, " +
             "c.expectedStartTime, c.realStartTime, c.expectedEndTime, " +
             "c.realEndTime,c.description, c.status, " +
             "new com.gender_healthcare_system.dtos.todo.ConsultationPaymentDTO" +

@@ -16,7 +16,6 @@ import java.io.Serializable;
 @NoArgsConstructor
 public class PaymentPayload implements Serializable {
 
-    @NotBlank(message = "Transaction Id is required")
     @Pattern(regexp = "\\d{8}", message = "Transaction ID must be exactly 8 digits")
     private String transactionId;
 

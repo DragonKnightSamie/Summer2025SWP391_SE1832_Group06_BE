@@ -1,5 +1,6 @@
 package com.gender_healthcare_system.payloads.todo;
 
+import com.gender_healthcare_system.entities.enu.GenderType;
 import com.gender_healthcare_system.entities.enu.TestingServiceStatus;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
@@ -29,6 +30,9 @@ public class TestingServiceUpdatePayload implements Serializable {
     @Length(min = 5, max = 255, message = "Description must be either" +
             "empty or between 5 and 255 characters")
     private String description;
+
+    @NotNull(message = "Target Gender is required")
+    private GenderType targetGender;
 
     @NotNull(message = "Price Amount is required")
     @Min(value = 50000, message = "Price Amount must be at least 50 000 VND")

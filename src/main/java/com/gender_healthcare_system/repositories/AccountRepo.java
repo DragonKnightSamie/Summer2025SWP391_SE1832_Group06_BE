@@ -122,7 +122,7 @@ public interface AccountRepo extends JpaRepository<Account, Integer> {
 
     // Customer specific queries
     @Query("SELECT new com.gender_healthcare_system.dtos.login.LoginResponse(" +
-            "a.accountId, a.fullName, a.email) FROM Account a " +
+            "a.accountId, a.fullName, a.gender, a.email) FROM Account a " +
             "WHERE a.accountId = :id AND a.role.roleName = 'CUSTOMER'")
     LoginResponse getCustomerLoginDetails(int id);
 

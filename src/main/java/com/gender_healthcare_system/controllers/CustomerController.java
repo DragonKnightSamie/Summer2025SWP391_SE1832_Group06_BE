@@ -5,6 +5,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.gender_healthcare_system.dtos.todo.*;
+import com.gender_healthcare_system.entities.enu.GenderType;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -27,13 +29,6 @@ import org.springframework.web.server.ResponseStatusException;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.gender_healthcare_system.dtos.login.LoginResponse;
-import com.gender_healthcare_system.dtos.todo.CertificateDTO;
-import com.gender_healthcare_system.dtos.todo.ConsultantScheduleDTO;
-import com.gender_healthcare_system.dtos.todo.ConsultationDTO;
-import com.gender_healthcare_system.dtos.todo.MenstrualCycleDTO;
-import com.gender_healthcare_system.dtos.todo.SymptomDTO;
-import com.gender_healthcare_system.dtos.todo.TestingServiceBookingDTO;
-import com.gender_healthcare_system.dtos.todo.TestingServiceResultDTO;
 import com.gender_healthcare_system.dtos.user.ConsultantDTO;
 import com.gender_healthcare_system.dtos.user.CustomerDTO;
 import com.gender_healthcare_system.entities.user.AccountInfoDetails;
@@ -132,17 +127,17 @@ public class CustomerController {
         int id = account.getId();
 
         LoginResponse loginDetails = customerService.getCustomerLoginDetails(id);
-        //loginDetails.setUsername(loginRequest.getUsername());
 
         Map<String, Object> responseMap = new HashMap<>();
 
-        String jwtToken = jwtService.generateToken(id, loginRequest.getUsername(),
-                account.getRolename(), loginDetails.getFullname(), loginDetails.getEmail());
-        //loginDetails.setToken(jwtToken);
+        String jwtToken = jwtService.generateTokenForCustomer(id, loginRequest.getUsername(),
+                account.getRolename(), loginDetails.getFullname(),
+                loginDetails.getGender().getGender(), loginDetails.getEmail());
+
         responseMap.put("Customer ID", id);
+        responseMap.put("Gender", loginDetails.getGender());
         responseMap.put("JWT token", jwtToken);
 
-        //return ResponseEntity.ok(jwtToken);
         return ResponseEntity.ok(responseMap);
     }
 
@@ -192,53 +187,24 @@ public class CustomerController {
         return ResponseEntity.ok("Customer profile updated successfully");
     }
 
-    /// /////////////////////////////// Manage Momo Payment /////////////////////////////////
-
-    //create payment for consultation registering
-    /*@PostMapping("/payment-transaction/create")
-    @PreAuthorize("hasAuthority('ROLE_CUSTOMER')")
-    public ResponseEntity<String> createPaymentRequest
-    (@RequestBody @Valid MomoPaymentPayload payload) throws Exception {
-
-        return ResponseEntity.ok(momoPaymentService.createMomoPaymentRequest(payload));
-    }*/
-
-
-    //Get customer payment info
-    /*@GetMapping("/payment-transaction/check-error")
-    @PreAuthorize("hasAuthority('ROLE_CUSTOMER')")
-    public ResponseEntity<String> handleCallback(
-            @RequestParam String transactionId,
-            @RequestParam String resultCode
-    ) {
-        if ("0".equals(resultCode)) {
-            // payment success
-            return ResponseEntity.ok(
-                    "Payment successful for transactionId " + transactionId);
-        } else {
-            // payment failed
-            return ResponseEntity.status(400).body("Payment failed with code: " + resultCode);
-        }
-    }*/
-
-
     /// /////////////////////////////// Manage Testing Service Bookings /////////////////////////
 
     @Operation(
-            summary = "Get all testing services",
+            summary = "Get all testing services by Customer gender",
             description = "Retrieve a paginated list of all available " +
-                    "testing services for customers."
+                    "testing services for Customers filtered by Customer gender."
     )
     //get all testing services
     @GetMapping("/testing-services/list")
     @PreAuthorize("hasAuthority('ROLE_CUSTOMER')")
-    public ResponseEntity<Map<String, Object>> getAllTestingServicesForCustomer
-    (@RequestParam(defaultValue = "0") int page,
+    public ResponseEntity<Map<String, Object>> getAllTestingServicesForCustomerByGender
+    (@RequestParam(defaultValue = "MALE") GenderType gender,
+     @RequestParam(defaultValue = "0") int page,
      @RequestParam(defaultValue = "serviceId") String sort,
      @RequestParam(defaultValue = "asc") String order) {
 
         return ResponseEntity.ok(testingService_service
-                .getAllTestingServicesForCustomer(page, sort, order));
+                .getAllTestingServicesForCustomerByGender(gender, page, sort, order));
     }
 
     /*@Operation(
@@ -399,17 +365,18 @@ public class CustomerController {
     }
 
     @Operation(
-            summary = "Get Consultation Types for Customer",
-            description = "Retrieve all consultation types a customer " +
+            summary = "Get Consultation Types for Customer by Gender",
+            description = "Retrieve all gender-specific consultation types a customer " +
                     "can choose from when booking consultation."
     )
     //Get consultations by customer ID
     @GetMapping("/consultations/consultation-types")
     @PreAuthorize("hasAuthority('ROLE_CUSTOMER')")
-    public ResponseEntity<List<String>> getAllConsultationTypesForCustomer() {
+    public ResponseEntity<List<ConsultationTypeDTO>> getAllConsultationTypesForCustomerByGender
+            (@RequestParam(defaultValue = "MALE") GenderType gender) {
 
         return ResponseEntity.ok
-                (consultationService.getAllConsultationTypesForCustomer());
+                (consultationService.getAllConsultationTypesForCustomerByGender(gender));
     }
 
     // Lấy consultation của chính mình
