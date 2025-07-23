@@ -27,7 +27,4 @@ public class BlogUpdatePayload implements Serializable {
     @NotBlank(message = "Content is required")
     @Length(min = 10, message = "Blog content must be at least 10 characters")
     private String content;
-
-    @NotNull(message = "Status is required")
-    private BlogStatus status;
 }

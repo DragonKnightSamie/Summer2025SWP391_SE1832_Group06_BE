@@ -72,7 +72,8 @@ public class BlogService {
     }
 
     ////////////////////////////// Search blogs //////////////////////////////
-    public Map<String, Object> searchBlogs(String keyword, int page, String sortField, String sortOrder) {
+    public Map<String, Object> searchBlogs
+    (String keyword, int page, String sortField, String sortOrder) {
 
         final int itemSize = 10;
 
@@ -86,13 +87,10 @@ public class BlogService {
 
         Page<BlogDTO> pageResult;
 
-        // Luôn chỉ lấy blog ACTIVE, có hoặc không có keyword
-        if (keyword == null || keyword.trim().isEmpty()) {
-            // Nếu không có keyword, trả về tất cả blog ACTIVE
-            pageResult = blogRepo.searchActiveBlogsByTitle("", pageRequest);
-        } else {
-            pageResult = blogRepo.searchActiveBlogsByTitle(keyword.trim(), pageRequest);
-        }
+        String newKeyword = "%" + keyword + "%";
+
+        pageResult = blogRepo.searchActiveBlogsByTitle
+                (newKeyword, BlogStatus.ACTIVE, pageRequest);
 
         if (!pageResult.hasContent()) {
             throw new AppException(404, "No Blogs found");
@@ -149,6 +147,6 @@ public class BlogService {
             throw new AppException(404, "Blog not found with ID " + id);
         }
 
-        blogRepo.deleteBlogById(id);
+        blogRepo.deleteBlogById(id, BlogStatus.DELETED);
     }
 }

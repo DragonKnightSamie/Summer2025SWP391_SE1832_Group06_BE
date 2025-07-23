@@ -190,7 +190,7 @@ public class ManagerController {
             description = "Allows managers to delete a blog by its ID."
     )
     //MANGER DELETE BLOGS
-    @DeleteMapping("/blogs/delete/{id}")
+    @PutMapping("/blogs/delete/{id}")
     @PreAuthorize("hasAuthority('ROLE_MANAGER')")
     public ResponseEntity<?> deleteBlog(@PathVariable int id) {
 

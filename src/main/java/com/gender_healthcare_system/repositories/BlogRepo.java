@@ -11,6 +11,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import com.gender_healthcare_system.dtos.todo.BlogDTO;
+import com.gender_healthcare_system.entities.enu.BlogStatus;
 import com.gender_healthcare_system.entities.todo.Blog;
 import com.gender_healthcare_system.payloads.todo.BlogUpdatePayload;
 
@@ -41,24 +42,25 @@ public interface BlogRepo extends JpaRepository<Blog, Integer> {
             "FROM Blog b")
     Page<BlogDTO> getAllBlogs(Pageable pageable);
 
-/*    @Query("SELECT new com.gender_healthcare_system.dtos." +
+    @Query("SELECT new com.gender_healthcare_system.dtos.todo.BlogDTO" +
             "(b.blogId, b.title, b.content, b.createdAt, b.status) " +
             "FROM Blog b " +
-            "WHERE b.title LIKE :keyword")*/
-    Page<BlogDTO> findByTitleContainingIgnoreCase(String keyword, Pageable pageable);
+            "WHERE b.title LIKE :keyword " +
+            "AND b.status = :status")
+    Page<BlogDTO> searchActiveBlogsByTitle(String keyword, BlogStatus status, Pageable pageable);
 
     @Modifying
     @Query("UPDATE Blog b " +
             "SET b.title = :#{#payload.title}, " +
-            "b.content = :#{#payload.content}, " +
-            "b.status = :#{#payload.status} " +
+            "b.content = :#{#payload.content} " +
             "WHERE b.blogId = :id")
     void updateBlogById(int id, @Param("payload") BlogUpdatePayload payload);
 
     @Modifying
-    @Query("DELETE FROM Blog b " +
+    @Query("UPDATE Blog b " +
+            "SET b.status = :status " +
             "WHERE b.blogId = :id")
-    void deleteBlogById(int id);
+    void deleteBlogById(int id, BlogStatus status);
 
     @Query("SELECT new com.gender_healthcare_system.dtos.todo.BlogDTO" +
            "(b.blogId, b.title, b.content, b.createdAt, b.status) " +
