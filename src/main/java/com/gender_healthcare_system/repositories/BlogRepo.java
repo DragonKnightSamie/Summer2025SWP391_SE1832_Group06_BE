@@ -1,8 +1,7 @@
 package com.gender_healthcare_system.repositories;
 
-import com.gender_healthcare_system.dtos.todo.BlogDTO;
-import com.gender_healthcare_system.entities.todo.Blog;
-import com.gender_healthcare_system.payloads.todo.BlogUpdatePayload;
+import java.util.Optional;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -11,7 +10,9 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
-import java.util.Optional;
+import com.gender_healthcare_system.dtos.todo.BlogDTO;
+import com.gender_healthcare_system.entities.todo.Blog;
+import com.gender_healthcare_system.payloads.todo.BlogUpdatePayload;
 
 @Repository
 public interface BlogRepo extends JpaRepository<Blog, Integer> {
@@ -58,5 +59,12 @@ public interface BlogRepo extends JpaRepository<Blog, Integer> {
     @Query("DELETE FROM Blog b " +
             "WHERE b.blogId = :id")
     void deleteBlogById(int id);
+
+    @Query("SELECT new com.gender_healthcare_system.dtos.todo.BlogDTO" +
+           "(b.blogId, b.title, b.content, b.createdAt, b.status) " +
+           "FROM Blog b " +
+           "WHERE LOWER(b.title) LIKE LOWER(CONCAT('%', :keyword, '%')) " +
+           "AND b.status = com.gender_healthcare_system.entities.enu.BlogStatus.ACTIVE")
+    Page<BlogDTO> searchActiveBlogsByTitle(@Param("keyword") String keyword, Pageable pageable);
 }
 

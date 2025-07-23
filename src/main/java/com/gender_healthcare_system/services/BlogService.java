@@ -86,10 +86,12 @@ public class BlogService {
 
         Page<BlogDTO> pageResult;
 
-        if (keyword == null || keyword.isEmpty()) {
-            pageResult = blogRepo.getAllBlogs(pageRequest);
+        // Luôn chỉ lấy blog ACTIVE, có hoặc không có keyword
+        if (keyword == null || keyword.trim().isEmpty()) {
+            // Nếu không có keyword, trả về tất cả blog ACTIVE
+            pageResult = blogRepo.searchActiveBlogsByTitle("", pageRequest);
         } else {
-            pageResult = blogRepo.findByTitleContainingIgnoreCase(keyword, pageRequest);
+            pageResult = blogRepo.searchActiveBlogsByTitle(keyword.trim(), pageRequest);
         }
 
         if (!pageResult.hasContent()) {
