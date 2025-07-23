@@ -165,19 +165,10 @@ public class ConsultationService {
     @Transactional(rollbackFor = Exception.class)
     public void registerConsultation(ConsultationRegisterPayload payload) {
 
-        if(payload.getPayment().getMethod() == PaymentMethod.CASH
-        && !StringUtils.isEmpty(payload.getPayment().getTransactionId()) ){
+        UtilFunctions.validateExpectedStartTime(payload.getExpectedStartTime());
 
-            throw new AppException(400,
-                    "Input TransactionId is not required when using CASH method");
-        }
-
-        if(payload.getPayment().getMethod() == PaymentMethod.BANKING
-                && StringUtils.isEmpty(payload.getPayment().getTransactionId()) ){
-
-            throw new AppException(400,
-                    "TransactionId is required when using CASH method");
-        }
+        UtilFunctions.validatePaymentInput(payload.getPayment().getMethod(),
+                payload.getPayment().getTransactionId());
 
         boolean consultationExist = consultationRepo
                 .existsConsultationByConsultantAccountIdAndExpectedStartTimeAndStatusNot
@@ -232,12 +223,8 @@ public class ConsultationService {
 
         if(payload.getPayment().getMethod() == PaymentMethod.CASH){
 
-            long currentTimeMillis = System.currentTimeMillis();
-            long timeTrimmed = currentTimeMillis / 100000;
-            long timeTrailing = currentTimeMillis % 100000;
-            String finalTime = String.valueOf(timeTrimmed + timeTrailing);
-
-            consultationPayment.setTransactionId(finalTime);
+            String transactionId = UtilFunctions.generateTransactionId();
+            consultationPayment.setTransactionId(transactionId);
         }
 
         if(payload.getPayment().getMethod() == PaymentMethod.BANKING){
@@ -271,6 +258,8 @@ public class ConsultationService {
 
     @Transactional(rollbackFor = Exception.class)
     public void reScheduleConsultation(int consultationId, ConsultationConfirmPayload payload) {
+
+        UtilFunctions.validateRescheduleExpectedStartTime(payload.getExpectedStartTime());
 
         Consultation consultation = consultationRepo
                 .findConsultationById(consultationId)

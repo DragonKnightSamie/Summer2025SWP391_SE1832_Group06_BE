@@ -164,19 +164,10 @@ public class TestingServiceBookingService {
     @Transactional(rollbackFor = Exception.class)
     public void createTestingServiceBooking(TestingServiceBookingRegisterPayload payload) {
 
-        if(payload.getPayment().getMethod() == PaymentMethod.CASH
-                && !StringUtils.isEmpty(payload.getPayment().getTransactionId()) ){
+        UtilFunctions.validateExpectedStartTime(payload.getExpectedStartTime());
 
-            throw new AppException(400,
-                    "Input TransactionId is not required when using CASH method");
-        }
-
-        if(payload.getPayment().getMethod() == PaymentMethod.BANKING
-                && StringUtils.isEmpty(payload.getPayment().getTransactionId()) ){
-
-            throw new AppException(400,
-                    "TransactionId is required when using CASH method");
-        }
+        UtilFunctions.validatePaymentInput(payload.getPayment().getMethod(),
+                payload.getPayment().getTransactionId());
 
         boolean bookingExist = testingServiceBookingRepo
                 .existsByTestingService_ServiceIdAndCustomer_AccountIdAndExpectedStartTime(payload.getServiceId(),
@@ -237,12 +228,8 @@ public class TestingServiceBookingService {
 
         if(payload.getPayment().getMethod() == PaymentMethod.CASH){
 
-            long currentTimeMillis = System.currentTimeMillis();
-            long timeTrimmed = currentTimeMillis / 100000;
-            long timeTrailing = currentTimeMillis % 100000;
-            String finalTime = String.valueOf(timeTrimmed + timeTrailing);
-
-            testingServicePayment.setTransactionId(finalTime);
+            String transactionId = UtilFunctions.generateTransactionId();
+            testingServicePayment.setTransactionId(transactionId);
         }
 
         if(payload.getPayment().getMethod() == PaymentMethod.BANKING){

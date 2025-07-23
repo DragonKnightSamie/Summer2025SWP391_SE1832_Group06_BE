@@ -1,10 +1,12 @@
 package com.gender_healthcare_system.utils;
 
 import com.gender_healthcare_system.entities.enu.GenderType;
+import com.gender_healthcare_system.entities.enu.PaymentMethod;
 import com.gender_healthcare_system.entities.enu.ResultType;
 import com.gender_healthcare_system.exceptions.AppException;
 import com.gender_healthcare_system.payloads.todo.TestingServiceResultCompletePayload;
 import com.gender_healthcare_system.payloads.todo.TestingServiceResultPayload;
+import org.apache.commons.lang3.StringUtils;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -15,6 +17,14 @@ import java.time.temporal.ChronoUnit;
 import java.util.*;
 
 public class UtilFunctions {
+
+    public static String generateTransactionId(){
+
+        long currentTimeMillis = System.currentTimeMillis();
+        long timeTrimmed = currentTimeMillis / 100000;
+        long timeTrailing = currentTimeMillis % 100000;
+        return String.valueOf(timeTrimmed + timeTrailing);
+    }
 
     public static LocalDateTime convertTimeStampToLocalDateTime(String timeStamp){
 
@@ -75,6 +85,41 @@ public class UtilFunctions {
                         "by 2 years or more");
             }
         }
+    }
+
+    public static void validateExpectedStartTime(LocalDateTime expectedStartTime){
+        LocalDate currentDate = getCurrentDateWithTimeZone();
+
+        LocalDate validateDate = expectedStartTime.toLocalDate();
+
+        long daysBetween = ChronoUnit.DAYS.between(currentDate, validateDate);
+        if(daysBetween <= 0){
+            throw new AppException(400, "Expected Start Time cannot be before " +
+                    "or of the same Date as current Date");
+        }
+
+        int minute = expectedStartTime.getMinute();
+
+        if(minute > 0){
+            System.out.println("Minute of expected start time cannot be greater than 0");
+        }
+    }
+
+    public static void validateRescheduleExpectedStartTime(LocalDateTime expectedStartTime){
+        LocalDateTime currentDateTime = getCurrentDateTimeWithTimeZone();
+
+        int minute = expectedStartTime.getMinute();
+
+        if(minute > 0){
+            System.out.println("Minute of expected start time cannot be greater than 0");
+        }
+
+        long hoursBetween = ChronoUnit.HOURS.between(currentDateTime, expectedStartTime);
+        if(hoursBetween < 3){
+            throw new AppException(400, "Reschedule Expected Start Time must be at least " +
+                    "3 hours late or more compared to current DateTime");
+        }
+
     }
 
     public static void validateRealStartAndEndTime
@@ -231,6 +276,23 @@ public class UtilFunctions {
         if (diffMinutes < minAdvanceInMinutes || diffMinutes > maxDelayInMinutes) {
             throw new AppException(400, "Real start time must be within -10 to +90 minutes of expected start time. " +
                     "Provided difference: " + diffMinutes + " minutes");
+        }
+    }
+
+    public static void validatePaymentInput(PaymentMethod method, String transactionId){
+
+        if(method == PaymentMethod.CASH
+                && !StringUtils.isEmpty(transactionId) ){
+
+            throw new AppException(400,
+                    "Input TransactionId is not required when using CASH method");
+        }
+
+        if(method == PaymentMethod.BANKING
+                && StringUtils.isEmpty(transactionId) ){
+
+            throw new AppException(400,
+                    "TransactionId is required when using BANKING method");
         }
     }
 
