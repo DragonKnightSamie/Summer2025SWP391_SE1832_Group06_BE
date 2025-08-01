@@ -36,6 +36,9 @@ public class MenstrualCycleService {
         cycle.setCreatedAt(LocalDateTime.now());
         cycle.setUpdatedAt(LocalDateTime.now());
         cycle.setCustomer(customer);
+        cycle.setFlowVolume(payload.getFlowVolume());
+        cycle.setOvulationDate(payload.getOvulationDate());
+        cycle.setWeight(payload.getWeight());
 
         MenstrualCycle saved = menstrualCycleRepo.save(cycle);
 
@@ -49,7 +52,10 @@ public class MenstrualCycleService {
                 saved.getEndDate(),
                 saved.getSeverity(),
                 saved.getStatus(),
-                saved.getNote()
+                saved.getNote(),
+                saved.getFlowVolume(),
+                saved.getOvulationDate(),
+                saved.getWeight()
         );
     }
 
@@ -78,6 +84,9 @@ public class MenstrualCycleService {
         cycle.setStatus(payload.getStatus());
         cycle.setNote(payload.getNote());
         cycle.setUpdatedAt(java.time.LocalDateTime.now());
+        cycle.setFlowVolume(payload.getFlowVolume());
+        cycle.setOvulationDate(payload.getOvulationDate());
+        cycle.setWeight(payload.getWeight());
         menstrualCycleRepo.save(cycle);
     }
 }

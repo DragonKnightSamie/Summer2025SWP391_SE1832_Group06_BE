@@ -36,6 +36,8 @@ public class CustomerDTO implements Serializable {
 
     private String address;
 
+    private String menstrualMedications; // Thông tin thuốc đã uống khi đến tháng
+
     private AccountStatus status;
     private MenstrualCycleDTO menstrualCycle;
 
@@ -69,5 +71,15 @@ public class CustomerDTO implements Serializable {
         this.fullName = fullName;
         this.gender = gender;
         this.status = status;
+    }
+
+    public Integer getAge() {
+        if (dateOfBirth == null) return null;
+        return java.time.Period.between(dateOfBirth, java.time.LocalDate.now()).getYears();
+    }
+
+    public boolean isPerimenopausalAge() {
+        Integer age = getAge();
+        return age != null && age >= 40 && age <= 50;
     }
 }

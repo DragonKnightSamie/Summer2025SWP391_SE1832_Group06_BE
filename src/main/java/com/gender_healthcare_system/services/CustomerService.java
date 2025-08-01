@@ -15,7 +15,6 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.gender_healthcare_system.dtos.login.LoginResponse;
 import com.gender_healthcare_system.dtos.user.CustomerDTO;
 import com.gender_healthcare_system.entities.user.Account;
-import com.gender_healthcare_system.entities.enu.AccountStatus;
 import com.gender_healthcare_system.exceptions.AppException;
 import com.gender_healthcare_system.payloads.user.CustomerUpdatePayload;
 import com.gender_healthcare_system.repositories.AccountRepo;
@@ -47,6 +46,10 @@ public class CustomerService {
             }
         } catch (Exception e) {
             // Không có chu kỳ hoặc lỗi, bỏ qua
+        }
+        Account account = accountRepo.findById(id).orElse(null);
+        if (account != null) {
+            customerDetails.setMenstrualMedications(account.getMenstrualMedications());
         }
         return customerDetails;
     }
@@ -112,5 +115,7 @@ public class CustomerService {
                 .orElseThrow(() -> new AppException(404, "No Customer found with ID " + id));
 
         accountRepo.updateCustomerById(id, payload);
+        account.setMenstrualMedications(payload.getMenstrualMedications());
+        accountRepo.saveAndFlush(account);
     }
 }

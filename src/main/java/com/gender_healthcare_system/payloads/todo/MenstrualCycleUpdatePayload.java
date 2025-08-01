@@ -37,5 +37,9 @@ public class MenstrualCycleUpdatePayload {
             " between 5 and 255 characters")
     private String note;
 
+    private Integer flowVolume;
+    private LocalDate ovulationDate;
+    private Double weight;
+
     private LocalDate endDate;
 }

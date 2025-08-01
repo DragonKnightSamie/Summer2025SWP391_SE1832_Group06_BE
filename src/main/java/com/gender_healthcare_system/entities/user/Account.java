@@ -1,19 +1,37 @@
 package com.gender_healthcare_system.entities.user;
 
+import java.io.Serializable;
+import java.time.LocalDate;
+import java.util.List;
+
+import org.hibernate.annotations.Nationalized;
+
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.gender_healthcare_system.entities.enu.AccountStatus;
 import com.gender_healthcare_system.entities.enu.Gender;
-import com.gender_healthcare_system.entities.todo.*;
-import jakarta.persistence.*;
+import com.gender_healthcare_system.entities.todo.Blog;
+import com.gender_healthcare_system.entities.todo.Certificate;
+import com.gender_healthcare_system.entities.todo.Comment;
+import com.gender_healthcare_system.entities.todo.Consultation;
+import com.gender_healthcare_system.entities.todo.TestingServiceBooking;
+
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
-import org.hibernate.annotations.Nationalized;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
-
-import java.io.Serializable;
-import java.time.LocalDate;
-import java.util.List;
 
 @Entity
 @Table(name = "Account")
@@ -61,6 +79,9 @@ public class Account implements Serializable {
     // Customer specific fields
     @Column(name = "date_of_birth")
     private LocalDate dateOfBirth;
+
+    @Column(name = "menstrual_medications", length = 255)
+    private String menstrualMedications; // Thông tin thuốc đã uống khi đến tháng
 
     @Column(name = "gender", length = 15)
     @Enumerated(EnumType.STRING)

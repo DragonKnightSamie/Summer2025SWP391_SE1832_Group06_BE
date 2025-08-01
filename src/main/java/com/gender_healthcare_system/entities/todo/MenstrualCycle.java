@@ -63,6 +63,18 @@ public class MenstrualCycle {
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 
+    // Lượng máu kinh (ml)
+    @Column(name = "flow_volume")
+    private Integer flowVolume;
+
+    // Ngày rụng trứng (có thể tính toán hoặc nhập tay)
+    @Column(name = "ovulation_date")
+    private LocalDate ovulationDate;
+
+    // Cân nặng (nếu muốn theo dõi sức khỏe sinh sản)
+    @Column(name = "weight")
+    private Double weight;
+
     // mqh nhiều 1
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "customer_id", nullable = false)

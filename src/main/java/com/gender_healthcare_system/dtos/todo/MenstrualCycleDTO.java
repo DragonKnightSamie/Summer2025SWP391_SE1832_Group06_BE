@@ -6,7 +6,6 @@ import java.time.LocalDateTime;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.gender_healthcare_system.entities.enu.MenstrualSeverity;
 import com.gender_healthcare_system.entities.enu.MenstrualStatus;
-import com.gender_healthcare_system.entities.user.Account;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
@@ -43,7 +42,7 @@ public class MenstrualCycleDTO {
 
     private String note;
 
-    public MenstrualCycleDTO(Integer cycleId, LocalDate startDate, Integer cycleLength, Boolean isTrackingEnabled, LocalDateTime createdAt, LocalDateTime updatedAt, LocalDate endDate) {
-        this(cycleId, startDate, cycleLength, isTrackingEnabled, createdAt, updatedAt, endDate, null, null, null);
-    }
+    private Integer flowVolume;
+    private LocalDate ovulationDate;
+    private Double weight;
 }

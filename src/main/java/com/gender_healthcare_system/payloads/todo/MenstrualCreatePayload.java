@@ -10,4 +10,8 @@ public class MenstrualCreatePayload {
     private Integer cycleLength;
     private Boolean isTrackingEnabled;
     private LocalDate endDate;
+
+    private Integer flowVolume;
+    private LocalDate ovulationDate;
+    private Double weight;
 }
