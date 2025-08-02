@@ -1,15 +1,14 @@
 package com.gender_healthcare_system.dtos.todo;
 
+import java.io.Serializable;
+import java.math.BigDecimal;
+
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.gender_healthcare_system.entities.enu.GenderType;
-import com.gender_healthcare_system.entities.enu.MeasureUnit;
 import com.gender_healthcare_system.entities.enu.ResultType;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
-import java.io.Serializable;
-import java.math.BigDecimal;
 
 @Data
 @AllArgsConstructor
@@ -25,9 +24,8 @@ public class TestingServiceResultDTO implements Serializable {
 
     private ResultType resultType;
 
-    private GenderType genderType;
-
-    private MeasureUnit measureUnit;
+    private String measureUnit;
+    private BigDecimal positiveThreshold;
 
     private BigDecimal minValue;
 
@@ -38,15 +36,14 @@ public class TestingServiceResultDTO implements Serializable {
 
     public TestingServiceResultDTO(Integer serviceResultId, String title,
                                    String description, ResultType resultType,
-                                   GenderType genderType, MeasureUnit measureUnit,
-                                   BigDecimal minValue, BigDecimal maxValue) {
+                                   String measureUnit, BigDecimal minValue, BigDecimal maxValue, BigDecimal positiveThreshold) {
         this.serviceResultId = serviceResultId;
         this.title = title;
         this.description = description;
         this.resultType = resultType;
-        this.genderType = genderType;
         this.measureUnit = measureUnit;
         this.minValue = minValue;
         this.maxValue = maxValue;
+        this.positiveThreshold = positiveThreshold;
     }
 }

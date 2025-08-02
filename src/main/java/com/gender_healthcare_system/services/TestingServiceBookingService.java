@@ -184,8 +184,8 @@ public class TestingServiceBookingService {
         TestingService testingService = testingServiceRepo.findById(payload.getServiceId())
                 .orElseThrow(() -> new AppException(404,
                         "Testing Service not found with ID " + payload.getServiceId()));
-
-        String serviceTargetGender = testingService.getTargetGender().getType();
+        // Lấy targetGender từ TestingServiceType
+        String serviceTargetGender = testingService.getTestingServiceType().getTargetGender().getType();
         String customerGender = customer.getGender().getGender();
 
         if(!serviceTargetGender.equals("ANY")
@@ -323,5 +323,40 @@ public class TestingServiceBookingService {
         }
 
         testingServiceBookingRepo.deleteTestingServiceBooking(id);
+    }
+
+    public String checkOverallResultForTestingBooking(int bookingId) {
+        // Lấy booking
+        TestingServiceBooking booking = testingServiceBookingRepo.findById(bookingId)
+            .orElseThrow(() -> new AppException(404, "Testing Service Booking not found with ID: " + bookingId));
+        // Lấy service
+        TestingService service = booking.getTestingService();
+        // Lấy overallFlagLogic
+        String logic = service.getOverallFlagLogic();
+        // Lấy kết quả từng template
+        String resultJson = booking.getResult();
+        if (resultJson == null || resultJson.isEmpty()) {
+            throw new AppException(400, "No test result found for this booking");
+        }
+        List<TestingServiceResultDTO> resultList;
+        try {
+            ObjectMapper mapper = new ObjectMapper();
+            resultList = mapper.readValue(resultJson, new com.fasterxml.jackson.core.type.TypeReference<List<TestingServiceResultDTO>>(){});
+        } catch (Exception e) {
+            throw new AppException(500, "Error parsing test result JSON");
+        }
+        // Đếm số positive/negative
+        long positive = resultList.stream().filter(r -> r.getResultType() != null && r.getResultType().name().equalsIgnoreCase("POSITIVE")).count();
+        long negative = resultList.stream().filter(r -> r.getResultType() != null && r.getResultType().name().equalsIgnoreCase("NEGATIVE")).count();
+        // Xử lý logic tổng quát (ví dụ: ALL_NEGATIVE, ANY_POSITIVE, ...)
+        if (logic == null || logic.isEmpty()) return "UNKNOWN";
+        switch (logic) {
+            case "ALL_NEGATIVE":
+                return positive == 0 ? "NEGATIVE" : "POSITIVE";
+            case "ANY_POSITIVE":
+                return positive > 0 ? "POSITIVE" : "NEGATIVE";
+            default:
+                return "UNKNOWN";
+        }
     }
 }

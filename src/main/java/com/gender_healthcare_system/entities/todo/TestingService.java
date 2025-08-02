@@ -1,15 +1,28 @@
 package com.gender_healthcare_system.entities.todo;
 
-import com.gender_healthcare_system.entities.enu.GenderType;
+import java.io.Serializable;
+import java.util.List;
+
+import org.hibernate.annotations.Nationalized;
+
 import com.gender_healthcare_system.entities.enu.TestingServiceStatus;
-import jakarta.persistence.*;
+
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.Nationalized;
-
-import java.io.Serializable;
-import java.util.List;
 
 @Entity
 @Table(name = "TestingService")
@@ -37,9 +50,8 @@ public class TestingService implements Serializable {
     @Column(name = "description")
     private String description;
 
-    @Column(name = "target_gender", nullable = false, length = 15)
-    @Enumerated(EnumType.STRING)
-    private GenderType targetGender;
+    @Column(name = "overall_flag_logic", length = 255)
+    private String overallFlagLogic;
 
     @Column(name = "price_amount", nullable = false)
     private long priceAmount;

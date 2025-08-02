@@ -1,16 +1,25 @@
 package com.gender_healthcare_system.entities.todo;
 
-import jakarta.persistence.*;
+import java.io.Serializable;
+import java.time.LocalDateTime;
+import java.util.List;
+
+import org.hibernate.annotations.Nationalized;
+
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.Nationalized;
-
-import java.io.Serializable;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
-import java.util.ArrayList;
-import java.util.List;
 
 @Entity
 @Table(name = "TestingServiceType")
@@ -32,6 +41,10 @@ public class TestingServiceType implements Serializable {
     @Column(name = "content", length = 255)
     private String content;
 
+    @Column(name = "target_gender", nullable = false, length = 15)
+    @Enumerated(EnumType.STRING)
+    private com.gender_healthcare_system.entities.enu.GenderType targetGender;
+
     @Column(name = "created_at", nullable = false)
     private LocalDateTime createdAt;
 
@@ -39,27 +52,11 @@ public class TestingServiceType implements Serializable {
     @OneToMany(mappedBy = "testingServiceType", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<TestingService> testingServices;
 
-    //Relationship with TestingServiceResult
-    @OneToMany(mappedBy = "testingServiceType", cascade = CascadeType.ALL, orphanRemoval = true)
-    //@MapsId // ✅ Map serviceTypeId = serviceResultId
-    private List<TestingServiceResult> testingServiceResultList;
-
     public TestingServiceType(int serviceTypeId, String title,
                               String content, LocalDateTime createdAt) {
         this.serviceTypeId = serviceTypeId;
         this.title = title;
         this.content = content;
         this.createdAt = createdAt;
-    }
-
-    public void addResult(TestingServiceResult result){
-        result.setTestingServiceType(this);
-
-        if(this.testingServiceResultList == null){
-            this.testingServiceResultList = new ArrayList<>();
-        }
-
-        this.testingServiceResultList.add(result);
-
     }
 }

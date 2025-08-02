@@ -45,4 +45,10 @@ public interface TestingServiceTypeRepo extends JpaRepository<TestingServiceType
     @Query("DELETE FROM TestingServiceType tst " +
             "WHERE tst.serviceTypeId = :id")
     void deleteTestingServiceTypeById(int id);
+
+    @Query("SELECT new com.gender_healthcare_system.dtos.todo.TestingServiceTypeDTO(" +
+            "tst.serviceTypeId, tst.title, tst.content, tst.createdAt) " +
+            "FROM TestingServiceType tst " +
+            "WHERE tst.targetGender = :gender OR tst.targetGender = 'ANY'")
+    Page<TestingServiceTypeDTO> getAllTestingServiceTypesForCustomerByGender(@Param("gender") com.gender_healthcare_system.entities.enu.GenderType gender, Pageable pageable);
 }

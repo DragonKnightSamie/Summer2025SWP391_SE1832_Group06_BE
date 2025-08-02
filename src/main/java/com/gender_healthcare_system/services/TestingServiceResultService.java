@@ -1,18 +1,16 @@
 package com.gender_healthcare_system.services;
 
+import java.util.List;
+
+import org.springframework.stereotype.Service;
+
 import com.gender_healthcare_system.dtos.todo.TestingServiceResultDTO;
-import com.gender_healthcare_system.entities.enu.Gender;
-import com.gender_healthcare_system.entities.enu.GenderType;
 import com.gender_healthcare_system.exceptions.AppException;
-import com.gender_healthcare_system.repositories.AccountRepo;
 import com.gender_healthcare_system.repositories.TestingServiceBookingRepo;
 import com.gender_healthcare_system.repositories.TestingServiceRepo;
 import com.gender_healthcare_system.repositories.TestingServiceResultRepo;
 
 import lombok.AllArgsConstructor;
-import org.springframework.stereotype.Service;
-
-import java.util.List;
 
 @Service
 @AllArgsConstructor
@@ -24,31 +22,19 @@ public class TestingServiceResultService {
 
     private final TestingServiceRepo testingServiceRepo;
 
-    private final AccountRepo accountRepo;
-
-    public List<TestingServiceResultDTO>
-            getAllServiceResultsByBookingId(int testingBookingId){
-
+    public List<TestingServiceResultDTO> getAllServiceResultsByBookingId(int testingBookingId){
         boolean bookingExist = testingServiceBookingRepo.existsById(testingBookingId);
-
         if(!bookingExist){
             throw new AppException(404,
                     "No Testing Booking found with ID " +testingBookingId);
         }
-
-        Gender customerGender =
-                accountRepo.getCustomerGenderByBookingId(testingBookingId);
-
-        GenderType genderType = GenderType.MALE;
-
-        if(customerGender == Gender.MALE){
-
-            genderType =GenderType.FEMALE;
+        // Đã bỏ lọc genderType, chỉ lấy theo serviceId
+        // Cần lấy serviceId từ booking
+        Integer serviceId = testingServiceBookingRepo.findServiceIdByBookingId(testingBookingId);
+        if(serviceId == null){
+            throw new AppException(404, "No Testing Service found for booking ID " + testingBookingId);
         }
-
-        return testingServiceResultRepo.
-                getAllServiceResultsByTypeIdAndGenderType(testingBookingId, genderType);
-
+        return testingServiceResultRepo.getAllServiceResultsByServiceId(serviceId);
     }
 
     public List<TestingServiceResultDTO>

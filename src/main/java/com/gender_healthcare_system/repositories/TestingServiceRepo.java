@@ -12,6 +12,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.Optional;
 
 @Repository
@@ -19,7 +20,7 @@ public interface TestingServiceRepo extends JpaRepository<TestingService, Intege
 
     // Get a single TestingServiceDTO by ID
     @Query("SELECT new com.gender_healthcare_system.dtos.todo.TestingServiceDTO(" +
-            "ts.serviceId, ts.serviceName, ts.description, ts.targetGender, ts.status, " +
+            "ts.serviceId, ts.serviceName, ts.description, ts.status, " +
             "ts.priceAmount, ts.priceDescription, " +
             "new com.gender_healthcare_system.dtos.todo.TestingServiceTypeDTO" +
             "(tst.serviceTypeId, tst.title, tst.content, tst.createdAt)) " +
@@ -37,26 +38,22 @@ public interface TestingServiceRepo extends JpaRepository<TestingService, Intege
 
     // Get all TestingServices (only entity)
     @Query("SELECT new com.gender_healthcare_system.dtos.todo.TestingServiceDTO" +
-            "(ts.serviceId, ts.serviceName, ts.description, ts.targetGender, ts.status) " +
+            "(ts.serviceId, ts.serviceName, ts.description, ts.status) " +
             "FROM TestingService ts " +
             "JOIN ts.testingServiceType tst")
     Page<TestingServiceDTO> getAllTestingServices(Pageable pageable);
 
-    // Get all TestingServices (only entity)
+    // Get all TestingServices for customer (bỏ targetGender)
     @Query("SELECT new com.gender_healthcare_system.dtos.todo.TestingServiceDTO" +
-            "(ts.serviceId, ts.serviceName, ts.description, ts.targetGender, " +
-            "ts.priceAmount, ts.priceDescription) " +
-            "FROM TestingService ts " +
-            "WHERE ts.targetGender IN (:gender, 'ANY')")
-    Page<TestingServiceDTO> getAllTestingServicesForCustomerByGender
-    (GenderType gender, Pageable pageable);
+            "(ts.serviceId, ts.serviceName, ts.description, ts.priceAmount, ts.priceDescription) " +
+            "FROM TestingService ts")
+    Page<TestingServiceDTO> getAllTestingServicesForCustomerByGender(Pageable pageable);
 
-    // Update TestingService
+    // Update TestingService (bỏ targetGender)
     @Modifying
     //@Transactional
     @Query("UPDATE TestingService ts SET ts.serviceName = :#{#payload.serviceName}, " +
             "ts.description = :#{#payload.description}, " +
-            "ts.targetGender = :#{#payload.targetGender}, " +
             "ts.priceAmount = :#{#payload.priceAmount}, " +
             "ts.priceDescription = :#{#payload.priceDescription}, " +
             "ts.status = :#{#payload.status} " +
@@ -64,5 +61,13 @@ public interface TestingServiceRepo extends JpaRepository<TestingService, Intege
     void updateTestingService(@Param("id") int id,
                               @Param("payload") TestingServiceUpdatePayload payload);
 
+    @Query("SELECT new com.gender_healthcare_system.dtos.todo.TestingServiceDTO(" +
+            "ts.serviceId, ts.serviceName, ts.description, ts.status, ts.priceAmount, ts.priceDescription, " +
+            "new com.gender_healthcare_system.dtos.todo.TestingServiceTypeDTO(" +
+            "tst.serviceTypeId, tst.title, tst.content, tst.createdAt)) " +
+            "FROM TestingService ts " +
+            "JOIN ts.testingServiceType tst " +
+            "WHERE tst.serviceTypeId = :typeId")
+    List<TestingServiceDTO> findByTestingServiceType_ServiceTypeId(@Param("typeId") int typeId);
 
 }

@@ -53,6 +53,7 @@ import com.gender_healthcare_system.services.SymptomService;
 import com.gender_healthcare_system.services.TestingServiceBookingService;
 import com.gender_healthcare_system.services.TestingServiceResultService;
 import com.gender_healthcare_system.services.TestingService_Service;
+import com.gender_healthcare_system.services.TestingServiceTypeService;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -85,6 +86,8 @@ public class CustomerController {
     private final ConsultantService consultantService;
 
     private final CertificateService certificateService;
+
+    private final TestingServiceTypeService testingServiceTypeService;
 
     @Operation(
             summary = "Register a new customer",
@@ -190,21 +193,28 @@ public class CustomerController {
     /// /////////////////////////////// Manage Testing Service Bookings /////////////////////////
 
     @Operation(
-            summary = "Get all testing services by Customer gender",
-            description = "Retrieve a paginated list of all available " +
-                    "testing services for Customers filtered by Customer gender."
+            summary = "Get all testing service types by Customer gender",
+            description = "Retrieve a paginated list of all available testing service types for Customers filtered by Customer gender."
     )
-    //get all testing services
-    @GetMapping("/testing-services/list")
+    @GetMapping("/testing-service-types/list")
     @PreAuthorize("hasAuthority('ROLE_CUSTOMER')")
-    public ResponseEntity<Map<String, Object>> getAllTestingServicesForCustomerByGender
+    public ResponseEntity<Map<String, Object>> getAllTestingServiceTypesForCustomerByGender
     (@RequestParam(defaultValue = "MALE") GenderType gender,
      @RequestParam(defaultValue = "0") int page,
-     @RequestParam(defaultValue = "serviceId") String sort,
+     @RequestParam(defaultValue = "serviceTypeId") String sort,
      @RequestParam(defaultValue = "asc") String order) {
+        return ResponseEntity.ok(testingServiceTypeService
+                .getAllTestingServiceTypesForCustomerByGender(gender, page, sort, order));
+    }
 
-        return ResponseEntity.ok(testingService_service
-                .getAllTestingServicesForCustomerByGender(gender, page, sort, order));
+    @Operation(
+            summary = "Get all testing services for a testing service type",
+            description = "Retrieve a list of all testing services belonging to a specific testing service type."
+    )
+    @GetMapping("/testing-services/of-type/{typeId}")
+    @PreAuthorize("hasAuthority('ROLE_CUSTOMER')")
+    public ResponseEntity<List<TestingServiceDTO>> getAllTestingServicesForATestingTypes(@PathVariable int typeId) {
+        return ResponseEntity.ok(testingService_service.getAllTestingServicesForATestingTypes(typeId));
     }
 
     /*@Operation(

@@ -1,7 +1,5 @@
 package com.gender_healthcare_system.entities.todo;
 
-import com.gender_healthcare_system.entities.enu.GenderType;
-import com.gender_healthcare_system.entities.enu.MeasureUnit;
 import com.gender_healthcare_system.entities.enu.ResultType;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -27,8 +25,8 @@ public class TestingServiceResult implements Serializable {
     private int serviceResultId;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "service_type_id", nullable = false)
-    private TestingServiceType testingServiceType;
+    @JoinColumn(name = "service_id", nullable = false)
+    private TestingService testingService;
 
     @Nationalized
     @Column(name = "title", nullable = false, length = 50)
@@ -42,19 +40,16 @@ public class TestingServiceResult implements Serializable {
     @Enumerated(EnumType.STRING)
     private ResultType type;
 
-    @Column(name = "gender_type", nullable = false, length = 15)
-    @Enumerated(EnumType.STRING)
-    private GenderType genderType;
-
-    @Nationalized
-    @Column(name = "measure_unit", length = 50)
-    @Enumerated(EnumType.STRING)
-    private MeasureUnit measureUnit;
+    @Column(name = "measure_unit", length = 30)
+    private String measureUnit;
 
     @Column(name = "min_value", precision = 5, scale = 2)
     private BigDecimal minValue;
 
     @Column(name = "max_value", precision = 5, scale = 2)
     private BigDecimal maxValue;
+
+    @Column(name = "positive_threshold", precision = 5, scale = 2, nullable = true, unique = false)
+    private BigDecimal positiveThreshold;
 
 }

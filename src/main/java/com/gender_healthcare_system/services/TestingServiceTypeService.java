@@ -1,17 +1,9 @@
 package com.gender_healthcare_system.services;
 
-import com.gender_healthcare_system.dtos.todo.TestingServiceResultDTO;
-import com.gender_healthcare_system.dtos.todo.TestingServiceTypeDTO;
-import com.gender_healthcare_system.dtos.todo.TestingServiceTypeDetailsDTO;
-import com.gender_healthcare_system.entities.todo.*;
-import com.gender_healthcare_system.exceptions.AppException;
-import com.gender_healthcare_system.payloads.todo.TestingServiceResultPayload;
-import com.gender_healthcare_system.payloads.todo.TestingServiceTypeRegisterPayload;
-import com.gender_healthcare_system.payloads.todo.TestingServiceTypeUpdatePayload;
-import com.gender_healthcare_system.repositories.TestingServiceResultRepo;
-import com.gender_healthcare_system.repositories.TestingServiceTypeRepo;
-import com.gender_healthcare_system.utils.UtilFunctions;
-import lombok.AllArgsConstructor;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -19,9 +11,17 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import com.gender_healthcare_system.dtos.todo.TestingServiceTypeDTO;
+import com.gender_healthcare_system.dtos.todo.TestingServiceTypeDetailsDTO;
+import com.gender_healthcare_system.entities.todo.TestingServiceType;
+import com.gender_healthcare_system.entities.enu.GenderType;
+import com.gender_healthcare_system.exceptions.AppException;
+import com.gender_healthcare_system.payloads.todo.TestingServiceTypeRegisterPayload;
+import com.gender_healthcare_system.payloads.todo.TestingServiceTypeUpdatePayload;
+import com.gender_healthcare_system.repositories.TestingServiceTypeRepo;
+import com.gender_healthcare_system.utils.UtilFunctions;
+
+import lombok.AllArgsConstructor;
 
 @Service
 @AllArgsConstructor
@@ -29,15 +29,9 @@ public class TestingServiceTypeService {
 
     private final TestingServiceTypeRepo testingServiceTypeRepo;
 
-    private final TestingServiceResultRepo testingServiceResultRepo;
-
     public TestingServiceTypeDetailsDTO getTestingServiceTypeById(int id) {
         TestingServiceTypeDetailsDTO serviceTypeDetails = testingServiceTypeRepo.getTestingServiceDetailsById(id)
                 .orElseThrow(() -> new AppException(404, "Testing Service type not found with ID: " + id));
-
-        List<TestingServiceResultDTO> serviceTypeResultList = testingServiceResultRepo.getAllServiceResultsByTypeId(id);
-
-        serviceTypeDetails.setServiceResultList(serviceTypeResultList);
         return serviceTypeDetails;
     }
 
@@ -73,41 +67,32 @@ public class TestingServiceTypeService {
         return map;
     }
 
+    public Map<String, Object> getAllTestingServiceTypesForCustomerByGender(GenderType gender, int page, String sort, String order) {
+        final int itemSize = 10;
+        Sort sortObj = Sort.by(Sort.Direction.ASC, sort);
+        if (order.equals("desc")) {
+            sortObj = Sort.by(Sort.Direction.DESC, sort);
+        }
+        Pageable pageRequest = PageRequest.of(page, itemSize, sortObj);
+        Page<com.gender_healthcare_system.dtos.todo.TestingServiceTypeDTO> pageResult = testingServiceTypeRepo.getAllTestingServiceTypesForCustomerByGender(gender, pageRequest);
+        if (!pageResult.hasContent()) {
+            throw new AppException(404, "No Testing Service Types found for gender " + gender);
+        }
+        Map<String, Object> map = new HashMap<>();
+        map.put("totalItems", pageResult.getTotalElements());
+        map.put("serviceTypes", pageResult.getContent());
+        map.put("totalPages", pageResult.getTotalPages());
+        map.put("currentPage", pageResult.getNumber());
+        return map;
+    }
+
     // Create a new testing service type
     @Transactional(rollbackFor = Exception.class)
     public void createTestingServiceType(TestingServiceTypeRegisterPayload payload) {
-
         TestingServiceType newServiceType = new TestingServiceType();
-
         newServiceType.setTitle(payload.getTitle());
         newServiceType.setContent(payload.getContent());
-
         newServiceType.setCreatedAt(UtilFunctions.getCurrentDateTimeWithTimeZone());
-
-        UtilFunctions.validateBulkTestTemplates(payload.getServiceResultList());
-
-        for (TestingServiceResultPayload item : payload.getServiceResultList()) {
-
-            TestingServiceResult resultItem = new TestingServiceResult();
-
-            resultItem.setTitle(item.getTitle());
-            resultItem.setDescription(item.getDescription());
-            resultItem.setType(item.getType());
-            resultItem.setGenderType(item.getGenderType());
-            resultItem.setMeasureUnit(item.getMeasureUnit());
-            resultItem.setMinValue(item.getMinValue());
-            resultItem.setMaxValue(item.getMaxValue());
-
-            newServiceType.addResult(resultItem);
-
-        }
-
-        /*
-         * if (testingService == null) {
-         * throw new IllegalArgumentException("Testing Service cannot be null");
-         * }
-         */
-
         testingServiceTypeRepo.saveAndFlush(newServiceType);
     }
 
@@ -128,8 +113,6 @@ public class TestingServiceTypeService {
         if (!serviceExists) {
             throw new AppException(404, "Testing Service type not found with ID: " + id);
         }
-
-        testingServiceResultRepo.deleteTestingServiceResultByServiceTypeId(id);
         testingServiceTypeRepo.deleteTestingServiceTypeById(id);
     }
 }

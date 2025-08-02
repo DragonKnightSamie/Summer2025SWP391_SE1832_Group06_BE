@@ -35,8 +35,9 @@ public class TestingService_Service {
                 .orElseThrow(() -> new AppException(404, "Testing Service not found with ID: " + id));
     }
 
+    // SỬA: Bỏ tham số gender vì repository không còn nhận gender nữa
     public Map<String, Object> getAllTestingServicesForCustomerByGender
-            (GenderType gender, int page, String sortField, String sortOrder) {
+            (int page, String sortField, String sortOrder) {
 
         final int itemSize = 10;
 
@@ -50,10 +51,9 @@ public class TestingService_Service {
                 .of(page, itemSize, sort);
 
         Page<TestingServiceDTO> pageResult = testingServiceRepo
-                .getAllTestingServicesForCustomerByGender(gender, pageRequest);
+                .getAllTestingServicesForCustomerByGender(pageRequest);
 
         if (!pageResult.hasContent()) {
-
             throw new AppException(404, "No Testing Services found");
         }
 
@@ -102,6 +102,14 @@ public class TestingService_Service {
         return map;
     }
 
+    public java.util.List<com.gender_healthcare_system.dtos.todo.TestingServiceDTO> getAllTestingServicesForATestingTypes(int typeId) {
+        java.util.List<com.gender_healthcare_system.dtos.todo.TestingServiceDTO> list = testingServiceRepo.findByTestingServiceType_ServiceTypeId(typeId);
+        if (list == null || list.isEmpty()) {
+            throw new AppException(404, "No Testing Services found for typeId " + typeId);
+        }
+        return list;
+    }
+
     // Create a new testing service
     @Transactional(rollbackFor = Exception.class)
     public void createTestingService(TestingServiceRegisterPayload payload) {
@@ -116,31 +124,11 @@ public class TestingService_Service {
         newService.setTestingServiceType(service);
         newService.setServiceName(payload.getServiceName());
         newService.setDescription(payload.getDescription());
-        newService.setTargetGender(payload.getTargetGender());
-
         newService.setPriceAmount(payload.getPriceAmount());
         newService.setPriceDescription(payload.getPriceDescription());
 
         newService.setStatus(TestingServiceStatus.AVAILABLE);
 
-        /*
-         * for(PriceListRegisterPayload item: payload.getPriceList()) {
-         * PriceList priceItem = new PriceList();
-         * 
-         * priceItem.setDescription(item.getDescription());
-         * priceItem.setPrice(item.getPrice());
-         * priceItem.setStatus(PriceListStatus.ACTIVE);
-         * 
-         * newService.addPriceItem(priceItem);
-         * 
-         * }
-         */
-
-        /*
-         * if (testingService == null) {
-         * throw new IllegalArgumentException("Testing Service cannot be null");
-         * }
-         */
 
         testingServiceRepo.saveAndFlush(newService);
     }

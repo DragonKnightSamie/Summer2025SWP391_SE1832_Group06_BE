@@ -244,4 +244,15 @@ public class StaffController {
         testingServiceBookingService.deleteTestingServiceBooking(id);
         return ResponseEntity.ok("Testing Service Booking deleted successfully");
     }
+
+    @Operation(
+            summary = "Check overall result for a testing booking",
+            description = "Check the overall result for a testing booking based on positive/negative result templates."
+    )
+    @GetMapping("/testing-service-bookings/{bookingId}/overall-result")
+    @PreAuthorize("hasAuthority('ROLE_STAFF')")
+    public ResponseEntity<String> checkOverallResultForTestingBooking(@PathVariable int bookingId) {
+        String result = testingServiceBookingService.checkOverallResultForTestingBooking(bookingId);
+        return ResponseEntity.ok(result);
+    }
 }

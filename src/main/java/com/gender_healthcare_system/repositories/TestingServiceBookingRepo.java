@@ -152,4 +152,7 @@ public interface TestingServiceBookingRepo extends JpaRepository<TestingServiceB
     (@Param("status") TestingServiceBookingStatus status, @Param("from") LocalDate from);
 
     boolean existsByTestingService_ServiceIdAndCustomer_AccountIdAndExpectedStartTime(int testingServiceServiceId, int customerAccountId, LocalDateTime expectedStartTime);
+
+    @Query("SELECT tsb.testingService.serviceId FROM TestingServiceBooking tsb WHERE tsb.serviceBookingId = :bookingId")
+    Integer findServiceIdByBookingId(@Param("bookingId") int bookingId);
 }
