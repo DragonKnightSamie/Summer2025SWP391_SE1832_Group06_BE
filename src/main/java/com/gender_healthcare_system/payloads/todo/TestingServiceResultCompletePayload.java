@@ -33,11 +33,16 @@ public class TestingServiceResultCompletePayload implements Serializable {
     @NotNull(message = "Test result type is required")
     private ResultType resultType;
 
-    @NotNull(message = "Test result gender type is required")
-    private GenderType genderType;
-
     @Nationalized
     private MeasureUnit measureUnit;
+
+    @DecimalMin(value = "0.0", message =
+            "Positive Threshold must be equal to or greater than 0.0")
+    @DecimalMax(value = "999.99", message =
+            "Positive Threshold must be equal to or less than 999.99")
+    @Digits(integer = 3, fraction = 2, message = "If provided, positive threshold value can " +
+            "only have 1 to 3 integer digits and 2 decimal digits at most")
+    private BigDecimal positiveThreshold;
 
     @DecimalMin(value = "0.0", message = "Min value must be equal to or greater than 0.0")
     @DecimalMax(value = "999.99", message = "Min value must be equal to or less than 999.99")
@@ -45,15 +50,15 @@ public class TestingServiceResultCompletePayload implements Serializable {
             "only have 1 to 3 integer digits and 2 decimal digits at most")
     private BigDecimal minValue;
 
-    @DecimalMin(value = "0.0", message = "Min value must be equal to or greater than 0.0")
-    @DecimalMax(value = "999.99", message = "Min value must be equal to or less than 999.99")
-    @Digits(integer = 3, fraction = 2, message = "If provided, min test result value can " +
+    @DecimalMin(value = "0.0", message = "Max value must be equal to or greater than 0.0")
+    @DecimalMax(value = "999.99", message = "Max value must be equal to or less than 999.99")
+    @Digits(integer = 3, fraction = 2, message = "If provided, max test result value can " +
             "only have 1 to 3 integer digits and 2 decimal digits at most")
     private BigDecimal maxValue;
 
-    @DecimalMin(value = "0.0", message = "Min value must be equal to or greater than 0.0")
-    @DecimalMax(value = "999.99", message = "Min value must be equal to or less than 999.99")
-    @Digits(integer = 3, fraction = 2, message = "If provided, min test result value can " +
+    @DecimalMin(value = "0.0", message = "Result value must be equal to or greater than 0.0")
+    @DecimalMax(value = "999.99", message = "Result value must be equal to or less than 999.99")
+    @Digits(integer = 3, fraction = 2, message = "If provided, real test result value can " +
             "only have 1 to 3 integer digits and 2 decimal digits at most")
     private BigDecimal result;
 }

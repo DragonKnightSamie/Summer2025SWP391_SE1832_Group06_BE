@@ -1,7 +1,6 @@
 package com.gender_healthcare_system.services;
 
 import com.gender_healthcare_system.dtos.todo.TestingServiceDTO;
-import com.gender_healthcare_system.entities.enu.GenderType;
 import com.gender_healthcare_system.entities.enu.TestingServiceStatus;
 import com.gender_healthcare_system.entities.todo.TestingService;
 import com.gender_healthcare_system.entities.todo.TestingServiceType;
@@ -102,8 +101,10 @@ public class TestingService_Service {
         return map;
     }
 
-    public java.util.List<com.gender_healthcare_system.dtos.todo.TestingServiceDTO> getAllTestingServicesForATestingTypes(int typeId) {
-        java.util.List<com.gender_healthcare_system.dtos.todo.TestingServiceDTO> list = testingServiceRepo.findByTestingServiceType_ServiceTypeId(typeId);
+    public List<TestingServiceDTO> getAllTestingServicesForATestingTypes(int typeId) {
+        List<TestingServiceDTO> list = testingServiceRepo
+                .findByTestingServiceTypeId(typeId);
+
         if (list == null || list.isEmpty()) {
             throw new AppException(404, "No Testing Services found for typeId " + typeId);
         }

@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import com.gender_healthcare_system.entities.enu.GenderType;
 import org.hibernate.annotations.Nationalized;
 
 import jakarta.persistence.CascadeType;
@@ -43,7 +44,7 @@ public class TestingServiceType implements Serializable {
 
     @Column(name = "target_gender", nullable = false, length = 15)
     @Enumerated(EnumType.STRING)
-    private com.gender_healthcare_system.entities.enu.GenderType targetGender;
+    private GenderType targetGender;
 
     @Column(name = "created_at", nullable = false)
     private LocalDateTime createdAt;

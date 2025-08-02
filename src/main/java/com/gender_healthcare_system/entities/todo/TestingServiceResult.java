@@ -40,6 +40,7 @@ public class TestingServiceResult implements Serializable {
     @Enumerated(EnumType.STRING)
     private ResultType type;
 
+    @Nationalized
     @Column(name = "measure_unit", length = 30)
     private String measureUnit;
 
@@ -49,7 +50,7 @@ public class TestingServiceResult implements Serializable {
     @Column(name = "max_value", precision = 5, scale = 2)
     private BigDecimal maxValue;
 
-    @Column(name = "positive_threshold", precision = 5, scale = 2, nullable = true, unique = false)
+    @Column(name = "positive_threshold", precision = 5, scale = 2)
     private BigDecimal positiveThreshold;
 
 }

@@ -58,7 +58,7 @@ public class TestingServiceBookingDTO implements Serializable {
 
     private TestingServiceBookingStatus status;
 
-    private List<TestingServiceResultDTO> results;
+    private TestingResultDetailsDTO results;
 
     private TestingServiceBookingPaymentDTO payment;
 

@@ -56,14 +56,14 @@ public class TestingServiceDTO implements Serializable {
     }
 
     public TestingServiceDTO(Integer serviceId, String serviceName, String description,
-                             String overallFlagLogic, Long priceAmount,
-                             String priceDescription) {
+                             Long priceAmount, String priceDescription,
+                             TestingServiceStatus status) {
         this.serviceId = serviceId;
         this.serviceName = serviceName;
         this.description = description;
-        this.overallFlagLogic = overallFlagLogic;
         this.priceAmount = priceAmount;
         this.priceDescription = priceDescription;
+        this.status = status;
     }
 
     

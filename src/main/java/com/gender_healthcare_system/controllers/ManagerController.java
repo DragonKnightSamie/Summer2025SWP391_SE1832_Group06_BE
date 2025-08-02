@@ -246,7 +246,7 @@ public class ManagerController {
             (@RequestBody @Valid ConsultantRegisterPayload payload) {
 
         accountService.createConsultantAccount(payload);
-        return ResponseEntity.ok("Staff account created successfully");
+        return ResponseEntity.ok("Consultant account created successfully");
     }
 
     @Operation(

@@ -5,7 +5,6 @@ import com.gender_healthcare_system.dtos.todo.TestingServiceBookingDTO;
 import com.gender_healthcare_system.entities.enu.TestingServiceBookingStatus;
 import com.gender_healthcare_system.entities.todo.TestingServiceBooking;
 import com.gender_healthcare_system.payloads.todo.EvaluatePayload;
-import com.gender_healthcare_system.payloads.todo.TestingServiceBookingCompletePayload;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -46,6 +45,13 @@ public interface TestingServiceBookingRepo extends JpaRepository<TestingServiceB
             "FROM TestingServiceBooking tsb " +
             "WHERE tsb.serviceBookingId = :id")
     Optional<TestingServiceBooking> getTestingServiceBookingById(@Param("id") int id);
+
+    // Get overall flag logic of a TestingService by Testing Booking ID
+    @Query("SELECT ts.overallFlagLogic " +
+            "FROM TestingServiceBooking tsb " +
+            "JOIN tsb.testingService ts " +
+            "WHERE tsb.serviceBookingId = :bookingId")
+    String getTestingServiceFlagLogicByBookingId(int bookingId);
 
     //get all TestingServiceBooking (only entity)
     @Query("SELECT new com.gender_healthcare_system.dtos.todo.TestingServiceBookingDTO" +

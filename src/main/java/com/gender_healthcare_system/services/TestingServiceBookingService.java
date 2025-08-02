@@ -1,10 +1,9 @@
 package com.gender_healthcare_system.services;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.gender_healthcare_system.dtos.todo.TestingResultDetailsDTO;
 import com.gender_healthcare_system.dtos.todo.TestingServiceBookingDTO;
-import com.gender_healthcare_system.dtos.todo.TestingServiceResultDTO;
 import com.gender_healthcare_system.entities.enu.*;
 import com.gender_healthcare_system.entities.todo.TestingService;
 import com.gender_healthcare_system.entities.todo.TestingServiceBooking;
@@ -52,12 +51,12 @@ public class TestingServiceBookingService {
 
         if (!StringUtils.isEmpty(result)) {
             ObjectMapper mapper = new ObjectMapper();
+            //mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
 
-            List<TestingServiceResultDTO> resultList = mapper
-                    .readValue(result, new TypeReference<>() {
-            });
+            TestingResultDetailsDTO results = mapper
+                    .readValue(result, TestingResultDetailsDTO.class);
 
-            testingService.setResults(resultList);
+            testingService.setResults(results);
         }
 
         return testingService;
@@ -274,10 +273,13 @@ public class TestingServiceBookingService {
         UtilFunctions.validateRealTestResult(payload.getResultList());
 
         ObjectMapper mapper = new ObjectMapper();
-        String result = mapper.writeValueAsString(payload.getResultList());
+        TestingResultDetailsPayload result = new
+                TestingResultDetailsPayload(payload.getResultList(), payload.getOverallResult());
+
+        String resultString = mapper.writeValueAsString(result);
 
         testingServiceBookingRepo.completeTestingServiceBooking(id, payload.getRealStartTime(),
-                payload.getRealEndTime(), result,
+                payload.getRealEndTime(), resultString,
                 TestingServiceBookingStatus.COMPLETED);
     }
 
@@ -325,38 +327,45 @@ public class TestingServiceBookingService {
         testingServiceBookingRepo.deleteTestingServiceBooking(id);
     }
 
-    public String checkOverallResultForTestingBooking(int bookingId) {
-        // Lấy booking
-        TestingServiceBooking booking = testingServiceBookingRepo.findById(bookingId)
-            .orElseThrow(() -> new AppException(404, "Testing Service Booking not found with ID: " + bookingId));
-        // Lấy service
-        TestingService service = booking.getTestingService();
-        // Lấy overallFlagLogic
-        String logic = service.getOverallFlagLogic();
-        // Lấy kết quả từng template
-        String resultJson = booking.getResult();
-        if (resultJson == null || resultJson.isEmpty()) {
+    public String checkOverallResultForTestingBooking
+            (int bookingId, List<String> resultList) {
+
+        boolean bookingExist = testingServiceBookingRepo.existsById(bookingId);
+
+        if(!bookingExist){
+
+            throw new AppException(404,
+                    "Testing Service Booking not found with ID: " + bookingId);
+        }
+
+        String logic = testingServiceBookingRepo
+                .getTestingServiceFlagLogicByBookingId(bookingId);
+
+        if (resultList == null || resultList.isEmpty()) {
             throw new AppException(400, "No test result found for this booking");
         }
-        List<TestingServiceResultDTO> resultList;
-        try {
+
+    /*    try {
             ObjectMapper mapper = new ObjectMapper();
-            resultList = mapper.readValue(resultJson, new com.fasterxml.jackson.core.type.TypeReference<List<TestingServiceResultDTO>>(){});
+            resultList = mapper.readValue(resultJson, new TypeReference<List<TestingServiceResultDTO>>(){});
         } catch (Exception e) {
             throw new AppException(500, "Error parsing test result JSON");
-        }
+        }*/
+
         // Đếm số positive/negative
-        long positive = resultList.stream().filter(r -> r.getResultType() != null && r.getResultType().name().equalsIgnoreCase("POSITIVE")).count();
-        long negative = resultList.stream().filter(r -> r.getResultType() != null && r.getResultType().name().equalsIgnoreCase("NEGATIVE")).count();
+        long positive = resultList.stream().filter(r -> r.equalsIgnoreCase("POSITIVE")).count();
+        long listCount = resultList.size();
+        //long negative = resultList.stream().filter(r -> r.equalsIgnoreCase("NEGATIVE")).count();
         // Xử lý logic tổng quát (ví dụ: ALL_NEGATIVE, ANY_POSITIVE, ...)
-        if (logic == null || logic.isEmpty()) return "UNKNOWN";
+        //if (logic == null || logic.isEmpty()) return "UNKNOWN";
+
         switch (logic) {
-            case "ALL_NEGATIVE":
-                return positive == 0 ? "NEGATIVE" : "POSITIVE";
+            case "ALL_POSITIVE":
+                return positive == listCount ? "POSITIVE" : "NEGATIVE";
             case "ANY_POSITIVE":
                 return positive > 0 ? "POSITIVE" : "NEGATIVE";
             default:
-                return "UNKNOWN";
+                return "INDETERMINATE";
         }
     }
 }

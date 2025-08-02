@@ -25,6 +25,7 @@ public class TestingServiceResultDTO implements Serializable {
     private ResultType resultType;
 
     private String measureUnit;
+
     private BigDecimal positiveThreshold;
 
     private BigDecimal minValue;

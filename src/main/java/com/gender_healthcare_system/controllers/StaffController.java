@@ -249,10 +249,13 @@ public class StaffController {
             summary = "Check overall result for a testing booking",
             description = "Check the overall result for a testing booking based on positive/negative result templates."
     )
-    @GetMapping("/testing-service-bookings/{bookingId}/overall-result")
+    @PostMapping("/testing-service-bookings/{bookingId}/overall-result")
     @PreAuthorize("hasAuthority('ROLE_STAFF')")
-    public ResponseEntity<String> checkOverallResultForTestingBooking(@PathVariable int bookingId) {
-        String result = testingServiceBookingService.checkOverallResultForTestingBooking(bookingId);
+    public ResponseEntity<String> checkOverallResultForTestingBooking
+            (@PathVariable int bookingId,
+             @RequestBody List<String> resultList) {
+        String result = testingServiceBookingService.
+                checkOverallResultForTestingBooking(bookingId, resultList);
         return ResponseEntity.ok(result);
     }
 }

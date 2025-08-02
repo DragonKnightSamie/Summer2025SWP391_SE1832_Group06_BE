@@ -69,15 +69,22 @@ public class TestingServiceTypeService {
 
     public Map<String, Object> getAllTestingServiceTypesForCustomerByGender(GenderType gender, int page, String sort, String order) {
         final int itemSize = 10;
+
         Sort sortObj = Sort.by(Sort.Direction.ASC, sort);
+
         if (order.equals("desc")) {
             sortObj = Sort.by(Sort.Direction.DESC, sort);
         }
+
         Pageable pageRequest = PageRequest.of(page, itemSize, sortObj);
-        Page<com.gender_healthcare_system.dtos.todo.TestingServiceTypeDTO> pageResult = testingServiceTypeRepo.getAllTestingServiceTypesForCustomerByGender(gender, pageRequest);
+
+        Page<TestingServiceTypeDTO> pageResult = testingServiceTypeRepo
+                .getAllTestingServiceTypesForCustomerByGender(gender, pageRequest);
+
         if (!pageResult.hasContent()) {
             throw new AppException(404, "No Testing Service Types found for gender " + gender);
         }
+
         Map<String, Object> map = new HashMap<>();
         map.put("totalItems", pageResult.getTotalElements());
         map.put("serviceTypes", pageResult.getContent());

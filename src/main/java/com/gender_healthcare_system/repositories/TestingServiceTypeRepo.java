@@ -2,6 +2,7 @@ package com.gender_healthcare_system.repositories;
 
 import com.gender_healthcare_system.dtos.todo.TestingServiceTypeDTO;
 import com.gender_healthcare_system.dtos.todo.TestingServiceTypeDetailsDTO;
+import com.gender_healthcare_system.entities.enu.GenderType;
 import com.gender_healthcare_system.entities.todo.TestingServiceType;
 import com.gender_healthcare_system.payloads.todo.TestingServiceTypeUpdatePayload;
 import org.springframework.data.domain.Page;
@@ -50,5 +51,6 @@ public interface TestingServiceTypeRepo extends JpaRepository<TestingServiceType
             "tst.serviceTypeId, tst.title, tst.content, tst.createdAt) " +
             "FROM TestingServiceType tst " +
             "WHERE tst.targetGender = :gender OR tst.targetGender = 'ANY'")
-    Page<TestingServiceTypeDTO> getAllTestingServiceTypesForCustomerByGender(@Param("gender") com.gender_healthcare_system.entities.enu.GenderType gender, Pageable pageable);
+    Page<TestingServiceTypeDTO> getAllTestingServiceTypesForCustomerByGender
+            (@Param("gender") GenderType gender, Pageable pageable);
 }

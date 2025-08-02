@@ -1,7 +1,6 @@
 package com.gender_healthcare_system.repositories;
 
 import com.gender_healthcare_system.dtos.todo.TestingServiceDTO;
-import com.gender_healthcare_system.entities.enu.GenderType;
 import com.gender_healthcare_system.entities.todo.TestingService;
 import com.gender_healthcare_system.payloads.todo.TestingServiceUpdatePayload;
 import org.springframework.data.domain.Page;
@@ -29,13 +28,6 @@ public interface TestingServiceRepo extends JpaRepository<TestingService, Intege
             "WHERE ts.serviceId = :id")
     Optional<TestingServiceDTO> getTestingServiceById(@Param("id") int id);
 
-    // Get a single TestingServices by id (only entity)
-    @Query("SELECT new com.gender_healthcare_system.entities.todo.TestingService" +
-            "(ts.serviceId, ts.serviceName, ts.description, ts.status) " +
-            "FROM TestingService ts " +
-            "WHERE ts.serviceId = :id")
-    Optional<TestingService> getTestingService(int id);
-
     // Get all TestingServices (only entity)
     @Query("SELECT new com.gender_healthcare_system.dtos.todo.TestingServiceDTO" +
             "(ts.serviceId, ts.serviceName, ts.description, ts.status) " +
@@ -62,12 +54,11 @@ public interface TestingServiceRepo extends JpaRepository<TestingService, Intege
                               @Param("payload") TestingServiceUpdatePayload payload);
 
     @Query("SELECT new com.gender_healthcare_system.dtos.todo.TestingServiceDTO(" +
-            "ts.serviceId, ts.serviceName, ts.description, ts.status, ts.priceAmount, ts.priceDescription, " +
-            "new com.gender_healthcare_system.dtos.todo.TestingServiceTypeDTO(" +
-            "tst.serviceTypeId, tst.title, tst.content, tst.createdAt)) " +
+            "ts.serviceId, ts.serviceName, ts.description," +
+            " ts.priceAmount, ts.priceDescription, ts.status) " +
             "FROM TestingService ts " +
             "JOIN ts.testingServiceType tst " +
             "WHERE tst.serviceTypeId = :typeId")
-    List<TestingServiceDTO> findByTestingServiceType_ServiceTypeId(@Param("typeId") int typeId);
+    List<TestingServiceDTO> findByTestingServiceTypeId(@Param("typeId") int typeId);
 
 }
