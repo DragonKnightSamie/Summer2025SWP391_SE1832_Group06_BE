@@ -669,7 +669,60 @@ public class CustomerController {
         return ResponseEntity.ok("Symptom deleted successfully");
     }
 
+    
+    @Operation(
+            summary = "Get customer age information",
+            description = "Get detailed age information including perimenopausal status for a customer"
+    )
+    @GetMapping("/age-info/{customerId}")
+    @PreAuthorize("hasAuthority('ROLE_CUSTOMER')")
+    public ResponseEntity<Map<String, Object>> getCustomerAgeInfo(
+            @PathVariable int customerId,
+            @AuthenticationPrincipal AccountInfoDetails account) throws JsonProcessingException {
+        // Security check: customer can only view their own age info
+        if (customerId != account.getId()) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Bạn không có quyền xem thông tin này!");
+        }
+        return ResponseEntity.ok(customerService.getCustomerAgeInfo(customerId));
+    }
+
+    @Operation(
+            summary = "Get my age information",
+            description = "Customer lấy thông tin tuổi của chính mình (id lấy từ token)"
+    )
+    @GetMapping("/age-info/my")
+    @PreAuthorize("hasAuthority('ROLE_CUSTOMER')")
+    public ResponseEntity<Map<String, Object>> getMyAgeInfo(
+            @AuthenticationPrincipal AccountInfoDetails account) throws JsonProcessingException {
+        int customerId = account.getId();
+        return ResponseEntity.ok(customerService.getCustomerAgeInfo(customerId));
+    }
+
+    @Operation(
+            summary = "Get perimenopausal customers (Manager only)",
+            description = "Get all customers in perimenopausal age range (40-50 years old)"
+    )
+    @GetMapping("/perimenopausal-customers")
+    @PreAuthorize("hasAuthority('ROLE_MANAGER')")
+    public ResponseEntity<Map<String, Object>> getPerimenopausalCustomers(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "accountId") String sort,
+            @RequestParam(defaultValue = "asc") String order) {
+        return ResponseEntity.ok(customerService.getPerimenopausalCustomers(page, sort, order));
+    }
+
+    @Operation(
+            summary = "Get customers by age range (Manager only)",
+            description = "Get customers within a specific age range"
+    )
+    @GetMapping("/customers-by-age-range")
+    @PreAuthorize("hasAuthority('ROLE_MANAGER')")
+    public ResponseEntity<Map<String, Object>> getCustomersByAgeRange(
+            @RequestParam int minAge,
+            @RequestParam int maxAge,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "accountId") String sort,
+            @RequestParam(defaultValue = "asc") String order) {
+        return ResponseEntity.ok(customerService.getCustomersByAgeRange(minAge, maxAge, page, sort, order));
+    }
 }
-
-
-

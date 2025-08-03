@@ -76,7 +76,8 @@ public class SecurityConfig {
                         "/api/v1/customer/testing-services/**",
                         "/api/v1/customer/female/**",
                         "/api/v1/customer/menstrual-cycles/**",
-                        "/api/v1/customer/symptoms/**"
+                        "/api/v1/customer/symptoms/**",
+                        "/api/v1/customer/age-info/**"
         };
 
         // Các API cần quyền ADMIN
@@ -96,8 +97,9 @@ public class SecurityConfig {
                         "/api/v1/manager/testing-service-forms/**",
                         "/api/v1/manager/price-lists/**",
                         "/api/v1/manager/image/**",
-                        "/api/v1/blogs/comments/commentId/{commentId}/remove"
-
+                        "/api/v1/blogs/comments/commentId/{commentId}/remove",
+                        "/api/v1/customer/perimenopausal-customers",
+                        "/api/v1/customer/customers-by-age-range"
         };
 
         // Các API cần quyền STAFF
