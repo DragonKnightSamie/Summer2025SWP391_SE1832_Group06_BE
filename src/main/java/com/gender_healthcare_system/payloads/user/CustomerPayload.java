@@ -2,6 +2,7 @@ package com.gender_healthcare_system.payloads.user;
 
 import java.io.Serializable;
 import java.time.LocalDate;
+import java.time.Period;
 
 import org.hibernate.annotations.Nationalized;
 import org.hibernate.validator.constraints.Length;
@@ -62,7 +63,7 @@ public class CustomerPayload implements Serializable {
 
     public Integer getAge() {
         if (dateOfBirth == null) return null;
-        return java.time.Period.between(dateOfBirth, java.time.LocalDate.now()).getYears();
+        return Period.between(dateOfBirth, LocalDate.now()).getYears();
     }
 
     public boolean isPerimenopausalAge() {

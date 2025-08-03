@@ -554,6 +554,70 @@ public class CustomerController {
         return ResponseEntity.ok("Updated menstrual cycle successfully");
     }
 
+    // New APIs for isTrackingEnabled
+    @Operation(
+            summary = "Toggle tracking enabled",
+            description = "Toggle the tracking enabled status of a menstrual cycle"
+    )
+    @PutMapping("/menstrual-cycles/{cycleId}/toggle-tracking")
+    @PreAuthorize("hasAuthority('ROLE_CUSTOMER')")
+    public ResponseEntity<String> toggleTrackingEnabled(@PathVariable Integer cycleId) {
+        menstrualCycleService.toggleTrackingEnabled(cycleId);
+        return ResponseEntity.ok("Tracking status toggled successfully");
+    }
+
+    @Operation(
+            summary = "Get active tracking cycles",
+            description = "Get all active tracking cycles for the current customer"
+    )
+    @GetMapping("/menstrual-cycles/active-tracking")
+    @PreAuthorize("hasAuthority('ROLE_CUSTOMER')")
+    public ResponseEntity<List<MenstrualCycleDTO>> getActiveTrackingCycles(
+            @AuthenticationPrincipal AccountInfoDetails account) {
+        int customerId = account.getId();
+        return ResponseEntity.ok(menstrualCycleService.getActiveTrackingCycles(customerId));
+    }
+
+    // New APIs for flowVolume
+    @Operation(
+            summary = "Update flow volume",
+            description = "Update the flow volume of a specific menstrual cycle"
+    )
+    @PutMapping("/menstrual-cycles/{cycleId}/flow-volume")
+    @PreAuthorize("hasAuthority('ROLE_CUSTOMER')")
+    public ResponseEntity<MenstrualCycleDTO> updateFlowVolume(
+            @PathVariable Integer cycleId,
+            @RequestParam Integer flowVolume) {
+        MenstrualCycleDTO updatedCycle = menstrualCycleService.updateFlowVolume(cycleId, flowVolume);
+        return ResponseEntity.ok(updatedCycle);
+    }
+
+    @Operation(
+            summary = "Get flow volume statistics",
+            description = "Get statistics about flow volume for the current customer"
+    )
+    @GetMapping("/menstrual-cycles/flow-volume-statistics")
+    @PreAuthorize("hasAuthority('ROLE_CUSTOMER')")
+    public ResponseEntity<Map<String, Object>> getFlowVolumeStatistics(
+            @AuthenticationPrincipal AccountInfoDetails account) {
+        int customerId = account.getId();
+        return ResponseEntity.ok(menstrualCycleService.getFlowVolumeStatistics(customerId));
+    }
+
+    @Operation(
+            summary = "Get cycles by flow volume range",
+            description = "Get menstrual cycles within a specific flow volume range"
+    )
+    @GetMapping("/menstrual-cycles/flow-volume-range")
+    @PreAuthorize("hasAuthority('ROLE_CUSTOMER')")
+    public ResponseEntity<List<MenstrualCycleDTO>> getCyclesByFlowVolumeRange(
+            @AuthenticationPrincipal AccountInfoDetails account,
+            @RequestParam(required = false) Integer minVolume,
+            @RequestParam(required = false) Integer maxVolume) {
+        int customerId = account.getId();
+        return ResponseEntity.ok(menstrualCycleService.getCyclesByFlowVolumeRange(customerId, minVolume, maxVolume));
+    }
+
     /// //////////////////////Symptom Management /////////////////////////
     private final SymptomService symptomService;
 

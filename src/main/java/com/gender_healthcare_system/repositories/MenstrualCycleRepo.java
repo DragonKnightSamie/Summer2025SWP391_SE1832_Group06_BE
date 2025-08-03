@@ -42,4 +42,26 @@ public interface MenstrualCycleRepo extends JpaRepository<MenstrualCycle, Intege
             "WHERE m.cycleId = :cycleId")
     void updateCycleById(@Param("cycleId") Integer cycleId,
                          @Param("payload") MenstrualCycleUpdatePayload payload);
+
+    // Get active tracking cycles by customer ID
+    @Query("SELECT new com.gender_healthcare_system.dtos.todo.MenstrualCycleDTO(" +
+            "m.cycleId, m.startDate, m.cycleLength, m.isTrackingEnabled, " +
+            "m.createdAt, m.updatedAt, m.endDate, m.severity, m.status, m.note, " +
+            "m.flowVolume, m.ovulationDate, m.weight) " +
+            "FROM MenstrualCycle m " +
+            "WHERE m.customer.accountId = :customerId AND m.isTrackingEnabled = true")
+    List<MenstrualCycleDTO> getActiveTrackingCyclesByCustomerId(@Param("customerId") int customerId);
+
+    // Get cycles by flow volume range
+    @Query("SELECT new com.gender_healthcare_system.dtos.todo.MenstrualCycleDTO(" +
+            "m.cycleId, m.startDate, m.cycleLength, m.isTrackingEnabled, " +
+            "m.createdAt, m.updatedAt, m.endDate, m.severity, m.status, m.note, " +
+            "m.flowVolume, m.ovulationDate, m.weight) " +
+            "FROM MenstrualCycle m " +
+            "WHERE m.customer.accountId = :customerId " +
+            "AND m.flowVolume >= :minVolume AND m.flowVolume <= :maxVolume " +
+            "AND m.flowVolume IS NOT NULL")
+    List<MenstrualCycleDTO> getCyclesByFlowVolumeRange(@Param("customerId") int customerId,
+                                                       @Param("minVolume") Integer minVolume,
+                                                       @Param("maxVolume") Integer maxVolume);
 }

@@ -2,6 +2,7 @@ package com.gender_healthcare_system.dtos.user;
 
 import java.io.Serializable;
 import java.time.LocalDate;
+import java.time.Period;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -75,7 +76,7 @@ public class CustomerDTO implements Serializable {
 
     public Integer getAge() {
         if (dateOfBirth == null) return null;
-        return java.time.Period.between(dateOfBirth, java.time.LocalDate.now()).getYears();
+        return Period.between(dateOfBirth, LocalDate.now()).getYears();
     }
 
     public boolean isPerimenopausalAge() {
