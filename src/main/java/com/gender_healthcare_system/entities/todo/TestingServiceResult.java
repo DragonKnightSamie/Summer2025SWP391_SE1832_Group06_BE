@@ -14,7 +14,7 @@ import java.math.BigDecimal;
 @Entity
 @Table(name = "TestingServiceResult")
 @Data
-@ToString(exclude = "testingServiceType")
+@ToString(exclude = "testingService")
 @NoArgsConstructor
 @AllArgsConstructor
 public class TestingServiceResult implements Serializable {

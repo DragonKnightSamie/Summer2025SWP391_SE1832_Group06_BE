@@ -1,7 +1,5 @@
 package com.gender_healthcare_system.payloads.todo;
 
-import com.gender_healthcare_system.entities.enu.GenderType;
-import com.gender_healthcare_system.entities.enu.MeasureUnit;
 import com.gender_healthcare_system.entities.enu.ResultType;
 import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;
@@ -34,7 +32,9 @@ public class TestingServiceResultCompletePayload implements Serializable {
     private ResultType resultType;
 
     @Nationalized
-    private MeasureUnit measureUnit;
+    @Length(min = 2, max = 30, message = "Measure Unit must be either null or " +
+            "has length between 2 to 30 characters")
+    private String measureUnit;
 
     @DecimalMin(value = "0.0", message =
             "Positive Threshold must be equal to or greater than 0.0")
