@@ -245,22 +245,25 @@ public class UtilFunctions {
 
         for(TestingServiceResultCompletePayload item: resultList){
 
-            BigDecimal realValue = item.getResult();
-            BigDecimal minValue = item.getMinValue();
-            BigDecimal maxValue = item.getMaxValue();
+            if(!item.getResult().contains("POSITIVE")
+            && !item.getResult().contains("NEGATIVE")) {
+                BigDecimal realValue = new BigDecimal(item.getResult());
+                BigDecimal minValue = item.getMinValue();
+                BigDecimal maxValue = item.getMaxValue();
 
-            if(minValue.compareTo(maxValue) > 0){
-                throw new AppException(400,
-                        "Test with title " + item.getTitle() +
-                                " has min value greater than max value");
-            }
+                if (minValue.compareTo(maxValue) > 0) {
+                    throw new AppException(400,
+                            "Test with title " + item.getTitle() +
+                                    " has min value greater than max value");
+                }
 
-            if(realValue.compareTo(minValue) < 0
-                    || realValue.compareTo(maxValue) > 0 ){
+                if (realValue.compareTo(minValue) < 0
+                        || realValue.compareTo(maxValue) > 0) {
 
-                throw new AppException(400, "Real value for test with title "
-                        + item.getTitle() + "must be within accepted range: [" +
-                        item.getMinValue() + "," + item.getMaxValue() + "]");
+                    throw new AppException(400, "Real value for test with title "
+                            + item.getTitle() + "must be within accepted range: [" +
+                            item.getMinValue() + "," + item.getMaxValue() + "]");
+                }
             }
         }
     }

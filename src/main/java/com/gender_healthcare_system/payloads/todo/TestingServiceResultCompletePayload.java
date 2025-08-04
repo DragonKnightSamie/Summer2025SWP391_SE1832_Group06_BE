@@ -56,9 +56,14 @@ public class TestingServiceResultCompletePayload implements Serializable {
             "only have 1 to 3 integer digits and 2 decimal digits at most")
     private BigDecimal maxValue;
 
-    @DecimalMin(value = "0.0", message = "Result value must be equal to or greater than 0.0")
+    @NotNull(message = "Result is required")
+    @Pattern(regexp = "^(?:POSITIVE|NEGATIVE|(?:0|[1-9]\\d{0,2})(?:\\.\\d{1,2})?)$",
+    message = "Result must be a decimal between 0.0 and 999.99 or the word POSITIVE/NEGATIVE")
+    private String result;
+
+    /*@DecimalMin(value = "0.0", message = "Result value must be equal to or greater than 0.0")
     @DecimalMax(value = "999.99", message = "Result value must be equal to or less than 999.99")
     @Digits(integer = 3, fraction = 2, message = "If provided, real test result value can " +
             "only have 1 to 3 integer digits and 2 decimal digits at most")
-    private BigDecimal result;
+    private BigDecimal result;*/
 }
